@@ -1,0 +1,90 @@
+<% content_for :title, "Employés" %>
+<% content_for :page_title, "Employés" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Équipe</h1>
+    <p><%= @company.employees.count %> membre<%= @company.employees.count != 1 ? 's' : '' %> au total</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to new_company_employee_path, class: "btn btn-primary" do %>
+      + Ajouter un employé
+    <% end %>
+  </div>
+</div>
+
+<% if @employees.any? %>
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+    <% @employees.each do |employee| %>
+      <div class="card" style="transition:var(--transition);"
+           onmouseenter="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'"
+           onmouseleave="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='none'">
+        <div class="card-body">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:48px; height:48px; background:var(--green-100);
+                          border-radius:50%; display:flex; align-items:center;
+                          justify-content:center; font-size:1rem; font-weight:700;
+                          color:var(--green-800); font-family:var(--font-display);">
+                <%= employee.first_name[0] %><%= employee.last_name[0] %>
+              </div>
+              <div>
+                <h3 style="font-size:1rem; margin-bottom:2px;"><%= employee.full_name %></h3>
+                <div style="font-size:0.78rem; color:var(--text-300);">
+                  <%= employee.email.presence || "Pas d'email" %>
+                </div>
+              </div>
+            </div>
+            <% if employee.active? %>
+              <span class="badge badge-green">Actif</span>
+            <% else %>
+              <span class="badge badge-red">Inactif</span>
+            <% end %>
+          </div>
+
+          <!-- Aptitudes -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase;
+                        letter-spacing:0.06em; color:var(--text-300); margin-bottom:8px;">
+              Aptitudes
+            </div>
+            <% if employee.service_types.any? %>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <% employee.service_types.limit(3).each do |st| %>
+                  <span class="badge badge-grey"><%= st.name %></span>
+                <% end %>
+                <% remaining = employee.service_types.count - 3 %>
+                <% if remaining > 0 %>
+                  <span class="badge badge-grey">+<%= remaining %></span>
+                <% end %>
+              </div>
+            <% else %>
+              <span style="font-size:0.82rem; color:var(--text-300);">Aucune aptitude</span>
+            <% end %>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex; gap:8px; border-top:1px solid var(--border-light); padding-top:14px;">
+            <%= link_to "Voir", company_employee_path(employee), class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Horaires", company_employee_schedules_path(employee), class: "btn btn-ghost btn-sm" %>
+            <%= link_to employee.active? ? "Désactiver" : "Activer",
+                  toggle_active_company_employee_path(employee),
+                  data: { turbo_method: :patch },
+                  class: "btn btn-ghost btn-sm",
+                  style: "margin-left:auto; color:#{employee.active? ? '#dc2626' : 'var(--green-700)'};" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">👥</div>
+      <h3>Aucun employé</h3>
+      <p>Ajoutez vos premiers collaborateurs pour commencer à gérer les rendez-vous.</p>
+      <%= link_to "+ Ajouter un employé", new_company_employee_path,
+            class: "btn btn-primary", style: "margin-top:16px;" %>
+    </div>
+  </div>
+<% end %>

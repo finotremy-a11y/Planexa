@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Planify Pro</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <style>
+    /* Public navbar */
+    .navbar {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .navbar-logo {
+      width: 32px; height: 32px;
+      background: var(--green-800);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .navbar-brand-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-900);
+    }
+
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar-link {
+      padding: 8px 16px;
+      font-size: 0.88rem;
+      color: var(--text-700);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .navbar-link:hover {
+      background: var(--cream);
+      color: var(--text-900);
+    }
+
+    .public-footer {
+      background: var(--green-900);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 32px;
+      font-size: 0.82rem;
+      margin-top: 80px;
+    }
+
+    .public-footer a { color: rgba(255,255,255,0.7); }
+    .public-footer strong { color: white; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <div class="navbar-logo">⚙</div>
+      <span class="navbar-brand-name">Planify Pro</span>
+    <% end %>
+
+    <div class="navbar-links">
+      <%= link_to "Rechercher", search_path, class: "navbar-link" %>
+
+      <% if user_signed_in? %>
+        <% case current_user.role %>
+        <% when "company_admin" %>
+          <%= link_to "Mon espace", company_root_path, class: "btn btn-secondary btn-sm" %>
+        <% when "client" %>
+          <%= link_to "Mes RDV", client_root_path, class: "btn btn-secondary btn-sm" %>
+        <% when "admin" %>
+          <%= link_to "Admin", admin_root_path, class: "btn btn-secondary btn-sm" %>
+        <% end %>
+        <%= link_to "Déconnexion", destroy_user_session_path,
+              data: { turbo_method: :delete }, class: "navbar-link" %>
+      <% else %>
+        <%= link_to "Connexion", new_user_session_path, class: "navbar-link" %>
+        <%= link_to "Créer un compte", new_user_registration_path,
+              class: "btn btn-primary btn-sm" %>
+      <% end %>
+    </div>
+  </nav>
+
+  <% flash.each do |type, message| %>
+    <% css = { "notice" => "alert-success", "alert" => "alert-error" } %>
+    <div class="alert <%= css[type] || 'alert-info' %>"
+         style="margin:16px auto; max-width:720px; border-radius:var(--radius-md);">
+      <%= message %>
+    </div>
+  <% end %>
+
+  <%= yield %>
+
+  <footer class="public-footer">
+    <strong>Planify Pro</strong> — La plateforme de gestion de rendez-vous pour les artisans et entreprises de services.<br>
+    <span style="margin-top:8px; display:block;">© <%= Date.current.year %> Planify Pro. Tous droits réservés.</span>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<%= form_with model: [:company, employee], local: true do |f| %>
+  <div class="card" style="max-width:600px;">
+    <div class="card-header">
+      <h2 style="font-size:1.2rem;">
+        <%= employee.new_record? ? "Ajouter un employé" : "Modifier #{employee.full_name}" %>
+      </h2>
+    </div>
+    <div class="card-body">
+      <% if employee.errors.any? %>
+        <div class="alert alert-error" style="margin-bottom:20px;">
+          <ul style="list-style:none; padding:0; margin:0;">
+            <% employee.errors.full_messages.each do |msg| %>
+              <li>• <%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="form-group">
+          <%= f.label :first_name, "Prénom", class: "form-label" %>
+          <%= f.text_field :first_name, class: "form-control", placeholder: "Jean" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :last_name, "Nom", class: "form-label" %>
+          <%= f.text_field :last_name, class: "form-control", placeholder: "Dupont" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email, "Email professionnel", class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", placeholder: "jean@monentreprise.fr" %>
+        <span class="form-hint">Non visible par les clients</span>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :phone, "Téléphone", class: "form-label" %>
+        <%= f.phone_field :phone, class: "form-control", placeholder: "06 12 34 56 78" %>
+      </div>
+    </div>
+    <div class="card-footer" style="display:flex; gap:10px; justify-content:flex-end;">
+      <%= link_to "Annuler", company_employees_path, class: "btn btn-ghost" %>
+      <%= f.submit employee.new_record? ? "Ajouter l'employé" : "Sauvegarder",
+            class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>

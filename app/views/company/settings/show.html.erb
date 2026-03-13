@@ -1,0 +1,114 @@
+<% content_for :title, "Réglages" %>
+<% content_for :page_title, "Réglages" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Réglages</h1>
+    <p>Personnalisez le fonctionnement de votre espace Planify Pro</p>
+  </div>
+</div>
+
+<%= form_with model: [:company, @setting], url: company_settings_path, method: :patch, local: true do |f| %>
+  <div style="display:grid; gap:20px; max-width:720px;">
+
+    <!-- Bloc 1 : Prise de RDV -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">📅 Prise de rendez-vous</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Comment vos clients peuvent-ils prendre rendez-vous ?
+          </p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="radio-cards">
+          <label class="radio-card">
+            <%= f.radio_button :booking_mode, "booking_public",
+                  checked: @setting.booking_public? %>
+            <div class="radio-card-content">
+              <h4>🌐 Réservation publique (type Doctolib)</h4>
+              <p>Vos créneaux sont visibles en ligne. Les clients peuvent réserver directement depuis votre fiche.</p>
+            </div>
+          </label>
+          <label class="radio-card">
+            <%= f.radio_button :booking_mode, "booking_private",
+                  checked: @setting.booking_private? %>
+            <div class="radio-card-content">
+              <h4>🔒 Gestion privée</h4>
+              <p>Vous saisissez vous-même les rendez-vous dans votre dashboard. Aucune réservation en ligne.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 2 : Paiement -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">💳 Paiement</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Comment les clients règlent-ils vos prestations ?
+          </p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="radio-cards">
+          <label class="radio-card">
+            <%= f.radio_button :payment_mode, "external",
+                  checked: @setting.external? %>
+            <div class="radio-card-content">
+              <h4>🤝 Paiement hors application</h4>
+              <p>Vous gérez le paiement directement avec vos clients (espèces, virement, CB sur place…).</p>
+            </div>
+          </label>
+          <label class="radio-card">
+            <%= f.radio_button :payment_mode, "in_app",
+                  checked: @setting.in_app? %>
+            <div class="radio-card-content">
+              <h4>💸 Paiement en ligne via Planify Pro</h4>
+              <p>Les clients paient en ligne lors de la réservation. Les fonds arrivent directement sur votre compte Stripe.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloc 3 : Assignation -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">👤 Assignation des employés</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Qui désigne l'employé pour chaque rendez-vous ?
+          </p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="radio-cards">
+          <label class="radio-card">
+            <%= f.radio_button :assignment_mode, "automatic",
+                  checked: @setting.automatic? %>
+            <div class="radio-card-content">
+              <h4>⚡ Assignation automatique</h4>
+              <p>Planify Pro désigne automatiquement l'employé disponible et qualifié, en équilibrant la charge de travail.</p>
+            </div>
+          </label>
+          <label class="radio-card">
+            <%= f.radio_button :assignment_mode, "manual",
+                  checked: @setting.manual? %>
+            <div class="radio-card-content">
+              <h4>✋ Assignation manuelle</h4>
+              <p>Vous choisissez vous-même quel employé est affecté à chaque rendez-vous depuis votre dashboard.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <%= f.submit "Sauvegarder les réglages", class: "btn btn-primary btn-lg" %>
+    </div>
+  </div>
+<% end %>

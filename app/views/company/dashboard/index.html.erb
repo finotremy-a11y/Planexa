@@ -1,0 +1,190 @@
+<% content_for :title, "Tableau de bord" %>
+<% content_for :page_title, "Tableau de bord" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Bonjour, <%= current_user.first_name %> 👋</h1>
+    <p>Voici un aperçu de votre activité aujourd'hui</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to new_company_appointment_path, class: "btn btn-primary" do %>
+      + Nouveau rendez-vous
+    <% end %>
+  </div>
+</div>
+
+<!-- Stats -->
+<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:32px;">
+  <div class="stat-card green">
+    <div class="stat-icon green">📅</div>
+    <div class="stat-value"><%= @today_appointments %></div>
+    <div class="stat-label">RDV aujourd'hui</div>
+  </div>
+  <div class="stat-card gold">
+    <div class="stat-icon gold">⏳</div>
+    <div class="stat-value"><%= @unassigned_count %></div>
+    <div class="stat-label">À assigner</div>
+    <% if @unassigned_count > 0 %>
+      <a href="<%= unassigned_company_appointments_path %>"
+         style="font-size:0.78rem; color:var(--gold-600); margin-top:8px; display:block;">
+        Voir →
+      </a>
+    <% end %>
+  </div>
+  <div class="stat-card brown">
+    <div class="stat-icon brown">👥</div>
+    <div class="stat-value"><%= @employees_count %></div>
+    <div class="stat-label">Employés actifs</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon green">💶</div>
+    <div class="stat-value"><%= number_to_currency(@monthly_revenue, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %></div>
+    <div class="stat-label">CA ce mois</div>
+  </div>
+</div>
+
+<!-- Quick settings banner if not configured -->
+<% unless @company.setting.booking_public? || @company.employees.any? %>
+  <div class="alert alert-warning" style="margin-bottom:24px;">
+    ⚠️ Complétez votre configuration : ajoutez vos employés et vos prestations pour commencer à recevoir des rendez-vous.
+    <%= link_to "Configurer maintenant →", company_employees_path, style: "font-weight:600; color:var(--gold-700); margin-left:8px;" %>
+  </div>
+<% end %>
+
+<div style="display:grid; grid-template-columns: 1fr 340px; gap:24px;">
+
+  <!-- Prochains RDV -->
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Prochains rendez-vous</h3>
+      <%= link_to "Voir tout →", company_appointments_path, class: "btn btn-ghost btn-sm" %>
+    </div>
+    <% if @upcoming_appointments.any? %>
+      <div class="table-wrapper" style="border:none; border-radius:0;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date & heure</th>
+              <th>Prestation</th>
+              <th>Client</th>
+              <th>Employé</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @upcoming_appointments.each do |appt| %>
+              <tr>
+                <td>
+                  <div style="font-weight:500;">
+                    <%= appt.scheduled_at.strftime("%d/%m à %Hh%M") %>
+                  </div>
+                  <div style="font-size:0.78rem; color:var(--text-300);">
+                    <%= appt.duration_minutes %> min
+                  </div>
+                </td>
+                <td><%= appt.service_type.name %></td>
+                <td>
+                  <%= appt.client_user&.full_name || "<span style='color:var(--text-300)'>—</span>".html_safe %>
+                </td>
+                <td>
+                  <% if appt.employee %>
+                    <%= appt.employee.full_name %>
+                  <% else %>
+                    <span class="badge badge-gold">Non assigné</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% badge_map = {
+                    "pending"   => ["badge-gold",  "En attente"],
+                    "confirmed" => ["badge-green", "Confirmé"],
+                    "cancelled" => ["badge-red",   "Annulé"],
+                    "completed" => ["badge-grey",  "Terminé"]
+                  } %>
+                  <% cls, label = badge_map[appt.status] || ["badge-grey", appt.status] %>
+                  <span class="badge <%= cls %>"><%= label %></span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>Aucun rendez-vous à venir</h3>
+        <p>Créez votre premier rendez-vous ou activez les réservations en ligne.</p>
+        <%= link_to "Créer un rendez-vous", new_company_appointment_path,
+              class: "btn btn-primary", style: "margin-top:16px;" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Panneau latéral -->
+  <div style="display:flex; flex-direction:column; gap:16px;">
+
+    <!-- Réglages rapides -->
+    <div class="card">
+      <div class="card-header">
+        <h3 style="font-family:var(--font-display); font-size:1rem;">Réglages actifs</h3>
+        <%= link_to "Modifier", company_settings_path, class: "btn btn-ghost btn-sm" %>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.85rem; color:var(--text-700);">Réservations</span>
+            <span class="badge <%= @company.setting.booking_public? ? 'badge-green' : 'badge-grey' %>">
+              <%= @company.setting.booking_public? ? "En ligne" : "Privé" %>
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.85rem; color:var(--text-700);">Paiement</span>
+            <span class="badge <%= @company.setting.in_app_payment? ? 'badge-green' : 'badge-grey' %>">
+              <%= @company.setting.in_app_payment? ? "Via l'app" : "Hors app" %>
+            </span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.85rem; color:var(--text-700);">Assignation</span>
+            <span class="badge <%= @company.setting.auto_assignment? ? 'badge-green' : 'badge-brown' %>">
+              <%= @company.setting.auto_assignment? ? "Automatique" : "Manuelle" %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Équipe -->
+    <div class="card">
+      <div class="card-header">
+        <h3 style="font-family:var(--font-display); font-size:1rem;">Équipe</h3>
+        <%= link_to "+ Ajouter", new_company_employee_path, class: "btn btn-ghost btn-sm" %>
+      </div>
+      <% if @company.employees.active.any? %>
+        <div style="padding:8px 0;">
+          <% @company.employees.active.limit(5).each do |emp| %>
+            <div style="display:flex; align-items:center; gap:10px; padding:8px 20px;">
+              <div style="width:32px; height:32px; background:var(--green-100);
+                          border-radius:50%; display:flex; align-items:center;
+                          justify-content:center; font-size:0.78rem; font-weight:600;
+                          color:var(--green-800);">
+                <%= emp.first_name[0] %><%= emp.last_name[0] %>
+              </div>
+              <div>
+                <div style="font-size:0.85rem; font-weight:500;"><%= emp.full_name %></div>
+                <div style="font-size:0.72rem; color:var(--text-300);">
+                  <%= emp.service_types.count %> aptitude<%= emp.service_types.count != 1 ? 's' : '' %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div style="padding:20px; text-align:center; color:var(--text-300); font-size:0.85rem;">
+          Aucun employé.<br>
+          <%= link_to "Ajouter le premier →", new_company_employee_path,
+                style: "color:var(--green-700);" %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</div>

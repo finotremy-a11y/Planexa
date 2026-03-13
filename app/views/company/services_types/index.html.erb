@@ -1,0 +1,80 @@
+<% content_for :title, "Prestations" %>
+<% content_for :page_title, "Prestations" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Prestations</h1>
+    <p><%= @service_types.count %> prestation<%= @service_types.count != 1 ? 's' : '' %> configurée<%= @service_types.count != 1 ? 's' : '' %></p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to new_company_service_type_path, class: "btn btn-primary" do %>
+      + Ajouter une prestation
+    <% end %>
+  </div>
+</div>
+
+<% if @service_types.any? %>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Durée</th>
+          <th>Prix</th>
+          <th>Employés qualifiés</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @service_types.each do |st| %>
+          <tr>
+            <td>
+              <div style="font-weight:500;"><%= st.name %></div>
+              <% if st.description.present? %>
+                <div style="font-size:0.78rem; color:var(--text-300);">
+                  <%= truncate(st.description, length: 60) %>
+                </div>
+              <% end %>
+            </td>
+            <td><%= st.duration_minutes %> min</td>
+            <td style="font-weight:600; color:var(--green-800);">
+              <%= number_to_currency(st.price_cents / 100.0, unit:"€", separator:",", delimiter:" ", format:"%n %u") %>
+            </td>
+            <td>
+              <span class="badge badge-grey">
+                <%= st.qualified_employees.count %> employé<%= st.qualified_employees.count != 1 ? 's' : '' %>
+              </span>
+            </td>
+            <td>
+              <% if st.active? %>
+                <span class="badge badge-green">Active</span>
+              <% else %>
+                <span class="badge badge-red">Inactive</span>
+              <% end %>
+            </td>
+            <td>
+              <div style="display:flex; gap:6px;">
+                <%= link_to "Modifier", edit_company_service_type_path(st), class: "btn btn-ghost btn-sm" %>
+                <%= link_to st.active? ? "Désactiver" : "Activer",
+                      toggle_active_company_service_type_path(st),
+                      data: { turbo_method: :patch },
+                      class: "btn btn-ghost btn-sm" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-state-icon">🔧</div>
+      <h3>Aucune prestation</h3>
+      <p>Définissez vos types de services pour que les clients puissent réserver.</p>
+      <%= link_to "+ Créer une prestation", new_company_service_type_path,
+            class: "btn btn-primary", style: "margin-top:16px;" %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Planify Pro</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <style>
+    /* ── Company Layout ─────────────────────────────────────── */
+    .company-layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--cream);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--green-900);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gold-600);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1.1;
+    }
+
+    .sidebar-logo-sub {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-company {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-company-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-company-status {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .sidebar-company-status::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+    }
+
+    .sidebar-nav {
+      padding: 16px 0;
+      flex: 1;
+    }
+
+    .sidebar-section-label {
+      padding: 4px 24px 8px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.88rem;
+      font-weight: 400;
+      transition: var(--transition);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-link:hover {
+      color: white;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .sidebar-link.active {
+      color: white;
+      background: rgba(255,255,255,0.1);
+      border-left-color: var(--gold-400);
+      font-weight: 500;
+    }
+
+    .sidebar-link-icon {
+      width: 20px;
+      text-align: center;
+      opacity: 0.75;
+      font-size: 1rem;
+    }
+
+    .sidebar-link.active .sidebar-link-icon { opacity: 1; }
+
+    .sidebar-badge {
+      margin-left: auto;
+      background: var(--gold-600);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-avatar {
+      width: 32px; height: 32px;
+      background: var(--green-700);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .sidebar-user-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: white;
+    }
+
+    .sidebar-user-role {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .sidebar-signout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .sidebar-signout:hover { color: rgba(255,255,255,0.8); }
+
+    /* Main content */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: white;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-breadcrumb {
+      font-size: 0.85rem;
+      color: var(--text-500);
+    }
+
+    .topbar-breadcrumb strong {
+      color: var(--text-900);
+      font-weight: 500;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-notification {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-500);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .topbar-notification:hover { background: var(--cream); color: var(--text-900); }
+
+    .content-wrapper {
+      flex: 1;
+      padding: 32px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* Flash messages */
+    .flash-container {
+      position: fixed;
+      top: 72px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 380px;
+    }
+
+    .flash-message {
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="company-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">⚙</div>
+        <div>
+          <div class="sidebar-logo-text">Planify Pro</div>
+          <div class="sidebar-logo-sub">Espace entreprise</div>
+        </div>
+      </div>
+
+      <% if @company %>
+      <div class="sidebar-company">
+        <div class="sidebar-company-name"><%= @company.name %></div>
+        <div class="sidebar-company-status">
+          <%= @company.trial_active? ? "Période d'essai" : "Abonnement actif" %>
+        </div>
+      </div>
+      <% end %>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Principal</div>
+
+        <%= link_to company_root_path,
+              class: "sidebar-link #{current_page?(company_root_path) ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">◈</span>
+          Tableau de bord
+        <% end %>
+
+        <%= link_to company_appointments_path,
+              class: "sidebar-link #{controller_name == 'appointments' && namespace == 'company' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">📅</span>
+          Rendez-vous
+          <% unassigned = @company&.appointments&.pending&.unassigned&.count || 0 %>
+          <% if unassigned > 0 %>
+            <span class="sidebar-badge"><%= unassigned %></span>
+          <% end %>
+        <% end %>
+
+        <div class="sidebar-section-label" style="margin-top:12px">Équipe & Prestations</div>
+
+        <%= link_to company_employees_path,
+              class: "sidebar-link #{controller_name == 'employees' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">👥</span>
+          Employés
+        <% end %>
+
+        <%= link_to company_service_types_path,
+              class: "sidebar-link #{controller_name == 'service_types' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">🔧</span>
+          Prestations
+        <% end %>
+
+        <div class="sidebar-section-label" style="margin-top:12px">Configuration</div>
+
+        <%= link_to company_settings_path,
+              class: "sidebar-link #{controller_name == 'settings' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">⚙</span>
+          Réglages
+        <% end %>
+
+        <%= link_to company_subscription_path,
+              class: "sidebar-link #{controller_name == 'subscriptions' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">💳</span>
+          Abonnement
+        <% end %>
+
+        <%= link_to company_profile_path,
+              class: "sidebar-link #{controller_name == 'profiles' ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">🏢</span>
+          Profil entreprise
+        <% end %>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">
+            <%= current_user.first_name[0].upcase %><%= current_user.last_name[0].upcase %>
+          </div>
+          <div>
+            <div class="sidebar-user-name"><%= current_user.full_name %></div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+        </div>
+        <%= link_to destroy_user_session_path, data: { turbo_method: :delete },
+              class: "sidebar-signout" do %>
+          ↩ Déconnexion
+        <% end %>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <header class="topbar">
+        <div class="topbar-breadcrumb">
+          Planify Pro /
+          <strong><%= yield(:page_title) || controller_name.humanize %></strong>
+        </div>
+        <div class="topbar-actions">
+          <%= link_to company_appointments_path(q: { status_eq: 'pending' }),
+                class: "topbar-notification", title: "Rendez-vous en attente" do %>
+            🔔
+          <% end %>
+          <%= link_to root_path, class: "btn btn-ghost btn-sm", target: "_blank" do %>
+            👁 Voir la fiche publique
+          <% end %>
+        </div>
+      </header>
+
+      <!-- Flash messages -->
+      <div class="flash-container">
+        <% flash.each do |type, message| %>
+          <% css = { "notice" => "alert-success", "alert" => "alert-error",
+                     "warning" => "alert-warning", "info" => "alert-info" } %>
+          <div class="flash-message alert <%= css[type] || 'alert-info' %>">
+            <%= message %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="content-wrapper">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

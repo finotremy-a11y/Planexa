@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  # Ou utiliser Supabase en dev :
+  url: <%= ENV["DATABASE_URL"] %>
+
+test:
+  <<: *default
+  database: planify_pro_test
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
+  # Supabase connection pooling (port 6543) recommandé en production
+  # DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres
