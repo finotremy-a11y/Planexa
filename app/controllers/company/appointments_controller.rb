@@ -1,6 +1,6 @@
 class Company::AppointmentsController < Company::BaseController
-  before_action :set_appointment, only: [:show, :edit, :update, :confirm,
-                                          :cancel, :complete, :assign_employee]
+  before_action :set_appointment, only: [ :show, :edit, :update, :confirm,
+                                          :cancel, :complete, :assign_employee ]
 
   def index
     @q = @company.appointments.ransack(params[:q])

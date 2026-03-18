@@ -1,0 +1,80 @@
+<%= form_with model: [@company, appointment], html: { class: "appointment-form" } do |f| %>
+  <% if appointment.errors.any? %>
+    <div class="alert alert-danger" style="margin-bottom:20px;">
+      <strong><%= pluralize(appointment.errors.count, "erreur") %> :</strong>
+      <ul style="margin:8px 0 0 0; padding-left:20px;">
+        <% appointment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :service_type_id, "Prestation" %>
+      <%= f.collection_select :service_type_id,
+            @company.service_types.active.order(:name),
+            :id, :name,
+            { prompt: "Choisir une prestation…" },
+            class: "form-select" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :employee_id, "Employé (optionnel)" %>
+      <%= f.collection_select :employee_id,
+            @company.employees.active.order(:last_name),
+            :id, :full_name,
+            { prompt: "Attribution automatique" },
+            class: "form-select" %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :client_user_id, "Client (optionnel)" %>
+      <%= f.collection_select :client_user_id,
+            User.where(role: :client).order(:last_name).limit(200),
+            :id, :full_name,
+            { prompt: "Client sans compte" },
+            class: "form-select" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :duration_minutes, "Durée (minutes)" %>
+      <%= f.number_field :duration_minutes, class: "form-control", min: 5, step: 5 %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :scheduled_at, "Date et heure" %>
+    <%= f.datetime_local_field :scheduled_at,
+          class: "form-control",
+          value: appointment.scheduled_at&.strftime("%Y-%m-%dT%H:%M") %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :client_notes, "Notes client" %>
+    <%= f.text_area :client_notes, class: "form-control", rows: 3,
+          placeholder: "Informations transmises par le client…" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :internal_notes, "Notes internes" %>
+    <%= f.text_area :internal_notes, class: "form-control", rows: 3,
+          placeholder: "Notes visibles uniquement par votre équipe…" %>
+  </div>
+
+  <div class="form-check" style="margin-bottom:20px;">
+    <%= f.check_box :urgent, class: "form-check-input" %>
+    <%= f.label :urgent, "Marquer comme urgent", class: "form-check-label" %>
+  </div>
+
+  <div style="display:flex; gap:8px;">
+    <%= f.submit appointment.new_record? ? "Créer le rendez-vous" : "Enregistrer",
+          class: "btn btn-primary" %>
+    <%= link_to "Annuler",
+          appointment.new_record? ? company_appointments_path : company_appointment_path(appointment),
+          class: "btn btn-secondary" %>
+  </div>
+<% end %>

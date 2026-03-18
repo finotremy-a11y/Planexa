@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
-
   # ── Auth (Devise) ────────────────────────────────────────────────────────
   devise_for :users
-#controllers: {
-#registrations: "users/registrations",
-#sessions:      "users/sessions",
-#confirmations: "users/confirmations"
-#}
+  # controllers: {
+  # registrations: "users/registrations",
+  # sessions:      "users/sessions",
+  # confirmations: "users/confirmations"
+  # }
 
   # ── Page d'accueil & Recherche publique ──────────────────────────────────
   root "home#index"
@@ -15,11 +14,24 @@ Rails.application.routes.draw do
   get  "/recherche",          to: "search#index",  as: :search
   get  "/entreprises/:id",    to: "companies#show", as: :company_public
 
+  # Pages légales & contact
+  get  "/cgu", to: "pages#cgu", as: :cgu
+  get  "/cgv", to: "pages#cgv", as: :cgv
+  get  "/confidentialite", to: "pages#confidentialite", as: :confidentialite
+  get  "/mentions-legales", to: "pages#mentions_legales", as: :mentions_legales
+  get  "/contact", to: "pages#contact", as: :contact
+  post "/contact", to: "pages#send_contact", as: :send_contact
+
   # Prise de RDV publique
-  resources :appointments, only: [:new, :create, :show], path: "rendez-vous" do
+  resources :appointments, only: [ :new, :create, :show ], path: "rendez-vous" do
     collection do
       get :confirmation
     end
+  end
+
+  # ── Paiement client après RDV ────────────────────────────────────────────
+  scope path: "rendez-vous/:appointment_id", as: "appointment" do
+    resource :payment, only: [ :new, :create ], path: "paiement", controller: "payments"
   end
 
   # ── Stripe webhooks (AVANT les namespaces pour éviter CSRF) ──────────────
@@ -28,13 +40,13 @@ Rails.application.routes.draw do
   # ── Espace Client ────────────────────────────────────────────────────────
   namespace :client do
     root "dashboard#index"
-    resources :appointments, only: [:index, :show, :destroy], path: "mes-rdv" do
+    resources :appointments, only: [ :index, :show, :destroy ], path: "mes-rdv" do
       member do
         patch :cancel
       end
     end
-    resources :payments, only: [:show]
-    resource  :profile, only: [:show, :edit, :update]
+    resources :payments, only: [ :show ]
+    resource  :profile, only: [ :show, :edit, :update ]
   end
 
   # ── Espace Entreprise ─────────────────────────────────────────────────────
@@ -42,13 +54,13 @@ Rails.application.routes.draw do
     root "dashboard#index"
 
     # Onboarding (étapes initiales après inscription)
-    resource :onboarding, only: [:show, :update], path: "onboarding"
+    resource :onboarding, only: [ :show, :update ], path: "onboarding"
 
     # Réglages
-    resource :settings, only: [:show, :update], path: "reglages"
+    resource :settings, only: [ :show, :update ], path: "reglages"
 
     # Abonnement & Facturation
-    resource :subscription, only: [:show, :new, :create, :destroy], path: "abonnement" do
+    resource :subscription, only: [ :show, :new, :create, :destroy ], path: "abonnement" do
       post :checkout          # → Stripe Checkout
       post :portal            # → Stripe Billing Portal
     end
@@ -65,14 +77,14 @@ Rails.application.routes.draw do
       member do
         patch :toggle_active
       end
-      resources :skills, only: [:index, :create, :destroy],
+      resources :skills, only: [ :index, :create, :destroy ],
                          controller: "employee_skills", path: "aptitudes"
-      resources :schedules, only: [:index, :new, :create, :destroy],
+      resources :schedules, only: [ :index, :create, :destroy ],
                             path: "horaires"
     end
 
     # Prestations / Domaines d'activité
-    resources :service_types, path: "prestations" do
+    resources :service_types, path: "prestations", except: [ :show ] do
       member do
         patch :toggle_active
       end
@@ -93,26 +105,26 @@ Rails.application.routes.draw do
     end
 
     # Planning
-    resources :schedules, only: [:index], path: "planning"
+    resources :schedules, only: [ :index ], path: "planning"
 
     # Profil entreprise
-    resource :profile, only: [:show, :edit, :update], path: "profil"
+    resource :profile, only: [ :show, :edit, :update ], path: "profil"
   end
 
   # ── Espace Admin ──────────────────────────────────────────────────────────
   namespace :admin do
     root "dashboard#index"
 
-    resources :companies, only: [:index, :show, :destroy] do
+    resources :companies, only: [ :index, :show, :destroy ] do
       member do
         patch :suspend
         patch :reactivate
       end
     end
 
-    resources :users, only: [:index, :show, :destroy]
+    resources :users, only: [ :index, :show, :destroy ]
 
-    resources :subscriptions, only: [:index, :show] do
+    resources :subscriptions, only: [ :index, :show ] do
       member do
         patch :cancel
       end
@@ -130,4 +142,8 @@ Rails.application.routes.draw do
 
   # ── Health check (Render) ─────────────────────────────────────────────────
   get "/up", to: "rails/health#show", as: :rails_health_check
+
+  # ── Pages d'erreur custom ─────────────────────────────────────────────────
+  match "/404", to: "errors#not_found",             via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
 end

@@ -1,0 +1,12 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "396ac3808df8849484dc136676adc81f9dababa5cfccb89d6ec4dc09ed51aae5",
+      "note": "Admin::SubscriptionsController — protégé par require_admin!, unscoped find intentionnel"
+    },
+    {
+      "fingerprint": "e0f4d734ddbf8dcfb16155ab8c33495edbad33e26474ac6e0fdf846e5fc4b55f",
+      "note": "Admin::CompaniesController — protégé par require_admin!, unscoped find intentionnel"
+    }
+  ]
+}

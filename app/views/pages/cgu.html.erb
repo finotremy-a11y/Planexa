@@ -1,0 +1,83 @@
+<% content_for :title, "Conditions Générales d'Utilisation" %>
+
+<div style="max-width:800px; margin:48px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:8px;">Conditions Générales d'Utilisation</h1>
+  <p style="color:var(--text-500); margin-bottom:32px;">Dernière mise à jour : <%= legal_updated_at %></p>
+
+  <div class="card">
+    <div class="card-body" style="line-height:1.9;">
+      <h2 style="font-size:1.2rem; margin:0 0 12px;">Article 1 — Présentation</h2>
+      <p>
+        Planify Pro est une plateforme SaaS permettant aux entreprises de services et artisans
+        de gérer leur planning et leurs rendez-vous, et aux clients de trouver des professionnels
+        et de réserver en ligne. Le service est édité par <%= legal_business_name %> (<%= legal_owner_address %>).
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 2 — Acceptation</h2>
+      <p>
+        L'utilisation de Planify Pro implique l'acceptation pleine et entière des présentes CGU.
+        Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser le service.
+        Ces CGU peuvent être modifiées à tout moment ; les utilisateurs en seront informés
+        par email avec un préavis de 30 jours.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 3 — Accès au service</h2>
+      <p><strong>Clients :</strong> l'accès est gratuit. L'inscription nécessite une adresse email valide et un mot de passe. Le compte est personnel et non cessible.</p>
+      <p><strong>Entreprises :</strong> l'accès est soumis à un abonnement mensuel de 49 € HT. Une période d'essai gratuite de 14 jours est offerte à l'inscription.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 4 — Responsabilités des utilisateurs</h2>
+      <p>L'utilisateur s'engage à :</p>
+      <ul style="padding-left:20px; color:var(--text-700);">
+        <li>Ne pas usurper l'identité d'un tiers</li>
+        <li>Ne pas utiliser le service à des fins illicites</li>
+        <li>Maintenir la confidentialité de ses identifiants</li>
+        <li>Signaler toute utilisation frauduleuse à <%= legal_contact_email %></li>
+        <li>Ne pas tenter de perturber le fonctionnement du service</li>
+      </ul>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 5 — Rendez-vous et annulations</h2>
+      <p>
+        Planify Pro est un intermédiaire technique entre les clients et les entreprises.
+        La responsabilité de l'exécution du rendez-vous incombe exclusivement à l'entreprise concernée.
+        Les conditions d'annulation sont fixées par chaque entreprise.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 6 — Paiements</h2>
+      <p>
+        Lorsque l'option de paiement en ligne est activée par l'entreprise, les transactions
+        sont traitées par Stripe. Planify Pro ne stocke aucune donnée bancaire.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 7 — Disponibilité du service</h2>
+      <p>
+        <%= legal_business_name %> s'efforce d'assurer une disponibilité du service 24h/24 et 7j/7.
+        Des interruptions peuvent survenir pour maintenance ou en cas de force majeure.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 8 — Suspension et résiliation</h2>
+      <p>
+        <%= legal_business_name %> se réserve le droit de suspendre ou supprimer tout compte en cas
+        de violation des présentes CGU. L'utilisateur peut supprimer son compte à tout moment
+        en contactant <%= legal_contact_email %>.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 9 — Propriété intellectuelle</h2>
+      <p>
+        La plateforme Planify Pro, son code, son design et ses contenus sont la propriété
+        exclusive de <%= legal_business_name %>. Toute reproduction est interdite sans autorisation écrite.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 10 — Droit applicable</h2>
+      <p>
+        Les présentes CGU sont soumises au droit français.
+        Tout litige sera soumis aux tribunaux compétents de <%= legal_city %>, sauf disposition légale contraire.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 11 — Contact</h2>
+      <p>
+        Pour toute question : <a href="mailto:<%= legal_contact_email %>"><%= legal_contact_email %></a><br>
+        Ou via le <%= link_to "formulaire de contact", contact_path %>.
+      </p>
+    </div>
+  </div>
+</div>

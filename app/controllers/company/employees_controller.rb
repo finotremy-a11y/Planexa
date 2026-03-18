@@ -1,5 +1,5 @@
 class Company::EmployeesController < Company::BaseController
-  before_action :set_employee, only: [:show, :edit, :update, :destroy, :toggle_active]
+  before_action :set_employee, only: [ :show, :edit, :update, :destroy, :toggle_active ]
 
   def index
     @employees = @company.employees.includes(:service_types).order(:last_name)

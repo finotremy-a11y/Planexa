@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Planify Pro</title>
+  <!-- Pas d'indexation pour les pages d'authentification -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="theme-color" content="#2C5F2E">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <style>
+    .auth-layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      background: radial-gradient(circle at top left, rgba(184, 134, 11, 0.08), transparent 28%), var(--cream);
+    }
+
+    .auth-visual {
+      background: linear-gradient(160deg, var(--green-900) 0%, var(--green-800) 52%, var(--brown-700) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.035'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .auth-visual-logo,
+    .auth-visual-content,
+    .auth-visual-footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-visual-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-visual-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--gold-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .auth-visual-logo-name {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .auth-visual-content h2 {
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      color: white;
+      margin-bottom: 16px;
+      line-height: 1.15;
+    }
+
+    .auth-visual-content p {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 1rem;
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .auth-features {
+      display: grid;
+      gap: 12px;
+      max-width: 520px;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.92rem;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(8px);
+    }
+
+    .auth-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .auth-visual-footer {
+      color: rgba(255, 255, 255, 0.38);
+      font-size: 0.78rem;
+    }
+
+    .auth-form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 64px;
+    }
+
+    .auth-form-container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .auth-form-header {
+      margin-bottom: 32px;
+    }
+
+    .auth-form-header h1 {
+      font-size: 1.9rem;
+      margin-bottom: 8px;
+    }
+
+    .auth-form-header p {
+      color: var(--text-500);
+      font-size: 0.92rem;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--text-300);
+      font-size: 0.82rem;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .auth-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-visual {
+        display: none;
+      }
+
+      .auth-form-panel {
+        padding: 40px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-layout">
+    <div class="auth-visual">
+      <div class="auth-visual-logo">
+        <div class="auth-visual-logo-icon">⚙</div>
+        <span class="auth-visual-logo-name">Planify Pro</span>
+      </div>
+
+      <div class="auth-visual-content">
+        <h2>La gestion de rendez-vous pensée pour les pros du terrain</h2>
+        <p>
+          Centralisez vos réservations, coordonnez votre équipe et offrez une expérience
+          client plus fluide, du premier contact jusqu’au paiement.
+        </p>
+
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="auth-feature-icon">📅</div>
+            Planning intelligent et visibilité temps réel
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🌐</div>
+            Réservations en ligne 24h/24 depuis votre fiche publique
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">💳</div>
+            Encaissement sécurisé via Stripe
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🔔</div>
+            Emails automatiques et rappels sans friction
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-visual-footer">
+        © <%= Date.current.year %> Planify Pro · 49 € / mois · 14 jours d’essai
+      </div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-form-container">
+        <% flash.each do |type, message| %>
+          <% css = { "notice" => "alert-success", "alert" => "alert-error", "warning" => "alert-warning" } %>
+          <div class="alert <%= css[type] || 'alert-info' %>" style="margin-bottom:20px;">
+            <%= message %>
+          </div>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

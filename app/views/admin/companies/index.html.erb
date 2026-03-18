@@ -1,0 +1,121 @@
+<% content_for :title, "Entreprises" %>
+<% content_for :page_title, "Entreprises" %>
+
+<div style="background:white; border-radius:10px; border:1px solid #e2e8f0;
+            padding:16px 20px; margin-bottom:20px;">
+  <%= search_form_for @q, url: admin_companies_path, method: :get do |f| %>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+      <div class="form-group" style="margin:0; flex:1; min-width:200px;">
+        <%= f.label :name_cont, "Recherche", class: "form-label" %>
+        <%= f.search_field :name_cont, class: "form-control",
+              placeholder: "Nom, ville..." %>
+      </div>
+      <div class="form-group" style="margin:0; min-width:140px;">
+        <%= f.label :status_eq, "Statut", class: "form-label" %>
+        <%= f.select :status_eq,
+              [["Tous", ""], ["Actif", "active"], ["Suspendu", "suspended"]],
+              {}, class: "form-control" %>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <%= f.submit "Filtrer", class: "btn btn-primary btn-sm" %>
+        <%= link_to "Réinitialiser", admin_companies_path, class: "btn btn-ghost btn-sm" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="admin-table-wrapper">
+  <div class="admin-table-header">
+    <h3><%= @pagy.count %> entreprise<%= @pagy.count > 1 ? 's' : '' %></h3>
+    <%= link_to "📥 Export CSV", admin_export_csv_path,
+          style: "font-size:0.82rem; color:#2C5F2E;" %>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="background:#f8fafc;">
+        <% ["Entreprise", "SIRET", "Ville", "Abonnement", "RDV", "Statut", "Actions"].each do |header| %>
+          <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
+                     font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">
+            <%= header %>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @companies.each do |company| %>
+        <tr style="border-bottom:1px solid #f1f5f9;"
+            onmouseenter="this.style.background='#f8fafc'"
+            onmouseleave="this.style.background='white'">
+          <td style="padding:12px 16px;">
+            <div style="font-weight:500; font-size:0.88rem;">
+              <%= link_to company.name, admin_company_path(company),
+                    style: "color:#1e293b; text-decoration:none;" %>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8;"><%= company.user.email %></div>
+          </td>
+          <td style="padding:12px 16px; font-size:0.82rem; font-family:monospace; color:#64748b;">
+            <%= company.siret %>
+          </td>
+          <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
+            <%= company.city %>
+          </td>
+          <td style="padding:12px 16px;">
+            <% if company.subscription %>
+              <% colors = {
+                "active" => ["#dcfce7", "#16a34a"],
+                "trialing" => ["#fef9c3", "#a16207"],
+                "past_due" => ["#fee2e2", "#dc2626"],
+                "suspended" => ["#fee2e2", "#dc2626"],
+                "canceled" => ["#f1f5f9", "#94a3b8"]
+              }
+              bg, fg = colors[company.subscription.status] || ["#f1f5f9", "#94a3b8"] %>
+              <span style="font-size:0.75rem; font-weight:500; padding:3px 8px;
+                           border-radius:99px; background:<%= bg %>; color:<%= fg %>;">
+                <%= company.subscription.status.humanize %>
+              </span>
+            <% else %>
+              <span style="font-size:0.75rem; color:#cbd5e1;">Aucun</span>
+            <% end %>
+          </td>
+          <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
+            <%= company.appointments.count %>
+          </td>
+          <td style="padding:12px 16px;">
+            <span style="font-size:0.75rem; font-weight:500; padding:3px 8px;
+                         border-radius:99px;
+                         background:<%= company.active? ? '#dcfce7' : '#fee2e2' %>;
+                         color:<%= company.active? ? '#16a34a' : '#dc2626' %>;">
+              <%= company.active? ? "Actif" : "Suspendu" %>
+            </span>
+          </td>
+          <td style="padding:12px 16px;">
+            <div style="display:flex; gap:6px; align-items:center;">
+              <%= link_to "Voir", admin_company_path(company),
+                    style: "font-size:0.78rem; color:#2C5F2E; font-weight:500;" %>
+              <% if company.active? %>
+                · <%= button_to "Suspendre",
+                      suspend_admin_company_path(company),
+                      method: :patch,
+                      style: "background:none; border:none; cursor:pointer;
+                              font-size:0.78rem; color:#dc2626; padding:0;
+                              font-family:var(--font-body);",
+                      data: { turbo_confirm: "Suspendre #{company.name} ?" } %>
+              <% else %>
+                · <%= button_to "Réactiver",
+                      reactivate_admin_company_path(company),
+                      method: :patch,
+                      style: "background:none; border:none; cursor:pointer;
+                              font-size:0.78rem; color:#16a34a; padding:0;
+                              font-family:var(--font-body);" %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div style="padding:16px 20px; border-top:1px solid #e2e8f0;">
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  </div>
+</div>

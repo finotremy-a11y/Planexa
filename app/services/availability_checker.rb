@@ -44,7 +44,7 @@ class AvailabilityChecker
   # Vérifie qu'il n'y a pas de chevauchement avec un autre RDV
   def no_conflict?
     @employee.appointments
-             .where.not(status: [:cancelled, :no_show])
+             .where.not(status: [ :cancelled, :no_show ])
              .none? do |appt|
                appt.scheduled_at < @end_datetime &&
                appt.ends_at > @datetime

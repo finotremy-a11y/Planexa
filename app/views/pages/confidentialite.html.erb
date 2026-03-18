@@ -1,0 +1,95 @@
+<% content_for :title, "Politique de confidentialité" %>
+
+<div style="max-width:800px; margin:48px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:8px;">Politique de confidentialité</h1>
+  <p style="color:var(--text-500); margin-bottom:32px;">Dernière mise à jour : <%= legal_updated_at %></p>
+
+  <div class="card">
+    <div class="card-body" style="line-height:1.9;">
+      <h2 style="font-size:1.2rem; margin:0 0 12px;">1. Qui sommes-nous ?</h2>
+      <p>
+        Planify Pro est une plateforme SaaS de gestion de rendez-vous éditée par
+        <strong><%= legal_business_name %></strong> (<%= legal_owner_address %>).
+        Le responsable du traitement des données est <%= legal_owner_name %>,
+        joignable à <a href="mailto:<%= legal_dpo_email %>"><%= legal_dpo_email %></a>.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">2. Données collectées</h2>
+      <p>Nous collectons les données suivantes selon votre profil :</p>
+      <p><strong>Clients :</strong> nom, prénom, adresse email, numéro de téléphone (optionnel), historique des rendez-vous, informations de paiement (gérées par Stripe, non stockées chez nous).</p>
+      <p><strong>Entreprises :</strong> nom de l'entreprise, SIRET, adresse, email, téléphone, informations des employés renseignées, informations de facturation (gérées par Stripe).</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">3. Finalités des traitements</h2>
+      <p>Vos données sont utilisées pour :</p>
+      <ul style="padding-left:20px; color:var(--text-700);">
+        <li>Gérer votre compte et vous fournir le service Planify Pro</li>
+        <li>Traiter les réservations et les paiements</li>
+        <li>Envoyer des confirmations et rappels de rendez-vous</li>
+        <li>Vous contacter en cas de besoin lié à votre compte</li>
+        <li>Respecter nos obligations légales et comptables</li>
+      </ul>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">4. Base légale</h2>
+      <p>
+        Le traitement de vos données repose sur l'exécution du contrat, votre consentement
+        lorsque cela est requis, et nos obligations légales.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">5. Durée de conservation</h2>
+      <ul style="padding-left:20px; color:var(--text-700);">
+        <li>Données de compte actif : pendant toute la durée d'utilisation du service</li>
+        <li>Après clôture du compte : 3 ans maximum</li>
+        <li>Données de facturation : 10 ans</li>
+        <li>Logs techniques : 12 mois maximum</li>
+      </ul>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">6. Partage des données</h2>
+      <p>Vos données peuvent être partagées avec :</p>
+      <ul style="padding-left:20px; color:var(--text-700);">
+        <li><strong>Stripe</strong> (paiements) — <a href="https://stripe.com/fr/privacy" target="_blank" rel="noopener">stripe.com/fr/privacy</a></li>
+        <li><strong>Supabase</strong> (hébergement BDD) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a></li>
+        <li><strong>Resend</strong> (emails) — <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">resend.com/legal/privacy-policy</a></li>
+        <li><strong>Render</strong> (hébergement) — <a href="https://render.com/privacy" target="_blank" rel="noopener">render.com/privacy</a></li>
+      </ul>
+      <p>Nous ne vendons jamais vos données à des tiers.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">7. Vos droits (RGPD)</h2>
+      <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+      <ul style="padding-left:20px; color:var(--text-700);">
+        <li><strong>Droit d'accès</strong> : obtenir une copie de vos données</li>
+        <li><strong>Droit de rectification</strong> : corriger des données inexactes</li>
+        <li><strong>Droit à l'effacement</strong> : demander la suppression de votre compte</li>
+        <li><strong>Droit à la portabilité</strong> : recevoir vos données dans un format lisible</li>
+        <li><strong>Droit d'opposition</strong> : vous opposer à certains traitements</li>
+        <li><strong>Droit de limitation</strong> : restreindre le traitement de vos données</li>
+      </ul>
+      <p>
+        Pour exercer vos droits, contactez-nous à
+        <a href="mailto:<%= legal_dpo_email %>"><%= legal_dpo_email %></a>.
+        Nous nous engageons à répondre sous 30 jours.
+        Vous pouvez également adresser une réclamation à la
+        <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">8. Cookies</h2>
+      <p>
+        Planify Pro utilise uniquement des cookies strictement nécessaires au fonctionnement
+        du service (session utilisateur, sécurité CSRF).
+        Nous n'utilisons pas de cookies publicitaires ou de tracking tiers.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">9. Sécurité</h2>
+      <p>
+        Nous mettons en œuvre les mesures techniques et organisationnelles appropriées
+        pour protéger vos données : chiffrement HTTPS, accès restreints, mots de passe chiffrés,
+        sauvegardes régulières.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">10. Contact</h2>
+      <p>
+        Pour toute question relative à cette politique :
+        <a href="mailto:<%= legal_dpo_email %>"><%= legal_dpo_email %></a>
+      </p>
+    </div>
+  </div>
+</div>

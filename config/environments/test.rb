@@ -48,6 +48,9 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
+  # Use Supabase in test env — skip schema reprepare
+  config.active_record.maintain_test_schema = false
+
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 end

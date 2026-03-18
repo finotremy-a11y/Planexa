@@ -3,21 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Planify Pro</title>
+
+  <!-- Titre dynamique -->
+  <title><%= content_for?(:title) ? page_title(yield(:title)) : page_title %></title>
+
+  <!-- Meta description -->
+  <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>">
+
+  <!-- Robots -->
+  <meta name="robots" content="<%= content_for?(:robots) ? yield(:robots) : 'index, follow' %>">
+
+  <!-- Canonical -->
+  <% if content_for?(:canonical) %>
+    <link rel="canonical" href="<%= yield(:canonical) %>">
+  <% end %>
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="Planify Pro">
+  <meta property="og:title"       content="<%= content_for?(:title) ? page_title(yield(:title)) : page_title %>">
+  <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>">
+  <meta property="og:image"       content="<%= content_for?(:og_image) ? yield(:og_image) : og_image_url %>">
+  <meta property="og:url"         content="<%= request.original_url %>">
+  <meta property="og:locale"      content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="<%= content_for?(:title) ? page_title(yield(:title)) : page_title %>">
+  <meta name="twitter:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>">
+  <meta name="twitter:image"       content="<%= content_for?(:og_image) ? yield(:og_image) : og_image_url %>">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="theme-color" content="#2C5F2E">
+
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_importmap_tags %>
   <style>
-    /* Public navbar */
     .navbar {
-      background: white;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-light);
-      padding: 0 48px;
-      height: 64px;
+      padding: 0 40px;
+      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -51,7 +89,9 @@
     .navbar-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .navbar-link {
@@ -69,16 +109,71 @@
     }
 
     .public-footer {
-      background: var(--green-900);
+      background: linear-gradient(180deg, var(--green-900) 0%, #122c14 100%);
       color: rgba(255,255,255,0.6);
-      text-align: center;
-      padding: 32px;
-      font-size: 0.82rem;
+      padding: 44px 40px 24px;
       margin-top: 80px;
     }
 
-    .public-footer a { color: rgba(255,255,255,0.7); }
+    .public-footer a { color: rgba(255,255,255,0.68); }
     .public-footer strong { color: white; }
+
+    .public-footer-grid {
+      max-width: 1100px;
+      margin: 0 auto 32px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    .public-footer-heading {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 12px;
+    }
+
+    .public-footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .public-footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 14px 20px;
+      }
+
+      .navbar-links {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .public-footer {
+        padding: 36px 20px 22px;
+      }
+
+      .public-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -90,21 +185,47 @@
 
     <div class="navbar-links">
       <%= link_to "Rechercher", search_path, class: "navbar-link" %>
+      <%= link_to "Contact", contact_path, class: "navbar-link" %>
 
       <% if user_signed_in? %>
         <% case current_user.role %>
         <% when "company_admin" %>
-          <%= link_to "Mon espace", company_root_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to "Mon dashboard", company_root_path, class: "btn btn-secondary btn-sm" %>
         <% when "client" %>
           <%= link_to "Mes RDV", client_root_path, class: "btn btn-secondary btn-sm" %>
         <% when "admin" %>
           <%= link_to "Admin", admin_root_path, class: "btn btn-secondary btn-sm" %>
         <% end %>
-        <%= link_to "Déconnexion", destroy_user_session_path,
-              data: { turbo_method: :delete }, class: "navbar-link" %>
+
+        <div style="position:relative;" data-controller="dropdown">
+          <button style="display:flex; align-items:center; gap:6px; background:var(--cream);
+                         border:1.5px solid var(--border); border-radius:var(--radius-md);
+                         padding:6px 12px; cursor:pointer; font-family:var(--font-body);
+                         font-size:0.85rem; font-weight:500;"
+                  data-action="click->dropdown#toggle"
+                  type="button">
+            <div style="width:26px; height:26px; background:var(--green-800); border-radius:50%;
+                        display:flex; align-items:center; justify-content:center;
+                        font-size:0.7rem; font-weight:700; color:white;">
+              <%= avatar_initials(current_user.full_name) %>
+            </div>
+            <%= current_user.first_name %>
+            ▾
+          </button>
+
+          <div data-dropdown-target="menu"
+               style="display:none; position:absolute; right:0; top:calc(100% + 6px);
+                      background:white; border:1px solid var(--border-light);
+                      border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
+                      min-width:180px; z-index:200; overflow:hidden;">
+            <%= link_to "Déconnexion", destroy_user_session_path,
+                  data: { turbo_method: :delete },
+                  style: "display:block; padding:10px 16px; font-size:0.88rem; color:#dc2626; text-decoration:none;" %>
+          </div>
+        </div>
       <% else %>
-        <%= link_to "Connexion", new_user_session_path, class: "navbar-link" %>
-        <%= link_to "Créer un compte", new_user_registration_path,
+        <%= link_to "Se connecter", new_user_session_path, class: "navbar-link" %>
+        <%= link_to "Essai gratuit", new_user_registration_path,
               class: "btn btn-primary btn-sm" %>
       <% end %>
     </div>
@@ -121,8 +242,44 @@
   <%= yield %>
 
   <footer class="public-footer">
-    <strong>Planify Pro</strong> — La plateforme de gestion de rendez-vous pour les artisans et entreprises de services.<br>
-    <span style="margin-top:8px; display:block;">© <%= Date.current.year %> Planify Pro. Tous droits réservés.</span>
+    <div class="public-footer-grid">
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+          <div style="width:28px; height:28px; background:var(--gold-600); border-radius:4px;
+                      display:flex; align-items:center; justify-content:center; font-size:0.85rem;">⚙</div>
+          <span style="font-family:var(--font-display); font-size:1rem; font-weight:700; color:white;">Planify Pro</span>
+        </div>
+        <p style="font-size:0.82rem; line-height:1.7; max-width:300px; color:rgba(255,255,255,0.6);">
+          La plateforme de gestion de rendez-vous pour les artisans et entreprises de services.
+        </p>
+      </div>
+
+      <div>
+        <div class="public-footer-heading">Légal</div>
+        <div class="public-footer-links">
+          <%= link_to "Mentions légales", mentions_legales_path %>
+          <%= link_to "CGU", cgu_path %>
+          <%= link_to "CGV", cgv_path %>
+          <%= link_to "Confidentialité", confidentialite_path %>
+        </div>
+      </div>
+
+      <div>
+        <div class="public-footer-heading">Planify Pro</div>
+        <div class="public-footer-links">
+          <%= link_to "Rechercher", search_path %>
+          <%= link_to "Contact", contact_path %>
+          <% unless user_signed_in? %>
+            <%= link_to "Créer un compte entreprise", new_user_registration_path %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="public-footer-bottom">
+      <span>© <%= Date.current.year %> <%= legal_business_name %> — Tous droits réservés</span>
+      <span>Fait avec soin en France</span>
+    </div>
   </footer>
 </body>
 </html>

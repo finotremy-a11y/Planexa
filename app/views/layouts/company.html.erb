@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Planify Pro</title>
+  <!-- Pas d'indexation pour l'espace entreprise -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="theme-color" content="#2C5F2E">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -316,7 +323,7 @@
         <% end %>
 
         <%= link_to company_appointments_path,
-              class: "sidebar-link #{controller_name == 'appointments' && namespace == 'company' ? 'active' : ''}" do %>
+              class: "sidebar-link #{controller_name == 'appointments' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">📅</span>
           Rendez-vous
           <% unassigned = @company&.appointments&.pending&.unassigned&.count || 0 %>
@@ -400,7 +407,8 @@
         <% flash.each do |type, message| %>
           <% css = { "notice" => "alert-success", "alert" => "alert-error",
                      "warning" => "alert-warning", "info" => "alert-info" } %>
-          <div class="flash-message alert <%= css[type] || 'alert-info' %>">
+          <div class="flash-message alert <%= css[type] || 'alert-info' %>"
+               data-controller="flash">
             <%= message %>
           </div>
         <% end %>

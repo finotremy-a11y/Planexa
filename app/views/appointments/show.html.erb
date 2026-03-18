@@ -1,0 +1,32 @@
+<% content_for :title, "Détail du rendez-vous" %>
+
+<div style="max-width:560px; margin:64px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:24px;">
+    Votre rendez-vous
+  </h1>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-body">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Entreprise</span>
+          <strong><%= @appointment.company.name %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Prestation</span>
+          <strong><%= @appointment.service_type.name %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Date</span>
+          <strong><%= l(@appointment.scheduled_at, format: :long) %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Statut</span>
+          <strong><%= @appointment.status.humanize %></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
+</div>

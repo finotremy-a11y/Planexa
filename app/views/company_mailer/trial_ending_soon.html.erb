@@ -1,0 +1,19 @@
+<h1>Votre essai se termine dans <%= @days_left %> jour<%= @days_left > 1 ? 's' : '' %> ⏰</h1>
+
+<p>Bonjour <%= @user.first_name %>,</p>
+
+<p>
+  Votre période d'essai gratuit sur <strong>Planify Pro</strong> touche à sa fin.
+  À partir du <%= (Time.current + @days_left.days).strftime("%d/%m/%Y") %>,
+  votre abonnement de <strong>49 € / mois</strong> sera automatiquement activé.
+</p>
+
+<div class="info-box">
+  <strong>Votre carte sera débitée automatiquement.</strong><br>
+  Si vous ne souhaitez pas continuer, annulez votre abonnement avant cette date
+  depuis votre espace entreprise.
+</div>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/abonnement" class="btn">
+  Gérer mon abonnement →
+</a>

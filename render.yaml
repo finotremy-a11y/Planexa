@@ -1,0 +1,75 @@
+# render.yaml — Infrastructure as Code pour Render
+services:
+  # ── Web Service (Rails) ───────────────────────────────────────────────────
+  - type: web
+    name: planify-pro-web
+    runtime: ruby
+    buildCommand: |
+      bundle install
+      bundle exec rails assets:precompile
+      bundle exec rails db:migrate
+    startCommand: bundle exec puma -C config/puma.rb
+    healthCheckPath: /up
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_SERVE_STATIC_FILES
+        value: true
+      - key: RAILS_LOG_TO_STDOUT
+        value: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: planify-pro-redis
+          property: connectionString
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_ID
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      - key: APP_HOST
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+  # ── Worker Sidekiq ────────────────────────────────────────────────────────
+  - type: worker
+    name: planify-pro-worker
+    runtime: ruby
+    buildCommand: bundle install
+    startCommand: bundle exec sidekiq
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: planify-pro-redis
+          property: connectionString
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+
+  # ── Redis ─────────────────────────────────────────────────────────────────
+  - type: redis
+    name: planify-pro-redis
+    plan: starter
+    maxmemoryPolicy: noeviction

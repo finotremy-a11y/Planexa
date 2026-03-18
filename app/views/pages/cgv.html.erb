@@ -1,0 +1,47 @@
+<% content_for :title, "Conditions Générales de Vente" %>
+
+<div style="max-width:800px; margin:48px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:8px;">Conditions Générales de Vente</h1>
+  <p style="color:var(--text-500); margin-bottom:32px;">Dernière mise à jour : <%= legal_updated_at %> — Applicables aux abonnements entreprises</p>
+
+  <div class="card">
+    <div class="card-body" style="line-height:1.9;">
+      <h2 style="font-size:1.2rem; margin:0 0 12px;">Article 1 — Objet</h2>
+      <p>Les présentes CGV régissent les conditions de vente de l'abonnement Planify Pro aux entreprises.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 2 — Tarifs</h2>
+      <p>L'abonnement Planify Pro est proposé au tarif de <strong>49 € HT / mois</strong> (soit 58,80 € TTC en France au taux de TVA de 20 %).</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 3 — Période d'essai</h2>
+      <p>Toute nouvelle souscription bénéficie d'une période d'essai gratuite de <strong>14 jours</strong>. Aucun prélèvement n'est effectué pendant cette période.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 4 — Paiement</h2>
+      <p>Le paiement est mensuel, prélevé automatiquement par carte bancaire via Stripe. En cas d'échec de paiement, l'entreprise reçoit un email de relance.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 5 — Résiliation</h2>
+      <p>L'abonnement peut être résilié à tout moment depuis l'espace entreprise. La résiliation prend effet à la fin de la période de facturation en cours.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 6 — Droit de rétractation</h2>
+      <p>Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne s'applique pas aux services pleinement exécutés avant la fin du délai de rétractation.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 7 — Responsabilité</h2>
+      <p><%= legal_business_name %> s'engage à fournir le service avec soin et compétence. Sa responsabilité est limitée au montant des sommes versées au cours des 3 derniers mois.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 8 — Médiation</h2>
+      <p>
+        En cas de litige, vous pouvez recourir gratuitement à un médiateur de la consommation.
+        Vous pouvez également utiliser la plateforme européenne :
+        <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 9 — Droit applicable</h2>
+      <p>Les présentes CGV sont soumises au droit français. Pour tout litige, compétence est attribuée aux tribunaux français.</p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Article 10 — Contact</h2>
+      <p>
+        <%= legal_business_name %> — <%= legal_owner_address %><br>
+        Email : <a href="mailto:<%= legal_contact_email %>"><%= legal_contact_email %></a>
+      </p>
+    </div>
+  </div>
+</div>

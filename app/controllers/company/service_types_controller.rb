@@ -1,5 +1,5 @@
 class Company::ServiceTypesController < Company::BaseController
-  before_action :set_service_type, only: [:show, :edit, :update, :destroy, :toggle_active]
+  before_action :set_service_type, only: [ :edit, :update, :destroy, :toggle_active ]
 
   def index
     @service_types = @company.service_types.order(:name)

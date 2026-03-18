@@ -91,6 +91,7 @@ module Stripe
         payment_intent = event.data.object
         payment = Payment.find_by(stripe_payment_intent_id: payment_intent.id)
         return unless payment
+        return if payment.succeeded? # Idempotence : déjà traité
 
         payment.update!(status: :succeeded, paid_at: Time.current)
         appointment = payment.appointment

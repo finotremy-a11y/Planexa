@@ -1,0 +1,34 @@
+<h1>Rappel : votre rendez-vous demain 📅</h1>
+
+<p>Bonjour <%= @client.first_name %>,</p>
+
+<p>Nous vous rappelons votre rendez-vous prévu <strong>demain</strong> :</p>
+
+<div class="info-box">
+  <div class="info-row">
+    <span class="info-label">Entreprise</span>
+    <span class="info-value"><%= @company.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Prestation</span>
+    <span class="info-value"><%= @appointment.service_type.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Heure</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%Hh%M") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Adresse</span>
+    <span class="info-value"><%= @company.address %>, <%= @company.city %></span>
+  </div>
+  <% if @company.phone.present? %>
+    <div class="info-row">
+      <span class="info-label">Téléphone</span>
+      <span class="info-value"><%= @company.phone %></span>
+    </div>
+  <% end %>
+</div>
+
+<p style="font-size:0.88rem; color:#6b6b6b;">
+  Si vous devez annuler, faites-le dès que possible depuis votre espace client.
+</p>

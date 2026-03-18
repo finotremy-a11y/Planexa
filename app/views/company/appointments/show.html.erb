@@ -1,0 +1,107 @@
+<% content_for :title, "Rendez-vous ##{@appointment.id}" %>
+<% content_for :page_title, "Rendez-vous du #{@appointment.scheduled_at.strftime('%d/%m/%Y')}" %>
+
+<div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+  <%# Main detail card %>
+  <div class="card" style="flex:1; min-width:300px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h3 style="margin:0;">Détails</h3>
+      <span class="badge badge-<%= @appointment.status %>">
+        <%= @appointment.status.humanize %>
+      </span>
+    </div>
+
+    <dl style="display:grid; grid-template-columns:auto 1fr; gap:8px 24px;">
+      <dt style="color:var(--text-400); white-space:nowrap;">Prestation</dt>
+      <dd><strong><%= @appointment.service_type.name %></strong></dd>
+
+      <dt style="color:var(--text-400);">Date</dt>
+      <dd><%= @appointment.scheduled_at.strftime("%A %d %B %Y") %></dd>
+
+      <dt style="color:var(--text-400);">Horaire</dt>
+      <dd><%= @appointment.scheduled_at.strftime("%H:%M") %> → <%= @appointment.ends_at.strftime("%H:%M") %></dd>
+
+      <dt style="color:var(--text-400);">Durée</dt>
+      <dd><%= @appointment.duration_minutes %> min</dd>
+
+      <dt style="color:var(--text-400);">Source</dt>
+      <dd><%= @appointment.online? ? "Réservation en ligne" : "Création manuelle" %></dd>
+
+      <% if @appointment.urgent? %>
+        <dt style="color:var(--text-400);">Urgence</dt>
+        <dd><span class="badge badge-danger">Urgent</span></dd>
+      <% end %>
+    </dl>
+
+    <% if @appointment.client_notes.present? %>
+      <hr style="margin:16px 0;">
+      <h4 style="margin-bottom:8px;">Notes client</h4>
+      <p style="color:var(--text-500); font-size:0.9rem;"><%= @appointment.client_notes %></p>
+    <% end %>
+
+    <% if @appointment.internal_notes.present? %>
+      <hr style="margin:16px 0;">
+      <h4 style="margin-bottom:8px;">Notes internes</h4>
+      <p style="color:var(--text-500); font-size:0.9rem;"><%= @appointment.internal_notes %></p>
+    <% end %>
+
+    <hr style="margin:20px 0;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <% if @appointment.pending? %>
+        <%= button_to "Confirmer", confirm_company_appointment_path(@appointment),
+              method: :patch, class: "btn btn-success btn-sm",
+              data: { turbo_confirm: "Confirmer ce rendez-vous ?" } %>
+      <% end %>
+      <% unless @appointment.cancelled? || @appointment.completed? %>
+        <%= button_to "Marquer terminé", complete_company_appointment_path(@appointment),
+              method: :patch, class: "btn btn-secondary btn-sm" %>
+        <%= button_to "Annuler", cancel_company_appointment_path(@appointment),
+              method: :patch, class: "btn btn-danger btn-sm",
+              data: { turbo_confirm: "Annuler ce rendez-vous ?" },
+              params: { reason: "Annulé par l'entreprise" } %>
+      <% end %>
+      <%= link_to "Modifier", edit_company_appointment_path(@appointment), class: "btn btn-secondary btn-sm" %>
+    </div>
+  </div>
+
+  <%# Right column: client + employee %>
+  <div style="display:flex; flex-direction:column; gap:16px; min-width:260px; max-width:320px;">
+    <%# Client %>
+    <div class="card">
+      <h4 style="margin-bottom:12px;">Client</h4>
+      <% if @appointment.client_user %>
+        <p style="margin:0;"><strong><%= @appointment.client_user.full_name %></strong></p>
+        <p style="margin:4px 0; font-size:0.85rem; color:var(--text-400);"><%= @appointment.client_user.email %></p>
+      <% else %>
+        <p style="color:var(--text-400); font-size:0.9rem;">Pas de compte client associé.</p>
+      <% end %>
+    </div>
+
+    <%# Employee %>
+    <div class="card">
+      <h4 style="margin-bottom:12px;">Employé assigné</h4>
+      <% if @appointment.employee %>
+        <p style="margin:0;"><strong><%= @appointment.employee.full_name %></strong></p>
+        <%= link_to "Changer d'employé", edit_company_appointment_path(@appointment), class: "btn btn-link btn-sm", style: "padding:0; margin-top:8px;" %>
+      <% else %>
+        <p style="color:var(--text-400); font-size:0.9rem; margin-bottom:12px;">Aucun employé assigné.</p>
+        <%# Quick assign form %>
+        <% if @company.employees.active.any? %>
+          <%= form_with url: assign_employee_company_appointment_path(@appointment), method: :patch, local: false do |f| %>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <%= f.select :employee_id,
+                    @company.employees.active.map { |e| [e.full_name, e.id] },
+                    { prompt: "Choisir…" },
+                    class: "form-select form-select-sm", style: "flex:1;" %>
+              <%= f.submit "Assigner", class: "btn btn-primary btn-sm" %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px;">
+  <%= link_to "← Retour à la liste", company_appointments_path, class: "btn btn-link btn-sm" %>
+</div>

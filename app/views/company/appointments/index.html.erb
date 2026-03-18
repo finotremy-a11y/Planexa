@@ -1,0 +1,104 @@
+<% content_for :title, "Rendez-vous" %>
+<% content_for :page_title, "Rendez-vous" %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <%= link_to "Vue liste", company_appointments_path, class: "btn btn-secondary btn-sm #{controller.action_name == 'index' ? 'active' : ''}" %>
+    <%= link_to "Calendrier", calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Non assignés", unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+  </div>
+  <%= link_to "Nouveau RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+</div>
+
+<%# Search / filters %>
+<%= search_form_for @q, url: company_appointments_path, html: { class: "search-form card", style: "margin-bottom:20px; padding:16px;" } do |f| %>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+    <div>
+      <%= f.label :status_eq, "Statut", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.select :status_eq,
+            [["Tous", nil], ["En attente", "pending"], ["Confirmé", "confirmed"],
+             ["Annulé", "cancelled"], ["Terminé", "completed"], ["Absent", "no_show"]],
+            { include_blank: false },
+            class: "form-select form-select-sm" %>
+    </div>
+    <div>
+      <%= f.label :scheduled_at_gteq, "À partir du", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.date_field :scheduled_at_gteq, class: "form-control form-control-sm" %>
+    </div>
+    <div>
+      <%= f.label :scheduled_at_lteq, "Jusqu'au", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.date_field :scheduled_at_lteq, class: "form-control form-control-sm" %>
+    </div>
+    <div>
+      <%= f.submit "Filtrer", class: "btn btn-secondary btn-sm" %>
+      <%= link_to "Réinitialiser", company_appointments_path, class: "btn btn-link btn-sm" %>
+    </div>
+  </div>
+<% end %>
+
+<% if @appointments.any? %>
+  <div class="card" style="overflow:hidden;">
+    <table class="table" style="margin:0;">
+      <thead>
+        <tr>
+          <th>Date &amp; Heure</th>
+          <th>Client</th>
+          <th>Prestation</th>
+          <th>Employé</th>
+          <th>Statut</th>
+          <th>Source</th>
+          <th style="text-align:right;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @appointments.each do |appt| %>
+          <tr>
+            <td>
+              <strong><%= appt.scheduled_at.strftime("%d/%m/%Y") %></strong><br>
+              <span style="color:var(--text-400); font-size:0.85rem;"><%= appt.scheduled_at.strftime("%H:%M") %> — <%= appt.ends_at.strftime("%H:%M") %></span>
+            </td>
+            <td>
+              <% if appt.client_user %>
+                <%= appt.client_user.full_name %>
+              <% else %>
+                <span style="color:var(--text-400);">Sans compte</span>
+              <% end %>
+            </td>
+            <td><%= appt.service_type.name %></td>
+            <td>
+              <% if appt.employee %>
+                <%= appt.employee.full_name %>
+              <% else %>
+                <span class="badge badge-warning">Non assigné</span>
+              <% end %>
+            </td>
+            <td>
+              <span class="badge badge-<%= appt.status %>">
+                <%= appt.human_attribute_value(:status) rescue appt.status %>
+              </span>
+            </td>
+            <td>
+              <span style="font-size:0.8rem; color:var(--text-400);">
+                <%= appt.online? ? "En ligne" : "Manuel" %>
+              </span>
+            </td>
+            <td style="text-align:right;">
+              <%= link_to "Voir", company_appointment_path(appt), class: "btn btn-link btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:16px;">
+    <%== pagy_bootstrap_nav(@pagy) %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <div style="font-size:3rem; margin-bottom:12px;">📭</div>
+    <h3>Aucun rendez-vous</h3>
+    <p>Créez votre premier rendez-vous ou attendez des réservations en ligne.</p>
+    <%= link_to "Créer un RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+  </div>
+<% end %>

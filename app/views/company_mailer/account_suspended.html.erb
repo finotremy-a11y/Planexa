@@ -1,0 +1,26 @@
+<h1>Votre compte Planify Pro a été suspendu</h1>
+
+<p>Bonjour <%= @user.first_name %>,</p>
+
+<p>
+  Suite au non-paiement de votre abonnement, le compte
+  <strong><%= @company.name %></strong> a été suspendu.
+</p>
+
+<div class="danger-box">
+  <strong>Conséquences :</strong>
+  <ul style="margin:8px 0 0 16px; padding:0;">
+    <li>Votre fiche n'est plus visible par les clients</li>
+    <li>Les réservations en ligne sont désactivées</li>
+    <li>Votre dashboard reste accessible pour régulariser</li>
+  </ul>
+</div>
+
+<p>
+  Dès que votre paiement sera régularisé, votre compte sera
+  <strong>réactivé automatiquement</strong>.
+</p>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/abonnement" class="btn">
+  Régulariser mon abonnement →
+</a>

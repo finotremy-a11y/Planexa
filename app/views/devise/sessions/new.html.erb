@@ -1,26 +1,43 @@
-<h2>Log in</h2>
+<% content_for :title, "Connexion" %>
+
+<div class="auth-form-header">
+  <h1>Bon retour !</h1>
+  <p>Pas encore de compte ? <%= link_to "Créer un compte gratuit", new_user_registration_path %></p>
+</div>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <p><%= f.label :email %></p>
-    <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
+  <div class="form-group">
+    <%= f.label :email, "Adresse email", class: "form-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email",
+          class: "form-control", placeholder: "vous@exemple.fr" %>
   </div>
 
-  <div class="field">
-    <p><%= f.label :password %></p>
-    <p><%= f.password_field :password, autocomplete: "current-password" %></p>
+  <div class="form-group">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:12px;">
+      <%= f.label :password, "Mot de passe", class: "form-label", style: "margin:0;" %>
+      <%= link_to "Mot de passe oublié ?", new_user_password_path,
+            style: "font-size:0.82rem; color:var(--green-700);" %>
+    </div>
+    <%= f.password_field :password, autocomplete: "current-password",
+          class: "form-control", placeholder: "••••••••" %>
   </div>
 
   <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <p><%= f.check_box :remember_me %></p>
-      <p><%= f.label :remember_me %></p>
+    <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+      <%= f.check_box :remember_me, style: "accent-color:var(--green-800);" %>
+      <%= f.label :remember_me, "Se souvenir de moi",
+            style: "font-size:0.88rem; color:var(--text-700); cursor:pointer; margin:0;" %>
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
+  <%= f.submit "Se connecter", class: "btn btn-primary btn-lg",
+        style: "width:100%; justify-content:center; margin-top:8px;" %>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<div class="auth-divider">ou</div>
+
+<div style="text-align:center; font-size:0.85rem; color:var(--text-500);">
+  Vous êtes une entreprise ?
+  <%= link_to "Démarrer l'essai gratuit →", new_user_registration_path,
+        style: "color:var(--green-700); font-weight:600;" %>
+</div>

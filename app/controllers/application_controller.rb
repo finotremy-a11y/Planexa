@@ -1,7 +1,10 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
+  layout :choose_layout
+
   before_action :authenticate_user!
+  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :check_company_suspension, if: :company_admin_signed_in?
 
   # Pundit — redirection en cas d'accès non autorisé
@@ -28,6 +31,18 @@ class ApplicationController < ActionController::Base
 
   def company_admin_signed_in?
     user_signed_in? && current_user.company_admin?
+  end
+
+  def choose_layout
+    return "auth" if devise_controller?
+    return "company" if controller_path.start_with?("company/")
+
+    "application"
+  end
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name role])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name role])
   end
 
   def after_sign_in_path_for(resource)

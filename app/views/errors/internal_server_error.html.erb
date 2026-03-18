@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Erreur serveur — Planify Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --green-800:#2C5F2E; --cream:#FAF8F5; --text-500:#6b6b6b; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'DM Sans', sans-serif;
+      background:var(--cream);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:24px;
+    }
+    .error-code {
+      font-family:'Playfair Display', serif;
+      font-size:8rem;
+      font-weight:700;
+      color:var(--green-800);
+      opacity:0.15;
+      line-height:1;
+      margin-bottom:-20px;
+    }
+    h1 {
+      font-family:'Playfair Display', serif;
+      font-size:2rem;
+      color:#1a1a1a;
+      margin-bottom:12px;
+    }
+    p { color:var(--text-500); margin-bottom:32px; line-height:1.7; }
+    .btn {
+      display:inline-block;
+      background:var(--green-800);
+      color:white;
+      padding:12px 28px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:500;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="error-code">500</div>
+    <h1>Erreur inattendue</h1>
+    <p>Une erreur s'est produite de notre côté.<br>Réessayez dans quelques instants.</p>
+    <a href="/" class="btn">← Retour à l'accueil</a>
+  </div>
+</body>
+</html>

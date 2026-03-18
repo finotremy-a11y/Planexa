@@ -1,0 +1,58 @@
+<% content_for :title, "Aptitudes — #{@employee.full_name}" %>
+
+<div style="max-width:800px; margin:32px auto; padding:0 24px;">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h1 style="font-family:var(--font-display); font-size:1.5rem; color:var(--green-900); margin:0;">
+        Aptitudes — <%= @employee.full_name %>
+      </h1>
+      <p style="color:var(--gray-500); margin:4px 0 0; font-size:0.9rem;">
+        <%= link_to "← Retour à l'employé", company_employee_path(@employee), style:"color:var(--green-700);" %>
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-body">
+      <h2 style="font-size:1rem; font-weight:600; margin-bottom:16px;">Aptitudes actuelles</h2>
+      <% if @skills.any? %>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <% @skills.each do |skill| %>
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--cream); border-radius:8px;">
+              <span style="font-weight:500;"><%= skill.service_type.name %></span>
+              <%= button_to "Supprimer",
+                    company_employee_skill_path(@employee, skill),
+                    method: :delete,
+                    data: { confirm: "Supprimer cette aptitude ?" },
+                    style: "background:none; border:none; color:var(--red-500); cursor:pointer; font-size:0.85rem;" %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--gray-400); font-style:italic;">Aucune aptitude assignée.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @available_service_types.any? %>
+    <div class="card">
+      <div class="card-body">
+        <h2 style="font-size:1rem; font-weight:600; margin-bottom:16px;">Ajouter une aptitude</h2>
+        <%= form_with url: company_employee_skills_path(@employee), method: :post do |f| %>
+          <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px;">
+              <%= f.label :service_type_id, "Prestation", style:"display:block; font-size:0.85rem; font-weight:500; margin-bottom:4px;" %>
+              <%= f.select :service_type_id,
+                    @available_service_types.map { |s| [s.name, s.id] },
+                    { prompt: "Choisir une prestation..." },
+                    { class: "form-control", name: "employee_skill[service_type_id]" } %>
+            </div>
+            <%= f.submit "Ajouter", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+</div>

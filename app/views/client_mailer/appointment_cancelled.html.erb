@@ -1,0 +1,27 @@
+<h1>Rendez-vous annulé</h1>
+
+<p>Bonjour <%= @client.first_name %>,</p>
+
+<p>
+  Votre rendez-vous avec <strong><%= @company.name %></strong> a été annulé.
+</p>
+
+<div class="info-box">
+  <div class="info-row">
+    <span class="info-label">Prestation</span>
+    <span class="info-value"><%= @appointment.service_type.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Date prévue</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %></span>
+  </div>
+</div>
+
+<p>
+  Pour reprendre rendez-vous, visitez la fiche de l'entreprise ou recherchez
+  un autre professionnel sur Planify Pro.
+</p>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/recherche" class="btn">
+  Trouver un professionnel →
+</a>

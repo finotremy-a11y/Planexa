@@ -1,0 +1,53 @@
+<h1>Nouveau rendez-vous 📅</h1>
+
+<p>Bonjour,</p>
+
+<p>
+  Un nouveau rendez-vous vient d'être créé pour
+  <strong><%= @company.name %></strong>.
+</p>
+
+<div class="info-box">
+  <div class="info-row">
+    <span class="info-label">Prestation</span>
+    <span class="info-value"><%= @appointment.service_type.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Date</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%A %d %B %Y") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Heure</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%Hh%M") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Durée</span>
+    <span class="info-value"><%= @appointment.duration_minutes %> minutes</span>
+  </div>
+  <% if @appointment.client_user %>
+    <div class="info-row">
+      <span class="info-label">Client</span>
+      <span class="info-value"><%= @appointment.client_user.full_name %></span>
+    </div>
+  <% end %>
+  <% if @appointment.employee %>
+    <div class="info-row">
+      <span class="info-label">Employé assigné</span>
+      <span class="info-value"><%= @appointment.employee.full_name %></span>
+    </div>
+  <% end %>
+  <% if @appointment.urgent? %>
+    <div class="info-row">
+      <span class="info-label">Priorité</span>
+      <span class="info-value" style="color:#dc2626;">🔴 Urgent</span>
+    </div>
+  <% end %>
+</div>
+
+<% if @appointment.client_notes.present? %>
+  <p><strong>Message du client :</strong><br><%= @appointment.client_notes %></p>
+<% end %>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/rendez-vous/<%= @appointment.id %>" class="btn">
+  Voir le rendez-vous →
+</a>

@@ -1,0 +1,25 @@
+<% content_for :title, "Activer mon abonnement" %>
+<% content_for :page_title, "Activer mon abonnement" %>
+
+<div style="max-width:480px; margin:0 auto; text-align:center; padding:56px 0;">
+  <div style="font-size:3.5rem; margin-bottom:16px;">⚡</div>
+  <h1 style="font-family:var(--font-display); margin-bottom:12px;">
+    Activez Planify Pro
+  </h1>
+  <p style="color:var(--text-500); margin-bottom:8px; font-size:1.05rem;">
+    14 jours d'essai gratuit — puis <strong>49 € / mois</strong>.
+  </p>
+  <p style="color:var(--text-400); font-size:0.9rem; margin-bottom:32px;">
+    Sans engagement · Annulable à tout moment · Paiement sécurisé via Stripe.
+  </p>
+
+  <%= button_to "Commencer mon essai gratuit →",
+        company_subscription_path,
+        method: :post,
+        class: "btn btn-primary btn-lg",
+        data: { turbo: false } %>
+
+  <p style="margin-top:24px; font-size:0.82rem; color:#888;">
+    Vous serez redirigé vers la page de paiement sécurisée Stripe.
+  </p>
+</div>

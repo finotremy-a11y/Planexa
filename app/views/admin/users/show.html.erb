@@ -1,0 +1,68 @@
+<% content_for :title, @user.full_name %>
+<% content_for :page_title, "Utilisateur" %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+  <div style="display:flex; align-items:center; gap:12px;">
+    <div style="width:40px; height:40px; border-radius:50%; display:flex;
+                align-items:center; justify-content:center; font-weight:700; color:white;
+                background:<%= @user.admin? ? '#ef4444' : @user.company_admin? ? '#2C5F2E' : '#6366f1' %>;">
+      <%= @user.first_name[0] %><%= @user.last_name[0] %>
+    </div>
+    <div>
+      <h1 style="font-family:var(--font-display); font-size:1.3rem; color:#0f172a; margin-bottom:2px;">
+        <%= @user.full_name %>
+      </h1>
+      <div style="font-size:0.84rem; color:#64748b;"><%= @user.email %></div>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <% unless @user == current_user %>
+      <%= button_to "Supprimer",
+            admin_user_path(@user),
+            method: :delete,
+            class: "btn btn-danger btn-sm",
+            data: { turbo_confirm: "Supprimer #{@user.full_name} ?" } %>
+    <% end %>
+    <%= link_to "Retour", admin_users_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="admin-table-wrapper">
+    <div class="admin-table-header"><h3>Informations</h3></div>
+    <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+      <% [
+        ["Prenom", @user.first_name],
+        ["Nom", @user.last_name],
+        ["Email", @user.email],
+        ["Telephone", @user.phone.presence || "-"],
+        ["Role", @user.role.humanize],
+        ["Inscrit le", @user.created_at.strftime("%d/%m/%Y")],
+        ["Compte confirme", @user.confirmed_at.present? ? "Oui" : "Non"]
+      ].each do |label, value| %>
+        <div style="display:flex; justify-content:space-between; gap:14px;">
+          <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>
+          <span style="font-size:0.82rem; color:#1e293b; text-align:right;"><%= value %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="admin-table-wrapper">
+    <div class="admin-table-header"><h3>Activite</h3></div>
+    <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+      <% [
+        ["Derniere connexion", @user.last_sign_in_at&.strftime("%d/%m/%Y %H:%M") || "-"],
+        ["Connexion actuelle", @user.current_sign_in_at&.strftime("%d/%m/%Y %H:%M") || "-"],
+        ["Nombre de connexions", @user.sign_in_count],
+        ["IP actuelle", @user.current_sign_in_ip || "-"],
+        ["IP precedente", @user.last_sign_in_ip || "-"]
+      ].each do |label, value| %>
+        <div style="display:flex; justify-content:space-between; gap:14px;">
+          <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>
+          <span style="font-size:0.82rem; color:#1e293b; text-align:right;"><%= value %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<% content_for :title, @company.name %>
+<% content_for :meta_description do %><%= @company.name %> — <%= @company.city %>. <%= truncate(@company.description, length: 120) if @company.description.present? %> Prenez rendez-vous en ligne sur Planify Pro.<% end %>
+
+<div style="max-width:900px; margin:32px auto; padding:0 24px;">
+
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-body">
+      <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap;">
+        <div style="width:72px; height:72px; background:var(--green-100);
+                    border-radius:var(--radius-lg); display:flex; align-items:center;
+                    justify-content:center; font-size:1.8rem; font-weight:700;
+                    color:var(--green-800); font-family:var(--font-display); flex-shrink:0;">
+          <%= @company.name[0].upcase %>
+        </div>
+        <div style="flex:1;">
+          <h1 style="margin-bottom:6px;"><%= @company.name %></h1>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; color:var(--text-500); font-size:0.88rem; margin-bottom:12px;">
+            <% if @company.address.present? %>
+              <span>📍 <%= @company.address %>, <%= @company.city %> <%= @company.zip_code %></span>
+            <% end %>
+            <% if @company.phone.present? %>
+              <span>📞 <%= @company.phone %></span>
+            <% end %>
+          </div>
+          <% if @company.description.present? %>
+            <p style="color:var(--text-700); line-height:1.7;"><%= @company.description %></p>
+          <% end %>
+        </div>
+
+        <% if @setting.booking_public? %>
+          <span style="background:var(--green-100); color:var(--green-800); padding:6px 12px;
+                        border-radius:99px; font-size:0.82rem; font-weight:600; white-space:nowrap;">
+            ✓ Réservation en ligne
+          </span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start;">
+
+    <div>
+      <h2 style="font-family:var(--font-display); margin-bottom:16px;">Nos prestations</h2>
+      <% if @service_types.any? %>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <% @service_types.each do |st| %>
+            <div class="card">
+              <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px;">
+                <div>
+                  <h3 style="font-size:1rem; margin-bottom:4px;"><%= st.name %></h3>
+                  <% if st.description.present? %>
+                    <p style="font-size:0.82rem; color:var(--text-500); margin:0;">
+                      <%= truncate(st.description, length: 80) %>
+                    </p>
+                  <% end %>
+                  <div style="font-size:0.78rem; color:var(--text-300); margin-top:4px;">
+                    ⏱ <%= st.duration_minutes %> min
+                  </div>
+                </div>
+                <div style="text-align:right; flex-shrink:0; margin-left:16px;">
+                  <% if st.price_cents > 0 %>
+                    <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:700; color:var(--green-800);">
+                      <%= number_to_currency(st.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                    </div>
+                  <% else %>
+                    <div style="font-size:0.85rem; color:var(--text-300);">Sur devis</div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--text-300);">Aucune prestation disponible pour le moment.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <div class="card" style="position:sticky; top:80px;">
+        <div style="padding:20px 24px; border-bottom:1px solid var(--border);">
+          <h3 style="font-family:var(--font-display); margin:0;">Prendre rendez-vous</h3>
+        </div>
+        <div class="card-body">
+          <% if @setting.booking_public? %>
+            <% if user_signed_in? && current_user.client? %>
+              <%= link_to "Choisir un créneau →",
+                    new_appointment_path(company_id: @company.id),
+                    class: "btn btn-primary btn-lg",
+                    style: "width:100%; justify-content:center;" %>
+            <% elsif user_signed_in? %>
+              <p style="color:var(--text-500); font-size:0.85rem; text-align:center;">
+                La prise de RDV est réservée aux comptes clients.
+              </p>
+            <% else %>
+              <p style="color:var(--text-500); font-size:0.85rem; margin-bottom:16px;">
+                Connectez-vous ou créez un compte gratuit pour réserver.
+              </p>
+              <%= link_to "Se connecter", new_user_session_path,
+                    class: "btn btn-primary",
+                    style: "width:100%; justify-content:center; margin-bottom:8px;",
+                    "display" => "block" %>
+              <%= link_to "Créer un compte gratuit", new_user_registration_path,
+                    class: "btn btn-secondary",
+                    style: "width:100%; justify-content:center;" %>
+            <% end %>
+          <% else %>
+            <p style="color:var(--text-500); font-size:0.85rem; text-align:center;">
+              Cette entreprise ne propose pas de réservation en ligne.
+              <% if @company.phone.present? %>
+                <br><br><strong>Contactez par téléphone :<br><%= @company.phone %></strong>
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

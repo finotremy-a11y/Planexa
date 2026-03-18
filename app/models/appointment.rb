@@ -35,4 +35,12 @@ class Appointment < ApplicationRecord
   def paid?
     payment&.succeeded?
   end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[status scheduled_at urgent employee_id client_user_id service_type_id company_id created_at]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[company service_type client_user employee]
+  end
 end

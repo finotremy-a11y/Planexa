@@ -1,0 +1,86 @@
+<% content_for :title, "Paiement" %>
+
+<div style="max-width:520px; margin:48px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:8px;">Paiement sécurisé</h1>
+  <p style="color:var(--text-500); margin-bottom:32px;">
+    <%= @appointment.service_type.name %> — <%= @appointment.company.name %>
+  </p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-body">
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+        <span style="color:var(--text-500);">Prestation</span>
+        <strong><%= @appointment.service_type.name %></strong>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+        <span style="color:var(--text-500);">Date</span>
+        <strong><%= @appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %></strong>
+      </div>
+      <div style="border-top:1px solid var(--border-light); padding-top:12px; margin-top:4px;
+                  display:flex; justify-content:space-between;">
+        <span style="font-weight:600;">Total</span>
+        <strong style="font-size:1.2rem; color:var(--green-800);">
+          <%= number_to_currency(@appointment.service_type.price_cents / 100.0,
+                unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div id="payment-element" style="margin-bottom:20px;"></div>
+      <div id="payment-errors" class="alert alert-error" style="display:none; margin-bottom:16px;"></div>
+      <button id="submit-payment" class="btn btn-primary btn-lg" style="width:100%; justify-content:center;">
+        Payer <%= number_to_currency(@appointment.service_type.price_cents / 100.0,
+              unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+      </button>
+      <p style="font-size:0.75rem; color:var(--text-300); text-align:center; margin-top:12px;">
+        🔒 Paiement sécurisé par Stripe
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe('<%= @publishable_key %>');
+  const appearance = {
+    theme: 'stripe',
+    variables: {
+      colorPrimary: '#2C5F2E',
+      borderRadius: '8px',
+      fontFamily: 'DM Sans, system-ui, sans-serif'
+    }
+  };
+
+  const elements = stripe.elements({
+    clientSecret: '<%= @payment_intent.client_secret %>',
+    appearance
+  });
+
+  const paymentElement = elements.create('payment');
+  paymentElement.mount('#payment-element');
+
+  document.getElementById('submit-payment').addEventListener('click', async () => {
+    const btn = document.getElementById('submit-payment');
+    const errors = document.getElementById('payment-errors');
+    btn.disabled = true;
+    btn.textContent = 'Traitement en cours...';
+    errors.style.display = 'none';
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: '<%= confirmation_appointments_url(appointment_id: @appointment.id) %>'
+      }
+    });
+
+    if (error) {
+      errors.textContent = error.message;
+      errors.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Réessayer';
+    }
+  });
+</script>

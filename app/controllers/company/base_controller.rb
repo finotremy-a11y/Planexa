@@ -1,7 +1,6 @@
 class Company::BaseController < ApplicationController
   before_action :require_company_admin!
   before_action :set_company
-  layout "company"
 
   private
 

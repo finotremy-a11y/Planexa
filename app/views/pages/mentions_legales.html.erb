@@ -1,0 +1,52 @@
+<% content_for :title, "Mentions légales" %>
+
+<div style="max-width:800px; margin:48px auto; padding:0 24px;">
+  <h1 style="font-family:var(--font-display); margin-bottom:32px;">Mentions légales</h1>
+
+  <div class="card">
+    <div class="card-body" style="line-height:1.9;">
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Éditeur du site</h2>
+      <p>
+        Le site Planify Pro est édité par :<br>
+        <strong><%= legal_business_name %></strong><br>
+        <%= legal_owner_address %><br>
+        SIRET : <%= legal_owner_siret %><br>
+        Email : <a href="mailto:<%= legal_contact_email %>"><%= legal_contact_email %></a><br>
+        <% if legal_phone.present? %>
+          Téléphone : <%= legal_phone %>
+        <% end %>
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Directeur de la publication</h2>
+      <p><%= legal_owner_name %></p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Hébergement</h2>
+      <p>
+        Ce site est hébergé par :<br>
+        <strong>Render Inc.</strong><br>
+        525 Brannan Street Suite 300<br>
+        San Francisco, CA 94107, USA<br>
+        <a href="https://render.com" target="_blank" rel="noopener">render.com</a>
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Propriété intellectuelle</h2>
+      <p>
+        L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes, etc.)
+        est la propriété exclusive de <%= legal_business_name %>, sauf mentions contraires.
+        Toute reproduction, distribution, modification, adaptation, retransmission ou publication
+        de ces éléments est strictement interdite sans l'accord exprès de <%= legal_business_name %>.
+      </p>
+
+      <h2 style="font-size:1.2rem; margin:24px 0 12px;">Limitation de responsabilité</h2>
+      <p>
+        <%= legal_business_name %> s'efforce d'assurer l'exactitude et la mise à jour des informations
+        diffusées sur ce site. Toutefois, <%= legal_business_name %> ne peut garantir l'exactitude,
+        la précision ou l'exhaustivité des informations mises à disposition sur ce site.
+      </p>
+
+      <p style="color:var(--text-300); font-size:0.82rem; margin-top:32px;">
+        Dernière mise à jour : <%= legal_updated_at %>
+      </p>
+    </div>
+  </div>
+</div>

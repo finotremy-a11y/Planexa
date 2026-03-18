@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Admin — Planify Pro</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <style>
+    .admin-layout { display:flex; min-height:100vh; background:#0f172a; }
+
+    .admin-sidebar {
+      width: 240px;
+      background: #0f172a;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .admin-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-logo-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .admin-logo-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .admin-nav { padding: 16px 0; flex: 1; }
+
+    .admin-nav-label {
+      padding: 4px 20px 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .admin-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .admin-link:hover { color: white; background: rgba(255,255,255,0.05); }
+    .admin-link.active {
+      color: white;
+      background: rgba(255,255,255,0.08);
+      border-left-color: #ef4444;
+    }
+
+    .admin-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .admin-main { margin-left: 240px; flex: 1; background: #f8fafc; min-height: 100vh; }
+
+    .admin-topbar {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .admin-topbar-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .admin-content { padding: 28px 32px; }
+
+    .admin-stat {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .admin-stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .admin-stat-label {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .admin-stat-trend {
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    .admin-stat-trend.up   { color: #16a34a; }
+    .admin-stat-trend.down { color: #dc2626; }
+
+    .admin-table-wrapper {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .admin-table-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-table-header h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <div>
+          <div class="admin-logo-name">Planify Pro</div>
+        </div>
+        <span class="admin-logo-badge">Admin</span>
+      </div>
+
+      <nav class="admin-nav">
+        <div class="admin-nav-label">Vue d'ensemble</div>
+
+        <%= link_to admin_root_path,
+              class: "admin-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
+          📊 Dashboard
+        <% end %>
+
+        <div class="admin-nav-label" style="margin-top:12px;">Gestion</div>
+
+        <%= link_to admin_companies_path,
+              class: "admin-link #{controller_name == 'companies' ? 'active' : ''}" do %>
+          🏢 Entreprises
+        <% end %>
+
+        <%= link_to admin_subscriptions_path,
+              class: "admin-link #{controller_name == 'subscriptions' ? 'active' : ''}" do %>
+          💳 Abonnements
+        <% end %>
+
+        <%= link_to admin_users_path,
+              class: "admin-link #{controller_name == 'users' ? 'active' : ''}" do %>
+          👥 Utilisateurs
+        <% end %>
+
+        <div class="admin-nav-label" style="margin-top:12px;">Outils</div>
+
+        <%= link_to admin_export_csv_path,
+              class: "admin-link" do %>
+          📥 Export CSV
+        <% end %>
+
+        <%= link_to "/admin/sidekiq",
+              class: "admin-link",
+              target: "_blank",
+              rel: "noopener" do %>
+          ⚙ Sidekiq
+        <% end %>
+      </nav>
+
+      <div class="admin-footer">
+        <div style="font-size:0.78rem; color:rgba(255,255,255,0.3); margin-bottom:8px;">
+          Connecté en tant qu'admin
+        </div>
+        <%= link_to "Déconnexion", destroy_user_session_path,
+              data: { turbo_method: :delete },
+              style: "font-size:0.82rem; color:rgba(255,255,255,0.4); text-decoration:none;" %>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <span class="admin-topbar-title">
+          <%= yield(:page_title) || controller_name.humanize %>
+        </span>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span style="font-size:0.78rem; color:#94a3b8;">
+            <%= Time.current.strftime("%d/%m/%Y %Hh%M") %>
+          </span>
+          <%= link_to "← Voir le site", root_path,
+                style: "font-size:0.82rem; color:#64748b; text-decoration:none;",
+                target: "_blank",
+                rel: "noopener" %>
+        </div>
+      </div>
+
+      <% flash.each do |type, message| %>
+        <% css = { "notice" => "alert-success", "alert" => "alert-error" } %>
+        <div class="alert <%= css[type] || 'alert-info' %>"
+             style="margin:16px 32px 0; border-radius:8px;">
+          <%= message %>
+        </div>
+      <% end %>
+
+      <div class="admin-content">
+        <%= yield %>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

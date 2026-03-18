@@ -1,0 +1,87 @@
+<% content_for :title, "Utilisateurs" %>
+<% content_for :page_title, "Utilisateurs" %>
+
+<div class="admin-table-wrapper">
+  <div class="admin-table-header">
+    <h3><%= @pagy.count %> utilisateur<%= @pagy.count > 1 ? 's' : '' %></h3>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <%= search_form_for @q, url: admin_users_path, method: :get do |f| %>
+        <div style="display:flex; gap:8px;">
+          <%= f.search_field :email_cont, class: "form-control",
+                style: "width:220px; height:32px; font-size:0.85rem;",
+                placeholder: "Rechercher par email..." %>
+          <%= f.submit "Rechercher", class: "btn btn-primary btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="background:#f8fafc;">
+        <% ["Nom", "Email", "Role", "Inscrit le", "Actions"].each do |header| %>
+          <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
+                     font-weight:600; text-transform:uppercase;
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">
+            <%= header %>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr style="border-bottom:1px solid #f1f5f9;"
+            onmouseenter="this.style.background='#f8fafc'"
+            onmouseleave="this.style.background='white'">
+          <td style="padding:12px 16px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="width:30px; height:30px; border-radius:50%; display:flex;
+                          align-items:center; justify-content:center;
+                          font-size:0.72rem; font-weight:700; color:white;
+                          background:<%= user.admin? ? '#ef4444' : user.company_admin? ? '#2C5F2E' : '#6366f1' %>;">
+                <%= user.first_name[0] %><%= user.last_name[0] %>
+              </div>
+              <span style="font-weight:500; font-size:0.88rem;">
+                <%= link_to user.full_name, admin_user_path(user), style: "color:#1e293b; text-decoration:none;" %>
+              </span>
+            </div>
+          </td>
+          <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
+            <%= user.email %>
+          </td>
+          <td style="padding:12px 16px;">
+            <% role_colors = {
+              "admin" => "#fee2e2,#dc2626",
+              "company_admin" => "#dcfce7,#16a34a",
+              "client" => "#eff6ff,#3b82f6"
+            }
+            bg, fg = (role_colors[user.role] || "#f1f5f9,#64748b").split(",") %>
+            <span style="font-size:0.75rem; font-weight:500; padding:3px 8px;
+                         border-radius:99px; background:<%= bg %>; color:<%= fg %>;">
+              <%= user.role.humanize %>
+            </span>
+          </td>
+          <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
+            <%= user.created_at.strftime("%d/%m/%Y") %>
+          </td>
+          <td style="padding:12px 16px;">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <%= link_to "Voir", admin_user_path(user), style: "font-size:0.78rem; color:#2C5F2E; font-weight:500;" %>
+              <% unless user == current_user %>
+                · <%= button_to "Supprimer",
+                      admin_user_path(user),
+                      method: :delete,
+                      style: "background:none; border:none; cursor:pointer;
+                              font-size:0.78rem; color:#dc2626; padding:0;
+                              font-family:var(--font-body);",
+                      data: { turbo_confirm: "Supprimer #{user.full_name} ?" } %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div style="padding:16px 20px; border-top:1px solid #e2e8f0;">
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  </div>
+</div>

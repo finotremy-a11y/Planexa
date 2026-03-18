@@ -56,16 +56,16 @@
       <div class="card-body">
         <div class="radio-cards">
           <label class="radio-card">
-            <%= f.radio_button :payment_mode, "external",
-                  checked: @setting.external? %>
+            <%= f.radio_button :payment_mode, "payment_external",
+                  checked: @setting.payment_external? %>
             <div class="radio-card-content">
               <h4>🤝 Paiement hors application</h4>
               <p>Vous gérez le paiement directement avec vos clients (espèces, virement, CB sur place…).</p>
             </div>
           </label>
           <label class="radio-card">
-            <%= f.radio_button :payment_mode, "in_app",
-                  checked: @setting.in_app? %>
+            <%= f.radio_button :payment_mode, "payment_in_app",
+                  checked: @setting.payment_in_app? %>
             <div class="radio-card-content">
               <h4>💸 Paiement en ligne via Planify Pro</h4>
               <p>Les clients paient en ligne lors de la réservation. Les fonds arrivent directement sur votre compte Stripe.</p>
@@ -88,22 +88,57 @@
       <div class="card-body">
         <div class="radio-cards">
           <label class="radio-card">
-            <%= f.radio_button :assignment_mode, "automatic",
-                  checked: @setting.automatic? %>
+            <%= f.radio_button :assignment_mode, "assignment_automatic",
+                  checked: @setting.assignment_automatic? %>
             <div class="radio-card-content">
               <h4>⚡ Assignation automatique</h4>
               <p>Planify Pro désigne automatiquement l'employé disponible et qualifié, en équilibrant la charge de travail.</p>
             </div>
           </label>
           <label class="radio-card">
-            <%= f.radio_button :assignment_mode, "manual",
-                  checked: @setting.manual? %>
+            <%= f.radio_button :assignment_mode, "assignment_manual",
+                  checked: @setting.assignment_manual? %>
             <div class="radio-card-content">
               <h4>✋ Assignation manuelle</h4>
               <p>Vous choisissez vous-même quel employé est affecté à chaque rendez-vous depuis votre dashboard.</p>
             </div>
           </label>
         </div>
+      </div>
+    </div>
+
+    <!-- Bloc Stripe Connect — visible pour la connexion des paiements -->
+    <div class="card" id="stripe-connect-block">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">💳 Connexion Stripe</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Nécessaire pour recevoir les paiements clients en ligne
+          </p>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if @company.stripe_onboarding_complete? %>
+          <div class="alert alert-success">
+            ✅ Votre compte Stripe est connecté. Vous pouvez recevoir des paiements.
+          </div>
+        <% elsif @company.stripe_account_id.present? %>
+          <div class="alert alert-warning" style="margin-bottom:16px;">
+            ⚠️ Votre compte Stripe n'est pas encore complètement configuré.
+          </div>
+          <%= link_to "Continuer la configuration Stripe →",
+                connect_company_stripe_connect_path,
+                class: "btn btn-gold" %>
+        <% else %>
+          <p style="color:var(--text-500); font-size:0.88rem; margin-bottom:16px;">
+            Pour activer les paiements en ligne, connectez votre compte Stripe.
+            Vos clients pourront payer directement lors de leur réservation.
+            L'argent arrive directement sur votre compte.
+          </p>
+          <%= link_to "Connecter mon compte Stripe →",
+                connect_company_stripe_connect_path,
+                class: "btn btn-primary" %>
+        <% end %>
       </div>
     </div>
 

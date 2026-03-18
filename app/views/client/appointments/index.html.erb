@@ -1,0 +1,78 @@
+<% content_for :title, "Mes rendez-vous" %>
+
+<div style="max-width:900px; margin:40px auto; padding:0 24px;">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Mes rendez-vous</h1>
+      <p><%= @pagy.count %> rendez-vous au total</p>
+    </div>
+    <div class="page-header-actions">
+      <%= link_to "Trouver une entreprise", search_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+
+  <% if @appointments.any? %>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <% @appointments.each do |appointment| %>
+        <div class="card">
+          <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+            <div style="display:flex; align-items:center; gap:20px;">
+              <div style="text-align:center; background:var(--green-50); border:1.5px solid var(--green-100);
+                          border-radius:var(--radius-md); padding:10px 16px; min-width:64px;">
+                <div style="font-size:1.4rem; font-weight:700; color:var(--green-800); font-family:var(--font-display); line-height:1;">
+                  <%= appointment.scheduled_at.day %>
+                </div>
+                <div style="font-size:0.72rem; color:var(--green-600); text-transform:uppercase; font-weight:600;">
+                  <%= appointment.scheduled_at.strftime("%b %Y") %>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-weight:600; font-size:1rem; margin-bottom:3px;">
+                  <%= appointment.service_type.name %>
+                </div>
+                <div style="font-size:0.85rem; color:var(--text-500); margin-bottom:3px;">
+                  🏢 <%= appointment.company.name %>
+                </div>
+                <div style="font-size:0.82rem; color:var(--text-300);">
+                  ⏰ <%= appointment.scheduled_at.strftime("%Hh%M") %>
+                  · ⏱ <%= appointment.duration_minutes %> min
+                  · 📍 <%= appointment.company.city %>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+              <%= status_badge(appointment.status) %>
+
+              <% if appointment.paid? %>
+                <span class="badge badge-green">💳 Payé</span>
+              <% end %>
+
+              <% if appointment.pending? || appointment.confirmed? %>
+                <%= button_to "Annuler",
+                      client_appointment_path(appointment),
+                      method: :delete,
+                      class: "btn btn-ghost btn-sm",
+                      style: "color:#dc2626;",
+                      data: { turbo_confirm: "Confirmer l'annulation de ce rendez-vous ?" } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  <% else %>
+    <div class="card">
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>Aucun rendez-vous</h3>
+        <p>Trouvez un professionnel et prenez votre premier rendez-vous.</p>
+        <%= link_to "Rechercher un professionnel →", search_path,
+              class: "btn btn-primary", style: "margin-top:16px;" %>
+      </div>
+    </div>
+  <% end %>
+</div>

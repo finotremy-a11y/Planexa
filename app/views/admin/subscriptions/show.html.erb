@@ -1,0 +1,67 @@
+<% content_for :title, "Abonnement #{@subscription.id}" %>
+<% content_for :page_title, "Abonnement" %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+  <div>
+    <h1 style="font-family:var(--font-display); font-size:1.35rem; color:#0f172a; margin-bottom:4px;">
+      <%= @company.name %>
+    </h1>
+    <div style="font-size:0.84rem; color:#64748b;">
+      Abonnement #<%= @subscription.id %>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <% if @subscription.canceled? %>
+      <span class="btn btn-ghost btn-sm" style="pointer-events:none; opacity:0.7;">Deja annule</span>
+    <% else %>
+      <%= button_to "Annuler abonnement",
+            cancel_admin_subscription_path(@subscription),
+            method: :patch,
+            class: "btn btn-danger btn-sm",
+            data: { turbo_confirm: "Annuler cet abonnement Stripe ?" } %>
+    <% end %>
+    <%= link_to "Voir entreprise", admin_company_path(@company), class: "btn btn-primary btn-sm" %>
+    <%= link_to "Retour", admin_subscriptions_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="admin-table-wrapper">
+    <div class="admin-table-header"><h3>Details Stripe</h3></div>
+    <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+      <% [
+        ["Statut", @subscription.status.humanize],
+        ["Subscription ID", @subscription.stripe_subscription_id],
+        ["Price ID", @subscription.stripe_price_id],
+        ["Fin periode", @subscription.current_period_end&.strftime("%d/%m/%Y") || "-"],
+        ["Fin essai", @subscription.trial_ends_at&.strftime("%d/%m/%Y") || "-"],
+        ["Suspendu le", @subscription.suspended_at&.strftime("%d/%m/%Y %H:%M") || "-"]
+      ].each do |label, value| %>
+        <div style="display:flex; justify-content:space-between; gap:14px;">
+          <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>
+          <span style="font-size:0.82rem; color:#1e293b; text-align:right; font-family:<%= label.include?("ID") ? 'monospace' : 'inherit' %>;">
+            <%= value %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="admin-table-wrapper">
+    <div class="admin-table-header"><h3>Entreprise</h3></div>
+    <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
+      <% [
+        ["Nom", @company.name],
+        ["SIRET", @company.siret],
+        ["Ville", @company.city],
+        ["Statut", @company.status.humanize],
+        ["Email", @company.user.email]
+      ].each do |label, value| %>
+        <div style="display:flex; justify-content:space-between; gap:14px;">
+          <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>
+          <span style="font-size:0.82rem; color:#1e293b; text-align:right;"><%= value %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -19,7 +19,7 @@ class Subscription < ApplicationRecord
 
   def days_until_trial_ends
     return 0 unless trial_ends_at
-    [(trial_ends_at - Time.current) / 1.day, 0].max.ceil
+    [ (trial_ends_at - Time.current) / 1.day, 0 ].max.ceil
   end
 
   def suspend!

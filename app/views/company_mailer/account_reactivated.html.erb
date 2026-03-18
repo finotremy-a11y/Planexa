@@ -1,0 +1,22 @@
+<h1>✅ Votre compte est réactivé !</h1>
+
+<p>Bonjour <%= @user.first_name %>,</p>
+
+<p>
+  Votre paiement a bien été reçu. Le compte
+  <strong><%= @company.name %></strong> est de nouveau pleinement actif.
+</p>
+
+<div class="info-box">
+  ✅ Votre fiche est à nouveau visible<br>
+  ✅ Les réservations en ligne sont rouvertes<br>
+  ✅ Votre équipe peut reprendre son activité normalement
+</div>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company" class="btn">
+  Retourner à mon dashboard →
+</a>
+
+<p style="font-size:0.82rem; color:#888; margin-top:20px;">
+  Merci pour votre confiance. Si vous avez la moindre question, n'hésitez pas à nous contacter.
+</p>

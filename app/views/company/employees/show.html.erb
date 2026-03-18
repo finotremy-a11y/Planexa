@@ -1,0 +1,66 @@
+<% content_for :title, @employee.full_name %>
+<% content_for :page_title, "Employé" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1><%= @employee.full_name %></h1>
+    <p><%= @employee.email %></p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "Modifier", edit_company_employee_path(@employee), class: "btn btn-secondary" %>
+    <%= link_to "← Retour", company_employees_path, class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <!-- Aptitudes -->
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Aptitudes</h3>
+      <%= link_to "Gérer", company_employee_skills_path(@employee), class: "btn btn-ghost btn-sm" %>
+    </div>
+    <div class="card-body">
+      <% if @skills.any? %>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <% @skills.each do |skill| %>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:500; font-size:0.9rem;"><%= skill.service_type.name %></span>
+              <span class="badge badge-grey"><%= skill.level %></span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--text-300); font-size:0.85rem;">Aucune aptitude assignée.</p>
+        <%= link_to "Ajouter des aptitudes →", company_employee_skills_path(@employee),
+              style: "font-size:0.85rem; color:var(--green-700);" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Horaires -->
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Horaires</h3>
+      <%= link_to "Gérer", company_employee_schedules_path(@employee), class: "btn btn-ghost btn-sm" %>
+    </div>
+    <div class="card-body">
+      <% day_names = %w[Dim Lun Mar Mer Jeu Ven Sam] %>
+      <% if @schedules.any? %>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <% @schedules.each do |s| %>
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem;">
+              <span style="font-weight:500;"><%= day_names[s.day_of_week] %></span>
+              <span style="color:var(--text-500);">
+                <%= s.start_time.strftime("%Hh%M") %> - <%= s.end_time.strftime("%Hh%M") %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--text-300); font-size:0.85rem;">Aucun horaire défini.</p>
+        <%= link_to "Définir les horaires →", company_employee_schedules_path(@employee),
+              style: "font-size:0.85rem; color:var(--green-700);" %>
+      <% end %>
+    </div>
+  </div>
+</div>

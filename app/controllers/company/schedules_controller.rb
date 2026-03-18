@@ -1,5 +1,5 @@
 class Company::SchedulesController < Company::BaseController
-  before_action :set_employee, only: [:index, :new, :create, :destroy]
+  before_action :set_employee, only: [ :index, :create, :destroy ]
 
   def index
     @schedules  = @employee.schedules.recurring.order(:day_of_week)
@@ -22,8 +22,8 @@ class Company::SchedulesController < Company::BaseController
   def destroy
     schedule = @company.schedules.find(params[:id])
     schedule.destroy
-    redirect_back(fallback_location: company_employees_path),
-      notice: "Créneau supprimé."
+    redirect_back(fallback_location: company_employees_path,
+                  notice: "Créneau supprimé.")
   end
 
   private

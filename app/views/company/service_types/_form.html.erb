@@ -1,0 +1,45 @@
+<%= form_with model: [:company, @service_type], local: true do |f| %>
+  <div class="card" style="max-width:600px;">
+    <div class="card-header">
+      <h2 style="font-size:1.2rem;">
+        <%= @service_type.new_record? ? "Créer une prestation" : "Modifier la prestation" %>
+      </h2>
+    </div>
+    <div class="card-body">
+      <% if @service_type.errors.any? %>
+        <div class="alert alert-error" style="margin-bottom:20px;">
+          <ul style="list-style:none; padding:0; margin:0;">
+            <% @service_type.errors.full_messages.each do |msg| %>
+              <li>• <%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :name, "Nom de la prestation", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "Ex: Dépannage plomberie" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :description, "Description", class: "form-label" %>
+        <%= f.text_area :description, class: "form-control", placeholder: "Décrivez la prestation..." %>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div class="form-group">
+          <%= f.label :duration_minutes, "Durée (minutes)", class: "form-label" %>
+          <%= f.number_field :duration_minutes, class: "form-control", min: 15, step: 15 %>
+        </div>
+        <div class="form-group">
+          <%= f.label :price_cents, "Prix (en centimes, ex: 9000 = 90€)", class: "form-label" %>
+          <%= f.number_field :price_cents, class: "form-control", min: 0 %>
+          <span class="form-hint">Entrez le prix en centimes. 90€ = 9000</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer" style="display:flex; gap:10px; justify-content:flex-end;">
+      <%= link_to "Annuler", company_service_types_path, class: "btn btn-ghost" %>
+      <%= f.submit @service_type.new_record? ? "Créer la prestation" : "Sauvegarder",
+            class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>

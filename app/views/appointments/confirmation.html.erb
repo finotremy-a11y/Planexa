@@ -1,0 +1,47 @@
+<% content_for :title, "Rendez-vous envoyé" %>
+
+<div style="max-width:560px; margin:64px auto; padding:0 24px; text-align:center;">
+  <div style="font-size:4rem; margin-bottom:16px;">✅</div>
+  <h1 style="font-family:var(--font-display); margin-bottom:12px;">
+    Demande envoyée !
+  </h1>
+  <p style="color:var(--text-500); margin-bottom:32px; line-height:1.7;">
+    <% if @appointment.confirmed? %>
+      Votre rendez-vous est <strong>confirmé</strong>.
+      Vous recevrez un email de confirmation.
+    <% else %>
+      Votre demande a bien été reçue.
+      L'entreprise va confirmer votre rendez-vous.
+    <% end %>
+  </p>
+
+  <div class="card" style="text-align:left; margin-bottom:24px;">
+    <div class="card-body">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Entreprise</span>
+          <strong><%= @appointment.company.name %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Prestation</span>
+          <strong><%= @appointment.service_type.name %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Date</span>
+          <strong><%= @appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %></strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-500);">Durée</span>
+          <strong><%= @appointment.duration_minutes %> min</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <% if user_signed_in? && current_user.client? %>
+      <%= link_to "Voir mes rendez-vous", client_appointments_path, class: "btn btn-primary" %>
+    <% end %>
+    <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
+  </div>
+</div>

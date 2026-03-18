@@ -8,6 +8,12 @@ class Company::EmployeeSkillsController < Company::BaseController
   end
 
   def create
+    service_type = @company.service_types.find_by(id: skill_params[:service_type_id])
+    unless service_type
+      return redirect_to company_employee_skills_path(@employee),
+        alert: "Prestation introuvable."
+    end
+
     @skill = @employee.employee_skills.new(skill_params)
     if @skill.save
       redirect_to company_employee_skills_path(@employee),

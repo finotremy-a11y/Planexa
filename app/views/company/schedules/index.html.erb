@@ -1,0 +1,124 @@
+<% content_for :title, "Horaires" %>
+<% content_for :page_title, "Horaires — #{@employee.full_name}" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Horaires de <%= @employee.full_name %></h1>
+    <p>Définissez les disponibilités hebdomadaires et les exceptions</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "← Retour", company_employee_path(@employee), class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <!-- Horaires récurrents -->
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Horaires hebdomadaires</h3>
+    </div>
+    <div class="card-body">
+      <% day_names = %w[Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi] %>
+      <% if @schedules.any? %>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+          <% @schedules.each do |s| %>
+            <div style="display:flex; justify-content:space-between; align-items:center;
+                        padding:10px 14px; background:var(--cream); border-radius:var(--radius-md);">
+              <span style="font-weight:500; font-size:0.9rem;"><%= day_names[s.day_of_week] %></span>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:0.85rem; color:var(--text-500);">
+                  <%= s.start_time.strftime("%Hh%M") %> – <%= s.end_time.strftime("%Hh%M") %>
+                </span>
+                <%= link_to "✕", company_employee_schedule_path(@employee, s),
+                      data: { turbo_method: :delete, turbo_confirm: "Supprimer ce créneau ?" },
+                      style: "color:var(--text-300); font-size:0.8rem;" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--text-300); font-size:0.85rem; margin-bottom:16px;">
+          Aucun horaire récurrent défini.
+        </p>
+      <% end %>
+
+      <!-- Formulaire ajout créneau récurrent -->
+      <%= form_with model: [:company, @employee, @new_schedule], local: true do |f| %>
+        <%= f.hidden_field :schedule_type, value: "recurring" %>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+          <div class="form-group" style="margin:0;">
+            <%= f.select :day_of_week,
+                  [["Lundi", 1], ["Mardi", 2], ["Mercredi", 3], ["Jeudi", 4],
+                   ["Vendredi", 5], ["Samedi", 6], ["Dimanche", 0]],
+                  {}, class: "form-control" %>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <%= f.time_field :start_time, class: "form-control", value: "08:00" %>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <%= f.time_field :end_time, class: "form-control", value: "18:00" %>
+          </div>
+        </div>
+        <%= f.submit "+ Ajouter", class: "btn btn-primary btn-sm" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Exceptions -->
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Exceptions & congés</h3>
+    </div>
+    <div class="card-body">
+      <% if @exceptions.any? %>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+          <% @exceptions.each do |ex| %>
+            <div style="display:flex; justify-content:space-between; align-items:center;
+                        padding:10px 14px; background:var(--cream); border-radius:var(--radius-md);">
+              <div>
+                <span style="font-weight:500; font-size:0.9rem;">
+                  <%= ex.specific_date.strftime("%d/%m/%Y") %>
+                </span>
+                <span class="badge <%= ex.available? ? 'badge-green' : 'badge-red' %>"
+                      style="margin-left:8px;">
+                  <%= ex.available? ? "Disponible" : "Indisponible" %>
+                </span>
+              </div>
+              <%= link_to "✕", company_employee_schedule_path(@employee, ex),
+                    data: { turbo_method: :delete },
+                    style: "color:var(--text-300);" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= form_with model: [:company, @employee, @new_schedule], local: true,
+            html: { id: "exception-form" } do |f| %>
+        <%= f.hidden_field :schedule_type, value: "exception" %>
+        <div class="form-group">
+          <%= f.label :specific_date, "Date", class: "form-label" %>
+          <%= f.date_field :specific_date, class: "form-control", min: Date.today %>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <%= f.time_field :start_time, class: "form-control", value: "08:00" %>
+          </div>
+          <div class="form-group">
+            <%= f.time_field :end_time, class: "form-control", value: "18:00" %>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+            <%= f.radio_button :available, true, checked: true %>
+            Disponible
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+            <%= f.radio_button :available, false %>
+            Indisponible (congé)
+          </label>
+        </div>
+        <%= f.submit "+ Ajouter une exception", class: "btn btn-secondary btn-sm" %>
+      <% end %>
+    </div>
+  </div>
+</div>

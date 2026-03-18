@@ -1,0 +1,39 @@
+<h1>Votre rendez-vous est confirmé ✅</h1>
+
+<p>Bonjour <%= @client.first_name %>,</p>
+
+<p>
+  Votre rendez-vous avec <strong><%= @company.name %></strong> est bien confirmé.
+</p>
+
+<div class="info-box">
+  <div class="info-row">
+    <span class="info-label">Entreprise</span>
+    <span class="info-value"><%= @company.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Prestation</span>
+    <span class="info-value"><%= @appointment.service_type.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Date</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%A %d %B %Y") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Heure</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%Hh%M") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Durée</span>
+    <span class="info-value"><%= @appointment.duration_minutes %> minutes</span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Adresse</span>
+    <span class="info-value"><%= @company.address %>, <%= @company.city %></span>
+  </div>
+</div>
+
+<p style="font-size:0.88rem; color:#6b6b6b;">
+  Vous recevrez un rappel 24h avant votre rendez-vous.
+  Pour annuler, connectez-vous à votre espace client.
+</p>

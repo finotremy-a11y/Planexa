@@ -1,0 +1,26 @@
+<h1>Votre abonnement Planify Pro a été annulé</h1>
+
+<p>Bonjour <%= @user.first_name %>,</p>
+
+<p>
+  Nous vous confirmons l'annulation de l'abonnement Planify Pro pour
+  <strong><%= @company.name %></strong>.
+</p>
+
+<p>
+  Votre compte reste accessible jusqu'à la fin de la période en cours.
+  Après cette date, votre fiche sera masquée et les réservations désactivées.
+</p>
+
+<p>
+  Vous pouvez à tout moment réactiver votre abonnement depuis votre espace.
+</p>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/abonnement" class="btn">
+  Réactiver mon abonnement →
+</a>
+
+<p style="font-size:0.82rem; color:#888; margin-top:20px;">
+  Nous sommes désolés de vous voir partir. Si vous avez des retours à nous faire,
+  répondez à cet email — votre avis compte pour nous.
+</p>

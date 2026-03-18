@@ -12,12 +12,12 @@ class StripeSubscriptionService
 
     Stripe::Checkout::Session.create(
       customer:              customer.id,
-      payment_method_types:  ["card"],
+      payment_method_types:  [ "card" ],
       mode:                  "subscription",
-      line_items: [{
+      line_items: [ {
         price:    PRICE_ID,
         quantity: 1
-      }],
+      } ],
       subscription_data: {
         trial_period_days: TRIAL_DAYS,
         metadata: { company_id: @company.id }

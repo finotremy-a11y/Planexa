@@ -1,29 +1,95 @@
-<h2>Sign up</h2>
+<% content_for :title, "Créer un compte" %>
+
+<div class="auth-form-header">
+  <h1>Créer votre compte</h1>
+  <p>Déjà inscrit ? <%= link_to "Se connecter", new_user_session_path %></p>
+</div>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+  <% if resource.errors.any? %>
+    <div class="alert alert-error" style="margin-bottom:20px;">
+      <% resource.errors.full_messages.each do |msg| %>
+        <div>• <%= msg %></div>
+      <% end %>
+    </div>
+  <% end %>
 
-  <div class="field">
-    <p><%= f.label :email %></p>
-    <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
+  <div class="form-group">
+    <div class="form-label" style="margin-bottom:10px;">Je suis...</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
+                     border:2px solid var(--border); border-radius:var(--radius-md);
+                     cursor:pointer; transition:var(--transition);"
+             id="label-client">
+        <%= f.radio_button :role, "client", checked: resource.role.blank? || resource.role == "client",
+              style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
+        <div>
+          <div style="font-weight:600; font-size:0.9rem;">Client</div>
+          <div style="font-size:0.75rem; color:var(--text-500);">Gratuit</div>
+        </div>
+      </label>
+      <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
+                     border:2px solid var(--border); border-radius:var(--radius-md);
+                     cursor:pointer; transition:var(--transition);"
+             id="label-company">
+        <%= f.radio_button :role, "company_admin",
+              checked: resource.role == "company_admin",
+              style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
+        <div>
+          <div style="font-weight:600; font-size:0.9rem;">Entreprise</div>
+          <div style="font-size:0.75rem; color:var(--gold-600);">14 j gratuits</div>
+        </div>
+      </label>
+    </div>
   </div>
 
-  <div class="field">
-    <p><%= f.label :password %></p>
-    <% if @minimum_password_length %>
-      <p><em>(<%= @minimum_password_length %> characters minimum)</em></p>
-    <% end %>
-    <p><%= f.password_field :password, autocomplete: "new-password" %></p>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+    <div class="form-group">
+      <%= f.label :first_name, "Prénom", class: "form-label" %>
+      <%= f.text_field :first_name, class: "form-control", placeholder: "Jean", autocomplete: "given-name" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :last_name, "Nom", class: "form-label" %>
+      <%= f.text_field :last_name, class: "form-control", placeholder: "Dupont", autocomplete: "family-name" %>
+    </div>
   </div>
 
-  <div class="field">
-    <p><%= f.label :password_confirmation %></p>
-    <p><%= f.password_field :password_confirmation, autocomplete: "new-password" %></p>
+  <div class="form-group">
+    <%= f.label :email, "Adresse email", class: "form-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email",
+          class: "form-control", placeholder: "vous@exemple.fr" %>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
+  <div class="form-group">
+    <%= f.label :password, "Mot de passe", class: "form-label" %>
+    <%= f.password_field :password, autocomplete: "new-password",
+          class: "form-control", placeholder: "8 caractères minimum" %>
+    <span class="form-hint">Minimum 8 caractères</span>
   </div>
+
+  <div class="form-group">
+    <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "form-label" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password",
+          class: "form-control", placeholder: "••••••••" %>
+  </div>
+
+  <div style="font-size:0.78rem; color:var(--text-300); margin-bottom:16px; line-height:1.6;">
+    En créant un compte, vous acceptez nos
+    <%= link_to "CGU", cgu_path, style: "color:var(--green-700);" %> et notre
+    <%= link_to "politique de confidentialité", confidentialite_path, style: "color:var(--green-700);" %>.
+  </div>
+
+  <%= f.submit "Créer mon compte →", class: "btn btn-primary btn-lg",
+        style: "width:100%; justify-content:center;" %>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<script>
+  function toggleRole(radio) {
+    document.getElementById("label-client").style.borderColor =
+      radio.value === "client" ? "var(--green-800)" : "var(--border)";
+    document.getElementById("label-company").style.borderColor =
+      radio.value === "company_admin" ? "var(--green-800)" : "var(--border)";
+  }
+
+  toggleRole(document.querySelector('input[name="user[role]"]:checked'));
+</script>

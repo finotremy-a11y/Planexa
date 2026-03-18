@@ -11,6 +11,9 @@ class Company::ProfilesController < Company::BaseController
 
   private
   def company_params
-    params.require(:company).permit(:name, :address, :city, :zip_code, :phone, :description, :website)
+    params.require(:company).permit(
+      :name, :siret, :address, :city, :zip_code,
+      :phone, :description, :website
+    )
   end
 end

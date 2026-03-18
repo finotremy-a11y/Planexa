@@ -36,7 +36,7 @@ class AutoAssignmentService
   def workload_score(employee)
     employee.appointments
             .where(scheduled_at: @scheduled_at.beginning_of_day..@scheduled_at.end_of_day)
-            .where.not(status: [:cancelled, :no_show])
+            .where.not(status: [ :cancelled, :no_show ])
             .count
   end
 end

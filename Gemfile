@@ -36,27 +36,45 @@ gem "activestorage-cloudinary-service"
 gem "ransack"             # Filtres dynamiques
 gem "pagy", "~> 9.0"      # Pagination
 
+# ── Monitoring ────────────────────────────────────────────────────────────────
+gem "sentry-ruby"             # Monitoring erreurs production
+gem "sentry-rails"
+gem "sentry-sidekiq"          # Erreurs dans les jobs Sidekiq
+
+# ── SEO ───────────────────────────────────────────────────────────────────────
+gem "sitemap_generator"       # Génération automatique sitemap.xml
+
 # ── Utilitaires ───────────────────────────────────────────────────────────────
 gem "money-rails", "~> 1.15"  # Gestion montants en centimes
 gem "whenever", require: false  # Cron jobs
-gem "dotenv-rails", groups: [:development, :test]
+gem "dotenv-rails", groups: [ :development, :test ]
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "factory_bot_rails"
   gem "faker"
-  gem "rspec-rails"
 end
 
 group :development do
   gem "web-console"
   gem "rubocop-rails-omakase", require: false
+  gem "rubocop-rails",         require: false
+  gem "rubocop-performance",   require: false
+  gem "bullet"
   gem "letter_opener"    # Preview emails en dev
+  gem "brakeman",        require: false
 end
 
 group :test do
+  gem "simplecov", require: false
+  gem "minitest-reporters"
+  gem "mocha"
   gem "shoulda-matchers"
+  gem "database_cleaner-active_record"
   gem "rails-controller-testing"
+  gem "capybara"
+  gem "selenium-webdriver"
 end
 
+gem "rack-attack"             # Rate limiting & throttling
 gem "connection_pool", "~> 2.4"

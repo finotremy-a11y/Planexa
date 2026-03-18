@@ -1,5 +1,17 @@
-<p>Welcome <%= @email %>!</p>
+<h1>Confirmez votre adresse email</h1>
 
-<p>You can confirm your account email through the link below:</p>
+<p>Bonjour <%= @resource.first_name %>,</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<p>
+	Merci de vous être inscrit sur <strong>Planify Pro</strong>.
+	Cliquez sur le bouton ci-dessous pour confirmer votre adresse email.
+</p>
+
+<a href="<%= confirmation_url(@resource, confirmation_token: @token) %>" class="btn">
+	Confirmer mon adresse email →
+</a>
+
+<p style="font-size:0.82rem; color:#888; margin-top:20px;">
+	Si vous n'avez pas créé de compte sur Planify Pro, ignorez cet email.
+	Ce lien expire dans 24 h.
+</p>

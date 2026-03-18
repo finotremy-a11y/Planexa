@@ -1,6 +1,7 @@
 require_relative "boot"
 
 require "rails"
+require "csv"
 # Pick the frameworks you want:
 require "active_model/railtie"
 require "active_job/railtie"
@@ -39,5 +40,9 @@ module PlanifyPro
     # Don't generate system test files.
     config.generators.system_tests = nil
     config.active_job.queue_adapter = :sidekiq
+    config.exceptions_app = self.routes
+
+    # Rate limiting via Rack::Attack
+    config.middleware.use Rack::Attack
   end
 end

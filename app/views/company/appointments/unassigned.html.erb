@@ -1,0 +1,76 @@
+<% content_for :title, "RDV non assignés" %>
+<% content_for :page_title, "Rendez-vous non assignés" %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+  <div style="display:flex; gap:8px;">
+    <%= link_to "Vue liste", company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Calendrier", calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Non assignés", unassigned_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
+  </div>
+  <%= link_to "Nouveau RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+</div>
+
+<% if @appointments.any? %>
+  <div class="card" style="overflow:hidden;">
+    <table class="table" style="margin:0;">
+      <thead>
+        <tr>
+          <th>Date &amp; Heure</th>
+          <th>Prestation</th>
+          <th>Client</th>
+          <th>Durée</th>
+          <th>Urgent</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @appointments.each do |appt| %>
+          <tr>
+            <td>
+              <strong><%= appt.scheduled_at.strftime("%d/%m/%Y %H:%M") %></strong>
+            </td>
+            <td><%= appt.service_type.name %></td>
+            <td>
+              <% if appt.client_user %>
+                <%= appt.client_user.full_name %>
+              <% else %>
+                <span style="color:var(--text-400);">—</span>
+              <% end %>
+            </td>
+            <td><%= appt.duration_minutes %> min</td>
+            <td>
+              <% if appt.urgent? %>
+                <span class="badge badge-danger">Urgent</span>
+              <% else %>
+                <span style="color:var(--text-300);">—</span>
+              <% end %>
+            </td>
+            <td>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <%# Quick assign form %>
+                <% if @company.employees.active.any? %>
+                  <%= form_with url: assign_employee_company_appointment_path(appt),
+                        method: :patch, local: false,
+                        style: "display:flex; gap:6px; align-items:center;" do |f| %>
+                    <%= select_tag "employee_id",
+                          options_from_collection_for_select(@company.employees.active.order(:last_name), :id, :full_name),
+                          prompt: "Assigner…", class: "form-select form-select-sm", style: "width:160px;" %>
+                    <%= submit_tag "Assigner", class: "btn btn-primary btn-sm" %>
+                  <% end %>
+                <% end %>
+                <%= link_to "Voir", company_appointment_path(appt), class: "btn btn-link btn-sm" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <div style="font-size:3rem; margin-bottom:12px;">✅</div>
+    <h3>Aucun rendez-vous sans assignation</h3>
+    <p>Tous les rendez-vous ont un employé assigné.</p>
+    <%= link_to "Voir tous les RDV", company_appointments_path, class: "btn btn-secondary btn-sm" %>
+  </div>
+<% end %>

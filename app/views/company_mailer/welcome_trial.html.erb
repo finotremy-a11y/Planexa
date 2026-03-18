@@ -1,0 +1,30 @@
+<h1>Bienvenue sur Planify Pro, <%= @user.first_name %> ! 🎉</h1>
+
+<p>
+  Votre espace entreprise <strong><%= @company.name %></strong> est activé.
+  Vous bénéficiez de <strong>14 jours d'essai gratuit</strong> pour découvrir
+  toutes les fonctionnalités sans aucun engagement.
+</p>
+
+<% if @trial_ends_at %>
+  <div class="warning-box">
+    <strong>📅 Votre essai se termine le <%= @trial_ends_at.strftime("%d/%m/%Y") %></strong><br>
+    Aucun prélèvement avant cette date.
+  </div>
+<% end %>
+
+<p>Pour bien démarrer, nous vous recommandons de :</p>
+<ol style="color:#3d3d3d; line-height:2.2; padding-left:20px;">
+  <li>Ajouter vos <strong>employés</strong> et leurs aptitudes</li>
+  <li>Créer vos <strong>prestations</strong> avec tarifs et durées</li>
+  <li>Configurer vos <strong>réglages</strong> (réservation, paiement, assignation)</li>
+  <li>Compléter votre <strong>profil entreprise</strong></li>
+</ol>
+
+<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company" class="btn">
+  Accéder à mon dashboard →
+</a>
+
+<p style="font-size:0.82rem; color:#888; border-top:1px solid #eee; padding-top:14px; margin-top:20px;">
+  Des questions ? Répondez directement à cet email, nous vous répondrons dans les plus brefs délais.
+</p>

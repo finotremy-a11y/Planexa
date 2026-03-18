@@ -1,0 +1,102 @@
+<% content_for :title, "Mon espace" %>
+
+<div style="max-width:900px; margin:40px auto; padding:0 24px;">
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h1 style="margin-bottom:4px;">Bonjour, <%= current_user.first_name %> 👋</h1>
+      <p style="color:var(--text-400); margin:0;">Gérez vos rendez-vous</p>
+    </div>
+    <%= link_to "Trouver une entreprise", search_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="font-family:var(--font-display); margin:0;">Prochains rendez-vous</h3>
+      <%= link_to "Voir tout", client_appointments_path, class: "btn btn-secondary btn-sm" %>
+    </div>
+    <% if @upcoming_appointments.any? %>
+      <div style="padding:8px 0;">
+        <% @upcoming_appointments.each do |appt| %>
+          <div style="display:flex; align-items:center; justify-content:space-between;
+                      padding:14px 24px; border-bottom:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <div style="text-align:center; background:var(--green-50);
+                          border-radius:var(--radius-md); padding:8px 12px; min-width:56px;">
+                <div style="font-size:1.2rem; font-weight:700; color:var(--green-800); line-height:1;">
+                  <%= appt.scheduled_at.day %>
+                </div>
+                <div style="font-size:0.7rem; color:var(--green-600); text-transform:uppercase;">
+                  <%= appt.scheduled_at.strftime("%b") %>
+                </div>
+              </div>
+              <div>
+                <div style="font-weight:500; margin-bottom:2px;"><%= appt.service_type.name %></div>
+                <div style="font-size:0.82rem; color:var(--text-500);">
+                  <%= appt.company.name %> · <%= appt.scheduled_at.strftime("%Hh%M") %>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <% status_styles = { "pending" => "background:#fef3c7; color:#92400e;", "confirmed" => "background:#dcfce7; color:#14532d;" } %>
+              <% status_labels = { "pending" => "En attente", "confirmed" => "Confirmé" } %>
+              <span style="<%= status_styles[appt.status] || 'background:#f3f4f6; color:#374151;' %> padding:3px 10px; border-radius:99px; font-size:0.78rem; font-weight:600;">
+                <%= status_labels[appt.status] || appt.status %>
+              </span>
+              <% if appt.pending? || appt.confirmed? %>
+                <%= button_to "Annuler",
+                      cancel_client_appointment_path(appt),
+                      method: :patch,
+                      class: "btn btn-secondary btn-sm",
+                      style: "color:#dc2626; border-color:#dc2626;",
+                      data: { turbo_confirm: "Confirmer l'annulation ?" } %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div style="text-align:center; padding:48px;">
+        <div style="font-size:3rem; margin-bottom:12px;">📭</div>
+        <h3>Aucun rendez-vous à venir</h3>
+        <p style="color:var(--text-400);">Trouvez un professionnel et prenez rendez-vous.</p>
+        <%= link_to "Rechercher →", search_path, class: "btn btn-primary", style: "margin-top:12px;" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @past_appointments.any? %>
+    <div class="card">
+      <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-family:var(--font-display); margin:0;">Historique récent</h3>
+        <%= link_to "Tout voir", client_appointments_path, class: "btn btn-secondary btn-sm" %>
+      </div>
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="background:var(--surface-100);">
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Date</th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Prestation</th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Entreprise</th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @past_appointments.each do |appt| %>
+            <tr style="border-top:1px solid var(--border);">
+              <td style="padding:12px 24px;"><%= appt.scheduled_at.strftime("%d/%m/%Y") %></td>
+              <td style="padding:12px 24px;"><%= appt.service_type.name %></td>
+              <td style="padding:12px 24px;"><%= appt.company.name %></td>
+              <td style="padding:12px 24px;">
+                <% past_styles = { "completed" => "background:#f3f4f6; color:#374151;", "cancelled" => "background:#fee2e2; color:#991b1b;" } %>
+                <% past_labels = { "completed" => "Terminé", "cancelled" => "Annulé" } %>
+                <span style="<%= past_styles[appt.status] || 'background:#f3f4f6; color:#374151;' %> padding:3px 10px; border-radius:99px; font-size:0.78rem; font-weight:600;">
+                  <%= past_labels[appt.status] || appt.status %>
+                </span>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

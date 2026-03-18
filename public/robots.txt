@@ -1,1 +1,29 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+
+# Autoriser les pages publiques
+Allow: /
+Allow: /recherche
+Allow: /entreprises/
+Allow: /cgu
+Allow: /cgv
+Allow: /confidentialite
+Allow: /mentions-legales
+Allow: /contact
+
+# Bloquer les espaces privés
+Disallow: /company
+Disallow: /company/
+Disallow: /client
+Disallow: /client/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /users/
+Disallow: /paiement/
+Disallow: /stripe/
+
+# Bloquer les fichiers système
+Disallow: /rails/
+Disallow: /*.json$
+
+# Sitemap
+Sitemap: https://planifypro.fr/sitemap.xml.gz
