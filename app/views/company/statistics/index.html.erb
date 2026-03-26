@@ -180,3 +180,43 @@
     </div>
   </div>
 </div>
+
+<%# ── Funnel de conversion (T1) ──────────────────────────────────────────── %>
+<div class="card" style="margin-bottom:32px;">
+  <div class="card-header">
+    <h3 style="font-family:var(--font-display);">Funnel de réservation</h3>
+    <span style="font-size:.78rem; color:var(--text-400);">Événements sur les <%= @period %> derniers jours</span>
+  </div>
+  <div style="padding:20px;">
+    <% funnel = [
+      { label: "Fiches vues",          value: @funnel_fiches_vues,      icon: "👁",  color: "var(--blue-600)" },
+      { label: "Réservations démarrées", value: @funnel_bookings_started, icon: "🖱",  color: "var(--gold-600)" },
+      { label: "Réservations finalisées", value: @funnel_bookings_done,    icon: "✅",  color: "var(--green-700)" },
+      { label: "Annulations",           value: @funnel_annulations,      icon: "🚫",  color: "var(--red-600)" }
+    ] %>
+    <% max_val = funnel.map { |s| s[:value] }.max.to_f %>
+    <% max_val = 1.0 if max_val.zero? %>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <% funnel.each do |step| %>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="width:30px; text-align:center; font-size:1.1rem;"><%= step[:icon] %></div>
+          <div style="width:200px; font-size:.85rem; font-weight:500; color:var(--text-700);"><%= step[:label] %></div>
+          <div style="flex:1; background:var(--bg-secondary); border-radius:99px; height:14px; overflow:hidden;">
+            <div style="width:<%= [(step[:value] / max_val * 100).round, 100].min %>%;
+                        height:100%; border-radius:99px;
+                        background:<%= step[:color] %>; transition:.4s ease;"></div>
+          </div>
+          <div style="width:48px; text-align:right; font-size:.9rem; font-weight:700;
+                      color:<%= step[:color] %>;"><%= step[:value] %></div>
+        </div>
+      <% end %>
+    </div>
+    <% if @funnel_fiches_vues.positive? && @funnel_bookings_done.positive? %>
+      <div style="margin-top:16px; padding:12px 16px; background:var(--green-50);
+                  border-radius:var(--radius-md); font-size:.82rem; color:var(--green-800);">
+        Taux de conversion fiche → réservation :
+        <strong><%= (@funnel_bookings_done.to_f / @funnel_fiches_vues * 100).round(1) %> %</strong>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -9,6 +9,7 @@ class PagesController < ApplicationController
   def confidentialite; end
   def mentions_legales; end
   def contact; end
+  def tarifs; end
 
   def send_contact
     contact_params = params.permit(:name, :email, :subject, :message)

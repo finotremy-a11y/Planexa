@@ -25,6 +25,7 @@ class Client::AppointmentsController < Client::BaseController
       @appointment.update!(status: :cancelled, cancellation_reason: "Annulé par le client")
       ClientMailer.appointment_cancelled(@appointment).deliver_later
       NotifyWaitlistJob.perform_later(@appointment.id)
+      track_event("annulation", company: @appointment.company)
       redirect_to client_appointments_path, notice: "Rendez-vous annulé."
     else
       redirect_to client_appointments_path, alert: "Ce rendez-vous ne peut plus être annulé."

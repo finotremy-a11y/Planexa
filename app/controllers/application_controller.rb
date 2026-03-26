@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
+  include Trackable
   include LocaleSwitcher
 
   layout :choose_layout

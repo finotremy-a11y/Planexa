@@ -193,6 +193,7 @@
     <div class="navbar-links">
       <%= render "shared/locale_switcher" %>
       <%= link_to t("nav.search"), search_path, class: "navbar-link" %>
+      <%= link_to "Tarifs", tarifs_path, class: "navbar-link" %>
       <%= link_to t("nav.contact"), contact_path, class: "navbar-link" %>
 
       <% if user_signed_in? %>

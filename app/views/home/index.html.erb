@@ -85,3 +85,38 @@
                 text-decoration:none; display:inline-block; transition:var(--transition);" %>
 </section>
 
+
+<section style="background:var(--bg-secondary); border-top:1px solid var(--border); padding:52px 48px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <h2 style="font-family:var(--font-display); font-size:1.3rem; margin-bottom:6px;">
+      Trouvez un professionnel près de chez vous
+    </h2>
+    <p style="color:var(--text-500); font-size:.88rem; margin-bottom:24px;">
+      Réservez en ligne chez des milliers de professionnels dans votre ville.
+    </p>
+
+    <% [
+      { label: "Coiffeur",        activity: "coiffeur",            cities: ["paris", "lyon", "marseille", "toulouse", "bordeaux", "nantes"] },
+      { label: "Ostéopathe",      activity: "osteopathe",          cities: ["paris", "lyon", "marseille", "toulouse", "bordeaux", "montpellier"] },
+      { label: "Kiné",            activity: "kinesitherapeute",    cities: ["paris", "lyon", "marseille", "toulouse", "nantes", "bordeaux"] },
+      { label: "Médecin",         activity: "medecin-generaliste", cities: ["paris", "lyon", "marseille", "toulouse", "bordeaux", "lille"] },
+      { label: "Coach sportif",   activity: "coach-sportif",       cities: ["paris", "lyon", "marseille", "bordeaux", "nantes", "strasbourg"] },
+      { label: "Sophrologue",     activity: "sophrologue",         cities: ["paris", "lyon", "toulouse", "bordeaux", "nantes", "montpellier"] }
+    ].each do |group| %>
+      <div style="margin-bottom:18px;">
+        <div style="font-weight:600; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em;
+                    color:var(--green-800); margin-bottom:8px;"><%= group[:label] %></div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <% group[:cities].each do |city| %>
+            <%= link_to "#{group[:label]} #{city.capitalize}",
+                  seo_search_landing_path(activity_slug: group[:activity], city_slug: city),
+                  style: "font-size:.82rem; color:var(--text-600); background:white;
+                          border:1px solid var(--border); border-radius:99px;
+                          padding:4px 12px; text-decoration:none;
+                          transition:var(--transition);" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>

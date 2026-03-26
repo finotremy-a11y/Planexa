@@ -9,7 +9,14 @@ class Company::SettingsController < Company::BaseController
 
   def update
     @setting = @company.setting
+    previous_booking_mode = @setting.booking_mode
+
     if @setting.update(setting_params)
+      # Track public page activation (first time booking goes public)
+      if @setting.booking_public? && previous_booking_mode != "public"
+        track_event("activation_page_publique", company: @company)
+      end
+
       sensitive_fields = %w[
         slot_interval_minutes
         buffer_between_appointments_minutes

@@ -16,6 +16,7 @@ class Company::StatisticsController < Company::BaseController
     build_revenue_kpis(payments)
     build_chart_data(appointments, payments)
     build_rankings(appointments)
+    build_funnel_kpis
   end
 
   def export_csv
@@ -51,6 +52,15 @@ class Company::StatisticsController < Company::BaseController
   end
 
   private
+
+  def build_funnel_kpis
+    counts = AnalyticsEvent.funnel_for(@company, period: @period)
+    @funnel_fiches_vues      = counts.fetch("fiche_viewed",          0)
+    @funnel_bookings_started = counts.fetch("booking_started",       0)
+    @funnel_bookings_done    = counts.fetch("booking_completed",     0)
+    @funnel_annulations      = counts.fetch("annulation",            0)
+    @funnel_page_activations = counts.fetch("activation_page_publique", 0)
+  end
 
   def sanitize_period(raw)
     val = raw.to_i

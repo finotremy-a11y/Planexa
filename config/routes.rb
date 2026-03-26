@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get  "/confidentialite", to: "pages#confidentialite", as: :confidentialite
   get  "/mentions-legales", to: "pages#mentions_legales", as: :mentions_legales
   get  "/contact", to: "pages#contact", as: :contact
+  get  "/tarifs",  to: "pages#tarifs",  as: :tarifs
   post "/contact", to: "pages#send_contact", as: :send_contact
 
   # Prise de RDV publique

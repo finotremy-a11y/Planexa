@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_24_144000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_26_094128) do
   create_schema "auth"
   create_schema "extensions"
   create_schema "graphql"
@@ -55,6 +55,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_144000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "analytics_events", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.string "session_id"
+    t.jsonb "properties", default: {}, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["company_id"], name: "index_analytics_events_on_company_id"
+    t.index ["created_at"], name: "index_analytics_events_on_created_at"
+    t.index ["name", "company_id"], name: "index_analytics_events_on_name_and_company_id"
+    t.index ["name"], name: "index_analytics_events_on_name"
   end
 
   create_table "api_tokens", force: :cascade do |t|

@@ -1,7 +1,14 @@
 <% if local_assigns[:service_templates].present? && @service_type.new_record? %>
   <div class="card" style="max-width:600px; margin-bottom:16px;">
     <div class="card-header">
-      <h2 style="font-size:1.05rem;">Assistant de creation rapide</h2>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <h2 style="font-size:1.05rem; margin:0;">Assistant de creation rapide</h2>
+        <% if current_user.company.healthcare_professional? %>
+          <span class="badge badge-green">🩺 Modèles médicaux</span>
+        <% else %>
+          <span class="badge badge-grey">💼 Modèles généralistes</span>
+        <% end %>
+      </div>
     </div>
     <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
       <p style="margin:0; color:var(--text-500); font-size:0.84rem;">

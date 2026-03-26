@@ -22,7 +22,10 @@ class AppointmentsController < ApplicationController
     unless @setting.booking_public?
       redirect_to company_public_path(@company),
         alert: "Cette entreprise n'accepte pas les réservations en ligne."
+      return
     end
+
+    track_event("booking_started", company: @company)
   end
 
   def create
@@ -54,6 +57,10 @@ class AppointmentsController < ApplicationController
             .perform_later(@appointment.id)
         end
       end
+
+      track_event("booking_completed", company: @company,
+                  service_type_id: @appointment.service_type_id,
+                  requires_payment: @appointment.requires_payment?)
 
       if @appointment.requires_payment?
         redirect_to new_appointment_payment_path(@appointment)
