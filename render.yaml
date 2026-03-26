@@ -68,6 +68,64 @@ services:
       - key: RESEND_API_KEY
         sync: false
 
+  # ── Cron Jobs (scheduling via Render, pas de whenever ni solid_queue) ──────
+  - type: cron
+    name: planify-pro-cron-suspend-overdue
+    runtime: ruby
+    schedule: "0 6 * * *"   # Chaque jour à 6h00 UTC
+    buildCommand: bundle install
+    startCommand: bundle exec rails runner "SuspendOverdueCompaniesJob.perform_later"
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: planify-pro-redis
+          property: connectionString
+      - key: SECRET_KEY_BASE
+        generateValue: true
+
+  - type: cron
+    name: planify-pro-cron-trial-ending
+    runtime: ruby
+    schedule: "0 8 * * *"   # Chaque jour à 8h00 UTC
+    buildCommand: bundle install
+    startCommand: bundle exec rails runner "TrialEndingReminderJob.perform_later"
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: planify-pro-redis
+          property: connectionString
+      - key: SECRET_KEY_BASE
+        generateValue: true
+
+  - type: cron
+    name: planify-pro-cron-weekly-perf
+    runtime: ruby
+    schedule: "30 8 * * 1"  # Chaque lundi à 8h30 UTC
+    buildCommand: bundle install
+    startCommand: bundle exec rails runner "WeeklyCompanyPerformanceEmailJob.perform_later"
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: planify-pro-redis
+          property: connectionString
+      - key: SECRET_KEY_BASE
+        generateValue: true
+
   # ── Redis ─────────────────────────────────────────────────────────────────
   - type: redis
     name: planify-pro-redis

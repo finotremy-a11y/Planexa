@@ -1,20 +1,11 @@
-# examples:
-#   periodic_cleanup:
-#     class: CleanSoftDeletedRecordsJob
-#     queue: background
-#     args: [ 1000, { batch_size: 500 } ]
-#     schedule: every hour
-#   periodic_cleanup_with_command:
-#     command: "SoftDeletedRecord.due.delete_all"
-#     priority: 2
-#     schedule: at 5am every day
+# recurring.yml — Solid Queue recurring tasks
+# Non utilisé en production : le scheduling est géré par les Render Cron Jobs (voir render.yaml).
+# Les 3 jobs planifiés sont :
+#   - SuspendOverdueCompaniesJob  → chaque jour à 6h00
+#   - TrialEndingReminderJob      → chaque jour à 8h00
+#   - WeeklyCompanyPerformanceEmailJob → chaque lundi à 8h30
+#
+# En développement local, utiliser :
+#   bundle exec rails runner "SuspendOverdueCompaniesJob.perform_later"
 
-production:
-  clear_solid_queue_finished_jobs:
-    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
-    schedule: every hour at minute 12
-
-  weekly_company_performance_email:
-    class: WeeklyCompanyPerformanceEmailJob
-    queue: default
-    schedule: every monday at 8:30am
+production: {}
