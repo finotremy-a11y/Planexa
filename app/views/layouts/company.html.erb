@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -300,7 +300,7 @@
         <div class="sidebar-logo-icon">⚙</div>
         <div>
           <div class="sidebar-logo-text">Planify Pro</div>
-          <div class="sidebar-logo-sub">Espace entreprise</div>
+          <div class="sidebar-logo-sub"><%= t("company_layout.space") %></div>
         </div>
       </div>
 
@@ -308,62 +308,90 @@
       <div class="sidebar-company">
         <div class="sidebar-company-name"><%= @company.name %></div>
         <div class="sidebar-company-status">
-          <%= @company.trial_active? ? "Période d'essai" : "Abonnement actif" %>
+          <%= @company.trial_active? ? t("company_layout.trial") : t("company_layout.subscription_active") %>
         </div>
       </div>
       <% end %>
 
       <nav class="sidebar-nav">
-        <div class="sidebar-section-label">Principal</div>
+        <div class="sidebar-section-label"><%= t("company_layout.section_main") %></div>
 
         <%= link_to company_root_path,
               class: "sidebar-link #{current_page?(company_root_path) ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">◈</span>
-          Tableau de bord
+          <%= t("company_layout.dashboard") %>
         <% end %>
 
         <%= link_to company_appointments_path,
               class: "sidebar-link #{controller_name == 'appointments' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">📅</span>
-          Rendez-vous
+          <%= t("company_layout.appointments") %>
           <% unassigned = @company&.appointments&.pending&.unassigned&.count || 0 %>
           <% if unassigned > 0 %>
             <span class="sidebar-badge"><%= unassigned %></span>
           <% end %>
         <% end %>
 
-        <div class="sidebar-section-label" style="margin-top:12px">Équipe & Prestations</div>
+        <div class="sidebar-section-label" style="margin-top:12px"><%= t("company_layout.section_team") %></div>
 
         <%= link_to company_employees_path,
               class: "sidebar-link #{controller_name == 'employees' ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">👥</span>
-          Employés
+          <%= t("company_layout.employees") %>
         <% end %>
 
         <%= link_to company_service_types_path,
               class: "sidebar-link #{controller_name == 'service_types' ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">🔧</span>
-          Prestations
+          <%= t("company_layout.service_types") %>
         <% end %>
 
-        <div class="sidebar-section-label" style="margin-top:12px">Configuration</div>
+        <%= link_to company_reviews_path,
+              class: "sidebar-link #{controller_name == 'reviews' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">⭐</span>
+          <%= t("company_layout.reviews") %>
+        <% end %>
+
+          <%= link_to company_inactive_clients_path,
+            class: "sidebar-link #{controller_name == 'inactive_clients' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
+            <span class="sidebar-link-icon">📣</span>
+            <%= t("company_layout.inactive_clients") %>
+          <% end %>
+
+        <%= link_to company_waitlist_entries_path,
+              class: "sidebar-link #{controller_name == 'waitlist_entries' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">📋</span>
+          <%= t("company_layout.waitlist") %>
+          <% waitlist_pending = @company&.waitlist_entries&.pending&.count || 0 %>
+          <% if waitlist_pending > 0 %>
+            <span class="sidebar-badge"><%= waitlist_pending %></span>
+          <% end %>
+        <% end %>
+
+        <div class="sidebar-section-label" style="margin-top:12px"><%= t("company_layout.section_configuration") %></div>
 
         <%= link_to company_settings_path,
               class: "sidebar-link #{controller_name == 'settings' ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">⚙</span>
-          Réglages
+          <%= t("company_layout.settings") %>
         <% end %>
 
         <%= link_to company_subscription_path,
               class: "sidebar-link #{controller_name == 'subscriptions' ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">💳</span>
-          Abonnement
+          <%= t("company_layout.subscription") %>
+        <% end %>
+
+        <%= link_to company_invoices_path,
+              class: "sidebar-link #{controller_name == 'invoices' && controller_path.start_with?('company/') ? 'active' : ''}" do %>
+          <span class="sidebar-link-icon">🧾</span>
+          <%= t("company_layout.invoices") %>
         <% end %>
 
         <%= link_to company_profile_path,
               class: "sidebar-link #{controller_name == 'profiles' ? 'active' : ''}" do %>
           <span class="sidebar-link-icon">🏢</span>
-          Profil entreprise
+          <%= t("company_layout.company_profile") %>
         <% end %>
       </nav>
 
@@ -374,12 +402,12 @@
           </div>
           <div>
             <div class="sidebar-user-name"><%= current_user.full_name %></div>
-            <div class="sidebar-user-role">Administrateur</div>
+            <div class="sidebar-user-role"><%= t("company_layout.administrator") %></div>
           </div>
         </div>
         <%= link_to destroy_user_session_path, data: { turbo_method: :delete },
               class: "sidebar-signout" do %>
-          ↩ Déconnexion
+          ↩ <%= t("nav.sign_out") %>
         <% end %>
       </div>
     </aside>
@@ -388,16 +416,51 @@
     <div class="main-content">
       <header class="topbar">
         <div class="topbar-breadcrumb">
-          Planify Pro /
+          <%= t("company_layout.breadcrumb_prefix") %> /
           <strong><%= yield(:page_title) || controller_name.humanize %></strong>
         </div>
         <div class="topbar-actions">
-          <%= link_to company_appointments_path(q: { status_eq: 'pending' }),
-                class: "topbar-notification", title: "Rendez-vous en attente" do %>
-            🔔
+          <%= render "shared/locale_switcher" %>
+          <%# ── Cloche de notifications temps réel ── %>
+          <% if @company %>
+            <%= turbo_stream_from "company_#{@company.id}_notifications" %>
+            <div style="position:relative;" data-controller="notifications">
+              <button data-action="click->notifications#toggle"
+                      class="topbar-notification"
+                      title="<%= t('company_layout.notifications') %>"
+                      style="position:relative;">
+                🔔
+                <%= render "company/notifications/badge",
+                      count: @company.notifications.unread.count %>
+              </button>
+              <div data-notifications-target="dropdown"
+                   style="display:none; position:absolute; top:44px; right:0;
+                          width:320px; background:white; border:1px solid var(--border);
+                          border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
+                          z-index:300; overflow:hidden;">
+                <div style="padding:10px 14px; border-bottom:1px solid var(--border-light);
+                             display:flex; align-items:center; justify-content:space-between;">
+                  <strong style="font-size:0.875rem;"><%= t("company_layout.notifications") %></strong>
+                  <%= link_to t("company_layout.see_all"),
+                        company_notifications_path,
+                        style: "font-size:0.78rem; color:var(--green-700);" %>
+                </div>
+                <div id="notifications_list" style="max-height:320px; overflow-y:auto;">
+                  <% recent = @company.notifications.recent %>
+                  <% if recent.empty? %>
+                    <p style="padding:24px; text-align:center; color:var(--text-400);
+                               font-size:0.875rem; margin:0;"><%= t("company_layout.no_notifications") %></p>
+                  <% else %>
+                    <% recent.each do |n| %>
+                      <%= render "company/notifications/notification", notification: n %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
           <% end %>
           <%= link_to root_path, class: "btn btn-ghost btn-sm", target: "_blank" do %>
-            👁 Voir la fiche publique
+            👁 <%= t("company_layout.view_public_page") %>
           <% end %>
         </div>
       </header>

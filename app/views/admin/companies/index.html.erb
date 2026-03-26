@@ -1,24 +1,24 @@
-<% content_for :title, "Entreprises" %>
-<% content_for :page_title, "Entreprises" %>
+<% content_for :title, t("admin.companies_title") %>
+<% content_for :page_title, t("admin.companies_title") %>
 
 <div style="background:white; border-radius:10px; border:1px solid #e2e8f0;
             padding:16px 20px; margin-bottom:20px;">
   <%= search_form_for @q, url: admin_companies_path, method: :get do |f| %>
     <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
       <div class="form-group" style="margin:0; flex:1; min-width:200px;">
-        <%= f.label :name_cont, "Recherche", class: "form-label" %>
+        <%= f.label :name_cont, t("admin.search_label"), class: "form-label" %>
         <%= f.search_field :name_cont, class: "form-control",
-              placeholder: "Nom, ville..." %>
+              placeholder: t("admin.search_placeholder") %>
       </div>
       <div class="form-group" style="margin:0; min-width:140px;">
-        <%= f.label :status_eq, "Statut", class: "form-label" %>
+        <%= f.label :status_eq, t("common.status"), class: "form-label" %>
         <%= f.select :status_eq,
-              [["Tous", ""], ["Actif", "active"], ["Suspendu", "suspended"]],
+              [[t("admin.all_option"), ""], [t("admin.active_label"), "active"], [t("admin.suspended_label"), "suspended"]],
               {}, class: "form-control" %>
       </div>
       <div style="display:flex; gap:8px;">
-        <%= f.submit "Filtrer", class: "btn btn-primary btn-sm" %>
-        <%= link_to "Réinitialiser", admin_companies_path, class: "btn btn-ghost btn-sm" %>
+        <%= f.submit t("common.filter"), class: "btn btn-primary btn-sm" %>
+        <%= link_to t("common.reset"), admin_companies_path, class: "btn btn-ghost btn-sm" %>
       </div>
     </div>
   <% end %>
@@ -26,14 +26,14 @@
 
 <div class="admin-table-wrapper">
   <div class="admin-table-header">
-    <h3><%= @pagy.count %> entreprise<%= @pagy.count > 1 ? 's' : '' %></h3>
+    <h3><%= t("admin.company_count", count: @pagy.count) %></h3>
     <%= link_to "📥 Export CSV", admin_export_csv_path,
           style: "font-size:0.82rem; color:#2C5F2E;" %>
   </div>
   <table style="width:100%; border-collapse:collapse;">
     <thead>
       <tr style="background:#f8fafc;">
-        <% ["Entreprise", "SIRET", "Ville", "Abonnement", "RDV", "Statut", "Actions"].each do |header| %>
+        <% [t("admin.company_header"), t("common.siret"), t("admin.city_header"), t("admin.subscription_header"), t("admin.appointments_count_header"), t("common.status"), t("admin.actions_header")].each do |header| %>
           <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                      font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
                      color:#94a3b8; border-bottom:1px solid #e2e8f0;">
@@ -72,10 +72,10 @@
               bg, fg = colors[company.subscription.status] || ["#f1f5f9", "#94a3b8"] %>
               <span style="font-size:0.75rem; font-weight:500; padding:3px 8px;
                            border-radius:99px; background:<%= bg %>; color:<%= fg %>;">
-                <%= company.subscription.status.humanize %>
+                <%= t("statuses.#{company.subscription.status}", default: company.subscription.status.humanize) %>
               </span>
             <% else %>
-              <span style="font-size:0.75rem; color:#cbd5e1;">Aucun</span>
+              <span style="font-size:0.75rem; color:#cbd5e1;"><%= t("admin.no_subscription_row") %></span>
             <% end %>
           </td>
           <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
@@ -86,23 +86,23 @@
                          border-radius:99px;
                          background:<%= company.active? ? '#dcfce7' : '#fee2e2' %>;
                          color:<%= company.active? ? '#16a34a' : '#dc2626' %>;">
-              <%= company.active? ? "Actif" : "Suspendu" %>
+              <%= company.active? ? t("admin.active_label") : t("admin.suspended_label") %>
             </span>
           </td>
           <td style="padding:12px 16px;">
             <div style="display:flex; gap:6px; align-items:center;">
-              <%= link_to "Voir", admin_company_path(company),
+              <%= link_to t("common.view"), admin_company_path(company),
                     style: "font-size:0.78rem; color:#2C5F2E; font-weight:500;" %>
               <% if company.active? %>
-                · <%= button_to "Suspendre",
+                · <%= button_to t("admin.suspend_button"),
                       suspend_admin_company_path(company),
                       method: :patch,
                       style: "background:none; border:none; cursor:pointer;
                               font-size:0.78rem; color:#dc2626; padding:0;
                               font-family:var(--font-body);",
-                      data: { turbo_confirm: "Suspendre #{company.name} ?" } %>
+                      data: { turbo_confirm: t("admin.suspend_confirm") } %>
               <% else %>
-                · <%= button_to "Réactiver",
+                · <%= button_to t("admin.reactivate_button"),
                       reactivate_admin_company_path(company),
                       method: :patch,
                       style: "background:none; border:none; cursor:pointer;

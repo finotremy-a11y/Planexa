@@ -1,5 +1,5 @@
 <% content_for :title, @employee.full_name %>
-<% content_for :page_title, "Employé" %>
+<% content_for :page_title, t("employees.show_title") %>
 
 <div class="page-header">
   <div class="page-header-left">
@@ -7,8 +7,8 @@
     <p><%= @employee.email %></p>
   </div>
   <div class="page-header-actions">
-    <%= link_to "Modifier", edit_company_employee_path(@employee), class: "btn btn-secondary" %>
-    <%= link_to "← Retour", company_employees_path, class: "btn btn-ghost" %>
+    <%= link_to t("common.edit"), edit_company_employee_path(@employee), class: "btn btn-secondary" %>
+    <%= link_to t("common.back_to_list"), company_employees_path, class: "btn btn-ghost" %>
   </div>
 </div>
 
@@ -16,8 +16,8 @@
   <!-- Aptitudes -->
   <div class="card">
     <div class="card-header">
-      <h3 style="font-family:var(--font-display);">Aptitudes</h3>
-      <%= link_to "Gérer", company_employee_skills_path(@employee), class: "btn btn-ghost btn-sm" %>
+      <h3 style="font-family:var(--font-display);"><%= t("employees.skills") %></h3>
+      <%= link_to t("common.manage"), company_employee_skills_path(@employee), class: "btn btn-ghost btn-sm" %>
     </div>
     <div class="card-body">
       <% if @skills.any? %>
@@ -30,8 +30,8 @@
           <% end %>
         </div>
       <% else %>
-        <p style="color:var(--text-300); font-size:0.85rem;">Aucune aptitude assignée.</p>
-        <%= link_to "Ajouter des aptitudes →", company_employee_skills_path(@employee),
+        <p style="color:var(--text-300); font-size:0.85rem;"><%= t("employees.no_skills_assigned") %></p>
+        <%= link_to t("employees.add_skills"), company_employee_skills_path(@employee),
               style: "font-size:0.85rem; color:var(--green-700);" %>
       <% end %>
     </div>
@@ -40,11 +40,11 @@
   <!-- Horaires -->
   <div class="card">
     <div class="card-header">
-      <h3 style="font-family:var(--font-display);">Horaires</h3>
-      <%= link_to "Gérer", company_employee_schedules_path(@employee), class: "btn btn-ghost btn-sm" %>
+      <h3 style="font-family:var(--font-display);"><%= t("employees.schedules") %></h3>
+      <%= link_to t("common.manage"), company_employee_schedules_path(@employee), class: "btn btn-ghost btn-sm" %>
     </div>
     <div class="card-body">
-      <% day_names = %w[Dim Lun Mar Mer Jeu Ven Sam] %>
+      <% day_names = t("employees.day_names") %>
       <% if @schedules.any? %>
         <div style="display:flex; flex-direction:column; gap:8px;">
           <% @schedules.each do |s| %>
@@ -57,10 +57,44 @@
           <% end %>
         </div>
       <% else %>
-        <p style="color:var(--text-300); font-size:0.85rem;">Aucun horaire défini.</p>
-        <%= link_to "Définir les horaires →", company_employee_schedules_path(@employee),
+        <p style="color:var(--text-300); font-size:0.85rem;"><%= t("employees.no_schedules") %></p>
+        <%= link_to t("employees.set_schedules"), company_employee_schedules_path(@employee),
               style: "font-size:0.85rem; color:var(--green-700);" %>
       <% end %>
     </div>
+  </div>
+</div>
+
+<!-- Absences -->
+<div class="card" style="margin-top:24px;">
+  <div class="card-header">
+    <h3 style="font-family:var(--font-display);"><%= t("employees.absences") %></h3>
+    <%= link_to t("common.manage"), company_employee_employee_absences_path(@employee), class: "btn btn-ghost btn-sm" %>
+  </div>
+  <div class="card-body">
+    <% if @absences.any? %>
+      <% upcoming = @absences.select { |a| a.starts_at > Time.current }.first(3) %>
+      <% if upcoming.any? %>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <% upcoming.each do |absence| %>
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem;
+                        padding:8px 0; border-bottom:1px solid var(--border);">
+              <span style="font-weight:500; color:var(--gold-700);">
+                <%= absence.reason_label %>
+              </span>
+              <span style="color:var(--text-400);">
+                <%= absence.starts_at.strftime("%d/%m/%Y") %> → <%= absence.ends_at.strftime("%d/%m/%Y") %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p style="color:var(--text-300); font-size:0.85rem;"><%= t("employees.no_upcoming_absences") %></p>
+      <% end %>
+    <% else %>
+      <p style="color:var(--text-300); font-size:0.85rem;"><%= t("employees.no_absences") %></p>
+    <% end %>
+    <%= link_to t("employees.add_absence"), new_company_employee_employee_absence_path(@employee),
+          style: "font-size:0.85rem; color:var(--green-700); margin-top:8px; display:inline-block;" %>
   </div>
 </div>

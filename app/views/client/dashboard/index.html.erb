@@ -1,18 +1,21 @@
-<% content_for :title, "Mon espace" %>
+<% content_for :title, t("client_dashboard.title") %>
 
 <div style="max-width:900px; margin:40px auto; padding:0 24px;">
 
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:12px;">
     <div>
-      <h1 style="margin-bottom:4px;">Bonjour, <%= current_user.first_name %> 👋</h1>
-      <p style="color:var(--text-400); margin:0;">Gérez vos rendez-vous</p>
+      <h1 style="margin-bottom:4px;"><%= t("client_dashboard.greeting", name: current_user.first_name) %> 👋</h1>
+      <p style="color:var(--text-400); margin:0;"><%= t("client_dashboard.subtitle") %></p>
     </div>
-    <%= link_to "Trouver une entreprise", search_path, class: "btn btn-primary" %>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <%= link_to t("client_dashboard.find_business"), search_path, class: "btn btn-primary" %>
+      <%= link_to "🧾 #{t("client_dashboard.my_invoices")}", client_invoices_path, class: "btn btn-secondary" %>
+    </div>
   </div>
 
   <div class="card" style="margin-bottom:24px;">
     <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="font-family:var(--font-display); margin:0;">Prochains rendez-vous</h3>
+      <h3 style="font-family:var(--font-display); margin:0;"><%= t("client_dashboard.upcoming_appointments") %></h3>
       <%= link_to "Voir tout", client_appointments_path, class: "btn btn-secondary btn-sm" %>
     </div>
     <% if @upcoming_appointments.any? %>
@@ -39,17 +42,17 @@
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
               <% status_styles = { "pending" => "background:#fef3c7; color:#92400e;", "confirmed" => "background:#dcfce7; color:#14532d;" } %>
-              <% status_labels = { "pending" => "En attente", "confirmed" => "Confirmé" } %>
+              <% status_labels = { "pending" => t("statuses.pending"), "confirmed" => t("statuses.confirmed") } %>
               <span style="<%= status_styles[appt.status] || 'background:#f3f4f6; color:#374151;' %> padding:3px 10px; border-radius:99px; font-size:0.78rem; font-weight:600;">
                 <%= status_labels[appt.status] || appt.status %>
               </span>
               <% if appt.pending? || appt.confirmed? %>
-                <%= button_to "Annuler",
+                    <%= button_to t("common.cancel"),
                       cancel_client_appointment_path(appt),
                       method: :patch,
                       class: "btn btn-secondary btn-sm",
                       style: "color:#dc2626; border-color:#dc2626;",
-                      data: { turbo_confirm: "Confirmer l'annulation ?" } %>
+                      data: { turbo_confirm: t("client_dashboard.cancel_confirmation") } %>
               <% end %>
             </div>
           </div>
@@ -58,9 +61,9 @@
     <% else %>
       <div style="text-align:center; padding:48px;">
         <div style="font-size:3rem; margin-bottom:12px;">📭</div>
-        <h3>Aucun rendez-vous à venir</h3>
-        <p style="color:var(--text-400);">Trouvez un professionnel et prenez rendez-vous.</p>
-        <%= link_to "Rechercher →", search_path, class: "btn btn-primary", style: "margin-top:12px;" %>
+        <h3><%= t("client_dashboard.no_upcoming") %></h3>
+        <p style="color:var(--text-400);"><%= t("client_dashboard.empty_state_text") %></p>
+        <%= link_to t("client_dashboard.search_button"), search_path, class: "btn btn-primary", style: "margin-top:12px;" %>
       </div>
     <% end %>
   </div>
@@ -68,16 +71,16 @@
   <% if @past_appointments.any? %>
     <div class="card">
       <div style="padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-family:var(--font-display); margin:0;">Historique récent</h3>
+        <h3 style="font-family:var(--font-display); margin:0;"><%= t("client_dashboard.recent_history") %></h3>
         <%= link_to "Tout voir", client_appointments_path, class: "btn btn-secondary btn-sm" %>
       </div>
       <table style="width:100%; border-collapse:collapse;">
         <thead>
           <tr style="background:var(--surface-100);">
-            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Date</th>
-            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Prestation</th>
-            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Entreprise</th>
-            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">Statut</th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;"><%= t("client_dashboard.date_header") %></th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;"><%= t("client_dashboard.service_header") %></th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;"><%= t("client_dashboard.company_header") %></th>
+            <th style="padding:10px 24px; text-align:left; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;"><%= t("common.status") %></th>
           </tr>
         </thead>
         <tbody>
@@ -88,7 +91,7 @@
               <td style="padding:12px 24px;"><%= appt.company.name %></td>
               <td style="padding:12px 24px;">
                 <% past_styles = { "completed" => "background:#f3f4f6; color:#374151;", "cancelled" => "background:#fee2e2; color:#991b1b;" } %>
-                <% past_labels = { "completed" => "Terminé", "cancelled" => "Annulé" } %>
+                <% past_labels = { "completed" => t("statuses.completed"), "cancelled" => t("statuses.cancelled") } %>
                 <span style="<%= past_styles[appt.status] || 'background:#f3f4f6; color:#374151;' %> padding:3px 10px; border-radius:99px; font-size:0.78rem; font-weight:600;">
                   <%= past_labels[appt.status] || appt.status %>
                 </span>

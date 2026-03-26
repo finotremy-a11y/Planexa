@@ -1,0 +1,12 @@
+<div style="display:flex; align-items:center; gap:6px;">
+  <span style="font-size:0.78rem; color:var(--text-400);"><%= t("locales.language") %></span>
+  <% LocaleSwitcher::SUPPORTED_LOCALES.each do |locale_code| %>
+    <% active = I18n.locale.to_s == locale_code %>
+    <%= button_to locale_path(locale: locale_code),
+          method: :patch,
+          data: { turbo: false },
+          style: "padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:600; border:1px solid var(--border); cursor:pointer; #{active ? 'background:var(--green-800); color:white; border-color:var(--green-800);' : 'background:white; color:var(--text-600);'}" do %>
+      <%= locale_badge(locale_code) %>
+    <% end %>
+  <% end %>
+</div>

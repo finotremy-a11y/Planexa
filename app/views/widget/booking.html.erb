@@ -1,0 +1,81 @@
+<div style="padding:8px 0 20px;">
+  <h2 style="margin:0 0 4px; font-size:1.2rem;">
+    Réservation en ligne
+  </h2>
+  <p style="margin:0; color:#6b7280; font-size:0.9rem;">
+    <strong><%= @company.name %></strong>
+  </p>
+</div>
+
+<%= form_with model: @booking_group,
+              url: widget_booking_create_path(company_token: @company.widget_token),
+              local: true do |f| %>
+
+  <% if @errors&.any? %>
+    <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:6px;
+                padding:10px 14px; margin-bottom:16px; color:#dc2626; font-size:0.875rem;">
+      <% @errors.each do |msg| %>
+        <div>&bull; <%= msg %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%# ── Prestations ── %>
+  <div style="margin-bottom:16px;">
+    <label style="display:block; font-weight:600; margin-bottom:8px; font-size:0.875rem;">
+      Prestations <span style="color:#6b7280; font-weight:400;">(min. 2)</span>
+    </label>
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <% @service_types.each do |st| %>
+        <label style="display:flex; align-items:center; justify-content:space-between;
+                       padding:10px 12px; border:1.5px solid #e5e7eb;
+                       border-radius:6px; cursor:pointer; font-size:0.875rem;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <%= check_box_tag "booking_group[service_type_ids][]", st.id, false,
+                  id: "widget_st_#{st.id}" %>
+            <div>
+              <div style="font-weight:500;"><%= st.name %></div>
+              <div style="color:#9ca3af; font-size:0.78rem;">⏱ <%= st.duration_minutes %> min</div>
+            </div>
+          </div>
+          <% if st.price_cents > 0 %>
+            <span style="font-weight:600; color:#065f46; font-size:0.875rem;">
+              <%= number_to_currency(st.price_cents / 100.0, unit: "€", separator: ",",
+                    delimiter: " ", format: "%n %u") %>
+            </span>
+          <% end %>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Date et heure ── %>
+  <div style="margin-bottom:16px;">
+    <%= f.label :scheduled_at, "Date et heure",
+          style: "display:block; font-weight:600; margin-bottom:6px; font-size:0.875rem;" %>
+    <%= f.datetime_local_field :scheduled_at,
+          style: "width:100%; padding:8px 10px; border:1.5px solid #e5e7eb; border-radius:6px;
+                  font-size:0.875rem; box-sizing:border-box;",
+          min: Time.current.strftime("%Y-%m-%dT%H:%M") %>
+  </div>
+
+  <%# ── Message optionnel ── %>
+  <div style="margin-bottom:20px;">
+    <%= f.label :client_notes, "Message (optionnel)",
+          style: "display:block; font-weight:600; margin-bottom:6px; font-size:0.875rem;" %>
+    <%= f.text_area :client_notes,
+          rows: 2,
+          style: "width:100%; padding:8px 10px; border:1.5px solid #e5e7eb; border-radius:6px;
+                  font-size:0.875rem; box-sizing:border-box; resize:vertical;",
+          placeholder: "Informations complémentaires..." %>
+  </div>
+
+  <%= f.submit "Confirmer la réservation",
+        style: "width:100%; padding:10px; background:#16a34a; color:#fff; font-weight:600;
+                border:none; border-radius:6px; cursor:pointer; font-size:0.9rem;" %>
+<% end %>
+
+<p style="text-align:center; margin-top:14px; font-size:0.72rem; color:#9ca3af;">
+  Propulsé par <a href="https://planifypro.app" target="_blank"
+    style="color:#6b7280; text-decoration:none;">PlanifyPro</a>
+</p>

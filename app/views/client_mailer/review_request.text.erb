@@ -1,0 +1,14 @@
+Bonjour <%= @client.first_name %>,
+
+Votre rendez-vous avec <%= @company.name %> est terminé.
+
+Prestation : <%= @appointment.service_type.name %>
+Date       : <%= @appointment.scheduled_at.strftime("%A %d %B %Y") %>
+
+Laissez votre avis en cliquant sur ce lien :
+<%= review_url(@review.token) %>
+
+Ce lien expire le <%= @review.expires_at.strftime("%d/%m/%Y") %>.
+
+Merci,
+L'équipe Planify Pro

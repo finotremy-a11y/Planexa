@@ -1,14 +1,14 @@
-<% content_for :title, "Prestations" %>
-<% content_for :page_title, "Prestations" %>
+<% content_for :title, t("services.title") %>
+<% content_for :page_title, t("services.title") %>
 
 <div class="page-header">
   <div class="page-header-left">
-    <h1>Prestations</h1>
-    <p><%= @service_types.count %> prestation<%= @service_types.count != 1 ? 's' : '' %> configurée<%= @service_types.count != 1 ? 's' : '' %></p>
+    <h1><%= t("services.title") %></h1>
+    <p><%= pluralize(@service_types.count, t("services.count_one"), t("services.count_other")) %></p>
   </div>
   <div class="page-header-actions">
     <%= link_to new_company_service_type_path, class: "btn btn-primary" do %>
-      + Ajouter une prestation
+      <%= t("services.add_button") %>
     <% end %>
   </div>
 </div>
@@ -18,12 +18,13 @@
     <table>
       <thead>
         <tr>
-          <th>Nom</th>
-          <th>Durée</th>
-          <th>Prix</th>
-          <th>Employés qualifiés</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <th><%= t("common.name") %></th>
+          <th><%= t("common.duration") %></th>
+          <th><%= t("common.price") %></th>
+          <th>Acompte</th>
+          <th><%= t("services.qualified_employees") %></th>
+          <th><%= t("common.status") %></th>
+          <th><%= t("common.actions") %></th>
         </tr>
       </thead>
       <tbody>
@@ -42,21 +43,34 @@
               <%= number_to_currency(st.price_cents / 100.0, unit:"€", separator:",", delimiter:" ", format:"%n %u") %>
             </td>
             <td>
+              <% if st.deposit_required? %>
+                <span class="badge badge-gold">
+                  <% if st.deposit_fixed_cents? %>
+                    <%= number_to_currency(st.deposit_amount_cents / 100.0, unit:"€", separator:",", delimiter:" ", format:"%n %u") %>
+                  <% else %>
+                    <%= st.deposit_value %>%
+                  <% end %>
+                </span>
+              <% else %>
+                <span class="badge badge-grey">Aucun</span>
+              <% end %>
+            </td>
+            <td>
               <span class="badge badge-grey">
-                <%= st.qualified_employees.count %> employé<%= st.qualified_employees.count != 1 ? 's' : '' %>
+                <%= pluralize(st.qualified_employees.count, t("services.employee_one"), t("services.employee_other")) %>
               </span>
             </td>
             <td>
               <% if st.active? %>
-                <span class="badge badge-green">Active</span>
+                <span class="badge badge-green"><%= t("services.active") %></span>
               <% else %>
-                <span class="badge badge-red">Inactive</span>
+                <span class="badge badge-red"><%= t("services.inactive") %></span>
               <% end %>
             </td>
             <td>
               <div style="display:flex; gap:6px;">
-                <%= link_to "Modifier", edit_company_service_type_path(st), class: "btn btn-ghost btn-sm" %>
-                <%= link_to st.active? ? "Désactiver" : "Activer",
+                <%= link_to t("common.edit"), edit_company_service_type_path(st), class: "btn btn-ghost btn-sm" %>
+                    <%= link_to st.active? ? t("common.deactivate") : t("common.activate"),
                       toggle_active_company_service_type_path(st),
                       data: { turbo_method: :patch },
                       class: "btn btn-ghost btn-sm" %>
@@ -71,9 +85,9 @@
   <div class="card">
     <div class="empty-state">
       <div class="empty-state-icon">🔧</div>
-      <h3>Aucune prestation</h3>
-      <p>Définissez vos types de services pour que les clients puissent réserver.</p>
-      <%= link_to "+ Créer une prestation", new_company_service_type_path,
+      <h3><%= t("services.empty_state") %></h3>
+      <p><%= t("services.empty_state_text") %></p>
+      <%= link_to t("services.create_first"), new_company_service_type_path,
             class: "btn btn-primary", style: "margin-top:16px;" %>
     </div>
   </div>

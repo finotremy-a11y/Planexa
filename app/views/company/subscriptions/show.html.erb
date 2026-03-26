@@ -1,64 +1,64 @@
-<% content_for :title, "Mon abonnement" %>
-<% content_for :page_title, "Mon abonnement" %>
+<% content_for :title, t("subscriptions.title") %>
+<% content_for :page_title, t("subscriptions.title") %>
 
 <div class="card" style="max-width:640px; margin:0 auto;">
   <% if params[:success] %>
     <div class="flash flash-success" style="margin-bottom:24px;">
-      🎉 Votre abonnement est activé — bienvenue sur Planify Pro !
+      🎉 <%= t("subscriptions.success_message") %>
     </div>
   <% end %>
   <% if params[:canceled] %>
     <div class="flash flash-warning" style="margin-bottom:24px;">
-      La procédure de paiement a été annulée. Vous pouvez réessayer à tout moment.
+      <%= t("subscriptions.cancelled_message") %>
     </div>
   <% end %>
 
   <% if @subscription&.active? %>
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
-      <span class="badge badge-success" style="font-size:1rem;">Actif</span>
-      <h2 style="margin:0;">Abonnement Planify Pro</h2>
+      <span class="badge badge-success" style="font-size:1rem;"><%= t("statuses.active") %></span>
+      <h2 style="margin:0;"><%= t("subscriptions.plan_name") %></h2>
     </div>
 
     <dl style="display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; margin-bottom:32px;">
-      <dt style="color:var(--text-400); font-size:0.85rem;">Plan</dt>
-      <dd>Pro — 49 € / mois</dd>
+      <dt style="color:var(--text-400); font-size:0.85rem;"><%= t("subscriptions.plan") %></dt>
+      <dd><%= t("subscriptions.pro_plan") %></dd>
 
       <% if @subscription.trial_ends_at&.future? %>
-        <dt style="color:var(--text-400); font-size:0.85rem;">Fin d'essai</dt>
+        <dt style="color:var(--text-400); font-size:0.85rem;"><%= t("subscriptions.trial_ends") %></dt>
         <dd><%= @subscription.trial_ends_at.strftime("%d/%m/%Y") %></dd>
       <% end %>
 
       <% if @subscription.current_period_end.present? %>
-        <dt style="color:var(--text-400); font-size:0.85rem;">Prochain prélèvement</dt>
+        <dt style="color:var(--text-400); font-size:0.85rem;"><%= t("subscriptions.next_billing") %></dt>
         <dd><%= @subscription.current_period_end.strftime("%d/%m/%Y") %></dd>
       <% end %>
     </dl>
 
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
-      <%= button_to "Gérer mon abonnement (portail Stripe)", portal_company_subscription_path,
+      <%= button_to t("subscriptions.manage_button"), portal_company_subscription_path,
             method: :post,
             class: "btn btn-secondary",
             data: { turbo: false } %>
 
-      <%= button_to "Annuler l'abonnement", company_subscription_path,
-            method: :delete,
-            class: "btn btn-danger btn-sm",
-            data: { turbo_confirm: "Confirmer l'annulation ? Votre accès restera actif jusqu'à la fin de la période." } %>
+      <%= button_to t("subscriptions.cancel_button"), company_subscription_path,
+        method: :delete,
+        class: "btn btn-danger btn-sm",
+        data: { turbo_confirm: t("subscriptions.cancel_confirmation") } %>
     </div>
 
   <% elsif @subscription&.trialing? %>
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
-      <span class="badge badge-info" style="font-size:1rem;">Période d'essai</span>
-      <h2 style="margin:0;">Abonnement Planify Pro</h2>
+      <span class="badge badge-info" style="font-size:1rem;"><%= t("subscriptions.trial_period") %></span>
+      <h2 style="margin:0;"><%= t("subscriptions.plan_name") %></h2>
     </div>
 
     <p>
-      Votre essai gratuit se termine le
+      <%= t("subscriptions.trial_ending") %>
       <strong><%= @subscription.trial_ends_at&.strftime("%d/%m/%Y") %></strong>.
-      Abonnez-vous maintenant pour ne pas perdre l'accès.
+      <%= t("subscriptions.trial_ending_cta") %>
     </p>
 
-    <%= button_to "Activer l'abonnement — 49 €/mois", company_subscription_path,
+    <%= button_to t("subscriptions.activate_button"), company_subscription_path,
           method: :post,
           class: "btn btn-primary",
           data: { turbo: false } %>
@@ -66,11 +66,11 @@
   <% else %>
     <div style="text-align:center; padding:32px 0;">
       <div style="font-size:3rem; margin-bottom:16px;">🔒</div>
-      <h2 style="margin-bottom:8px;">Aucun abonnement actif</h2>
+      <h2 style="margin-bottom:8px;"><%= t("subscriptions.no_active") %></h2>
       <p style="color:var(--text-500); margin-bottom:32px;">
-        Abonnez-vous pour accéder à toutes les fonctionnalités.
+        <%= t("subscriptions.empty_state_text") %>
       </p>
-      <%= button_to "Commencer — 14 jours gratuits", company_subscription_path,
+      <%= button_to t("subscriptions.start_button"), company_subscription_path,
             method: :post,
             class: "btn btn-primary btn-lg",
             data: { turbo: false } %>

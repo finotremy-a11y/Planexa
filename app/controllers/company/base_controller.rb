@@ -16,4 +16,8 @@ class Company::BaseController < ApplicationController
       redirect_to new_company_onboarding_path, notice: "Complétez d'abord votre profil entreprise."
     end
   end
+
+  def render_not_found
+    render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
+  end
 end

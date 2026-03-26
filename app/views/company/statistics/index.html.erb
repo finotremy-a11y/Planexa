@@ -1,0 +1,182 @@
+<% content_for :title, t("statistics.title") %>
+<% content_for :page_title, t("statistics.title") %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1><%= t("statistics.full_title") %></h1>
+    <p><%= t("statistics.full_title") %> — <%= @period %> <%= t("statistics.period_label") %></p>
+  </div>
+  <div class="page-header-actions" style="display:flex; gap:12px; align-items:center;">
+    <%# Sélecteur de période %>
+    <% [7, 30, 90].each do |p| %>
+      <%= link_to "#{p}j",
+            company_statistics_path(period: p),
+            class: "btn #{@period == p ? 'btn-primary' : 'btn-secondary'} btn-sm" %>
+    <% end %>
+    <%= link_to "⬇ #{t("statistics.export_csv")}",
+          company_export_statistics_csv_path(period: @period),
+          class: "btn btn-ghost btn-sm" %>
+  </div>
+</div>
+
+<%# ── KPI Cards ─────────────────────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:32px;">
+  <div class="stat-card green">
+    <div class="stat-icon green">📅</div>
+    <div class="stat-value"><%= @total_appointments %></div>
+    <div class="stat-label"><%= t("statistics.total_appointments") %></div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon green">💶</div>
+    <div class="stat-value">
+      <%= number_to_currency(@total_revenue_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+    </div>
+    <div class="stat-label"><%= t("statistics.revenue") %></div>
+  </div>
+  <div class="stat-card gold">
+    <div class="stat-icon gold">🛒</div>
+    <div class="stat-value">
+      <%= number_to_currency(@avg_basket_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+    </div>
+    <div class="stat-label"><%= t("statistics.avg_basket") %></div>
+  </div>
+  <div class="stat-card <%= @no_show_rate > 15 ? 'red' : 'brown' %>">
+    <div class="stat-icon <%= @no_show_rate > 15 ? 'red' : 'brown' %>">🚫</div>
+    <div class="stat-value"><%= @no_show_rate %>%</div>
+    <div class="stat-label"><%= t("statistics.no_show_rate") %></div>
+  </div>
+</div>
+
+<%# ── Statuts RDV ├─── %>
+<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:32px;">
+  <div style="background:var(--bg-secondary); border-radius:10px; padding:16px; text-align:center;">
+    <div style="font-size:1.4rem; font-weight:700; color:var(--green-700);"><%= @completed_count %></div>
+    <div style="font-size:0.8rem; color:var(--text-400); margin-top:4px;"><%= t("statistics.completed") %></div>
+  </div>
+  <div style="background:var(--bg-secondary); border-radius:10px; padding:16px; text-align:center;">
+    <div style="font-size:1.4rem; font-weight:700; color:var(--blue-600);"><%= @confirmed_count %></div>
+    <div style="font-size:0.8rem; color:var(--text-400); margin-top:4px;"><%= t("statistics.confirmed") %></div>
+  </div>
+  <div style="background:var(--bg-secondary); border-radius:10px; padding:16px; text-align:center;">
+    <div style="font-size:1.4rem; font-weight:700; color:var(--text-400);"><%= @cancelled_count %></div>
+    <div style="font-size:0.8rem; color:var(--text-400); margin-top:4px;"><%= t("statistics.cancelled_label") %></div>
+  </div>
+  <div style="background:var(--bg-secondary); border-radius:10px; padding:16px; text-align:center;">
+    <div style="font-size:1.4rem; font-weight:700; color:var(--red-600);"><%= @no_show_count %></div>
+    <div style="font-size:0.8rem; color:var(--text-400); margin-top:4px;"><%= t("statistics.no_show") %></div>
+  </div>
+</div>
+
+<%# ── Graphiques ─────────────────────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:32px;">
+
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);"><%= t("statistics.appointments_by_day") %></h3>
+    </div>
+    <div style="padding:20px;">
+      <%= line_chart @appointments_by_day,
+            label: t("statistics.appointments_short"),
+            colors: ["#16a34a"],
+            height: "220px",
+            dataset: { tension: 0.3, fill: true, backgroundColor: "rgba(22,163,74,0.08)" } %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);"><%= t("statistics.revenue_label") %></h3>
+    </div>
+    <div style="padding:20px;">
+      <%= bar_chart @revenue_by_period,
+            label: t("statistics.revenue_label_currency"),
+            colors: ["#2563eb"],
+            height: "220px",
+            thousands: " ",
+            decimal: "," %>
+    </div>
+  </div>
+
+</div>
+
+<%# ── Classements ─────────────────────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:32px;">
+
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);"><%= t("statistics.top_services") %></h3>
+    </div>
+    <% if @top_services.any? %>
+      <% max_count = @top_services.values.first.to_f %>
+      <div style="padding:12px 20px;">
+        <% @top_services.each_with_index do |(name, count), i| %>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 0;
+                      <%= i < @top_services.size - 1 ? 'border-bottom:1px solid var(--border);' : '' %>">
+            <span style="font-size:0.82rem; color:var(--text-300); min-width:18px; text-align:right;">
+              <%= i + 1 %>
+            </span>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span style="font-size:0.88rem; font-weight:500;"><%= name %></span>
+                <span style="font-size:0.82rem; color:var(--text-400);"><%= count %> <%= t("statistics.appointments_short") %></span>
+              </div>
+              <div style="background:var(--border); border-radius:4px; height:6px;">
+                <div style="background:var(--green-600); border-radius:4px; height:6px;
+                            width:<%= (count / max_count * 100).round %>%;"></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div style="padding:24px; color:var(--text-300); text-align:center;"><%= t("statistics.no_data") %></div>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);"><%= t("statistics.top_employees") %></h3>
+    </div>
+    <% if @top_employees.any? %>
+      <% max_emp = @top_employees.values.first.to_f %>
+      <div style="padding:12px 20px;">
+        <% @top_employees.each_with_index do |(name, count), i| %>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px 0;
+                      <%= i < @top_employees.size - 1 ? 'border-bottom:1px solid var(--border);' : '' %>">
+            <span style="font-size:0.82rem; color:var(--text-300); min-width:18px; text-align:right;">
+              <%= i + 1 %>
+            </span>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span style="font-size:0.88rem; font-weight:500;"><%= name %></span>
+                <span style="font-size:0.82rem; color:var(--text-400);"><%= count %> <%= t("statistics.appointments_short") %></span>
+              </div>
+              <div style="background:var(--border); border-radius:4px; height:6px;">
+                <div style="background:var(--blue-500); border-radius:4px; height:6px;
+                            width:<%= (count / max_emp * 100).round %>%;"></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div style="padding:24px; color:var(--text-300); text-align:center;">
+        <%= t("statistics.no_employees_assigned") %>
+      </div>
+    <% end %>
+  </div>
+
+</div>
+
+<%# ── Clients ─────────────────────────────────────────────────────────── %>
+<div class="card" style="margin-bottom:32px;">
+  <div class="card-header">
+    <h3 style="font-family:var(--font-display);"><%= t("statistics.unique_clients") %></h3>
+  </div>
+  <div style="padding:20px; display:flex; gap:32px; align-items:center;">
+    <div style="text-align:center;">
+      <div style="font-size:2rem; font-weight:700; color:var(--green-700);"><%= @unique_clients_count %></div>
+      <div style="font-size:0.82rem; color:var(--text-400);"><%= t("statistics.unique_clients_label") %></div>
+    </div>
+  </div>
+</div>

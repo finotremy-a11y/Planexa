@@ -49,6 +49,34 @@ class Client::AppointmentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "GET show affiche un CTA de rebooking pour un rendez-vous termine" do
+    appointment = create(:appointment,
+      company: @company,
+      service_type: @service,
+      client_user: @client,
+      status: :completed)
+
+    get client_appointment_path(appointment)
+
+    assert_response :success
+    assert_includes response.body, "Reprendre un rendez-vous similaire"
+    assert_includes response.body, "company_id=#{@company.id}"
+    assert_includes response.body, "service_type_id=#{@service.id}"
+  end
+
+  test "GET show n'affiche pas le CTA de rebooking si le rendez-vous n'est pas termine" do
+    appointment = create(:appointment,
+      company: @company,
+      service_type: @service,
+      client_user: @client,
+      status: :confirmed)
+
+    get client_appointment_path(appointment)
+
+    assert_response :success
+    assert_not_includes response.body, "Reprendre un rendez-vous similaire"
+  end
+
   # — Cancel (destroy) —
   test "DELETE destroy annule un RDV pending" do
     appointment = create(:appointment,
@@ -88,9 +116,15 @@ class Client::AppointmentsControllerTest < ActionDispatch::IntegrationTest
       service_type: @service,
       client_user:  @client,
       status:       :pending)
-    assert_emails 1 do
+
+    original_adapter = ActiveJob::Base.queue_adapter
+    ActiveJob::Base.queue_adapter = :test
+
+    assert_enqueued_emails 1 do
       delete client_appointment_path(appointment)
     end
+  ensure
+    ActiveJob::Base.queue_adapter = original_adapter
   end
 
   test "DELETE destroy autre client — 404" do

@@ -1,0 +1,65 @@
+<% content_for :title, "Réservation confirmée" %>
+
+<div style="max-width:680px; margin:40px auto; padding:0 24px;">
+  <div class="card">
+    <div class="card-body" style="text-align:center; padding:40px 24px;">
+      <div style="font-size:48px; margin-bottom:16px;">✅</div>
+      <h1 style="font-family:var(--font-display); margin-bottom:8px;">
+        Réservation confirmée !
+      </h1>
+      <p style="color:var(--text-500); margin-bottom:24px;">
+        Vos <%= @booking_group.appointments.count %> prestations chez
+        <strong><%= @company.name %></strong> sont bien enregistrées.
+      </p>
+
+      <div style="text-align:left; margin:0 auto; max-width:440px;">
+        <% current_time = nil %>
+        <% @booking_group.appointments.order(:scheduled_at).each_with_index do |appt, idx| %>
+          <div style="display:flex; gap:12px; padding:12px 0;
+                      <%= 'border-bottom:1px solid var(--border);' unless idx == @booking_group.appointments.size - 1 %>">
+            <div style="width:28px; height:28px; border-radius:50%; background:var(--green-100);
+                        color:var(--green-700); display:flex; align-items:center;
+                        justify-content:center; font-weight:600; font-size:14px; flex-shrink:0;">
+              <%= idx + 1 %>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:500;"><%= appt.service_type.name %></div>
+              <div style="font-size:0.82rem; color:var(--text-400);">
+                <%= appt.scheduled_at.strftime("%A %d %B %Y à %Hh%M") %>
+                &mdash; <%= appt.duration_minutes %> min
+                <% if appt.employee %>
+                  &mdash; avec <%= appt.employee.first_name %>
+                <% end %>
+              </div>
+            </div>
+            <% if appt.service_type.price_cents > 0 %>
+              <div style="font-weight:600; color:var(--green-800); white-space:nowrap;">
+                <%= number_to_currency(appt.service_type.price_cents / 100.0, unit: "€",
+                      separator: ",", format: "%n %u") %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if @booking_group.total_amount_cents > 0 %>
+          <div style="display:flex; justify-content:space-between; padding-top:16px;
+                      border-top:2px solid var(--border); margin-top:8px; font-weight:600;">
+            <span>Total</span>
+            <span style="color:var(--green-800);">
+              <%= number_to_currency(@booking_group.total_amount_cents / 100.0, unit: "€",
+                    separator: ",", format: "%n %u") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div style="padding:16px 24px; border-top:1px solid var(--border);
+                display:flex; justify-content:center; gap:12px;">
+      <% if user_signed_in? %>
+        <%= link_to "Mes rendez-vous", client_appointments_path, class: "btn btn-primary" %>
+      <% end %>
+      <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>

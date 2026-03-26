@@ -60,6 +60,42 @@ class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "PATCH update en mode professionnel de sante persiste les champs specifiques" do
+    patch company_profile_path, params: {
+      company: {
+        professional_category: "healthcare_professional",
+        health_specialty: "Medecin generaliste",
+        convention_sector: "sector_1",
+        teleconsultation_enabled: "1",
+        accessibility_info: "Acces PMR et ascenseur",
+        practical_info: "Se presenter 10 minutes avant la consultation",
+        cancellation_policy: "Annulation gratuite jusqu'a 24h"
+      }
+    }
+
+    assert_redirected_to company_profile_path
+    assert @company.reload.healthcare_professional?
+    assert_equal "Medecin generaliste", @company.health_specialty
+    assert_equal "sector_1", @company.convention_sector
+    assert @company.teleconsultation_enabled?
+    assert_equal "Acces PMR et ascenseur", @company.accessibility_info
+    assert_equal "Se presenter 10 minutes avant la consultation", @company.practical_info
+    assert_equal "Annulation gratuite jusqu'a 24h", @company.cancellation_policy
+  end
+
+  test "PATCH update refuse un profil sante sans specialite" do
+    patch company_profile_path, params: {
+      company: {
+        professional_category: "healthcare_professional",
+        health_specialty: "",
+        convention_sector: "sector_2"
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Specialite"
+  end
+
   test "PATCH update ne peut pas modifier le profil d'une autre entreprise" do
     other_user    = create(:user, :company_admin)
     other_company = create(:company, user: other_user, name: "Autre Entreprise")

@@ -1,0 +1,56 @@
+<% content_for :title, "Mes factures" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Mes factures</h1>
+    <p>Retrouvez toutes vos factures de rendez-vous</p>
+  </div>
+</div>
+
+<% if @invoices.any? %>
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <% @invoices.each do |invoice| %>
+      <div class="card">
+        <div style="padding:20px 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+            <div>
+              <div style="font-weight:600; font-size:0.95rem;"><%= invoice.invoice_number %></div>
+              <div style="font-size:0.82rem; color:var(--text-400); margin-top:2px;">
+                <%= invoice.company.name %>
+                — <%= invoice.issued_at.strftime("%d/%m/%Y") %>
+              </div>
+              <% if invoice.payment&.appointment %>
+                <div style="font-size:0.82rem; color:var(--text-400);">
+                  RDV du <%= invoice.payment.appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %>
+                  — <%= invoice.payment.appointment.service_type&.name %>
+                </div>
+              <% end %>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.1rem; font-weight:700; color:var(--green-700);">
+                <%= number_to_currency(invoice.total_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </div>
+              <div style="font-size:0.78rem; color:var(--text-400);">
+                dont TVA : <%= number_to_currency(invoice.tax_amount_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; padding-top:12px; border-top:1px solid var(--border);">
+            <%= link_to "Voir", client_invoice_path(invoice), class: "btn btn-secondary btn-sm" %>
+            <% if invoice.pdf.attached? %>
+              <%= link_to "⬇ PDF", download_client_invoice_path(invoice), class: "btn btn-ghost btn-sm" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card" style="padding:48px; text-align:center;">
+    <p style="color:var(--text-300); font-size:1rem;">
+      Aucune facture pour le moment.<br>
+      <small>Vos factures apparaîtront ici après chaque paiement confirmé.</small>
+    </p>
+  </div>
+<% end %>

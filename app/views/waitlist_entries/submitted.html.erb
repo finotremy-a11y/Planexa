@@ -1,0 +1,18 @@
+<% content_for :title, "Inscription en liste d'attente confirmée" %>
+
+<div style="max-width:520px; margin:80px auto; padding:0 24px; text-align:center;">
+  <div class="card">
+    <div style="padding:48px 32px;">
+      <div style="font-size:3rem; margin-bottom:16px;">📋</div>
+      <h1 style="font-family:var(--font-display); font-size:1.8rem; margin-bottom:12px;">
+        Inscription confirmée !
+      </h1>
+      <p style="color:var(--text-500); line-height:1.7; margin-bottom:28px;">
+        Vous êtes maintenant inscrit(e) en liste d'attente.
+        Vous recevrez un e-mail dès qu'un créneau se libère.
+        Vous aurez alors <strong>24 heures</strong> pour confirmer.
+      </p>
+      <%= link_to "Retour à l'accueil", root_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>

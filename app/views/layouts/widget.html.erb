@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Réservation en ligne</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", media: "all" %>
+  </head>
+  <body class="planify-widget" style="margin:0; padding:0; background:#fff;">
+    <div style="max-width:640px; margin:0 auto; padding:16px;">
+      <%= yield %>
+    </div>
+  </body>
+</html>

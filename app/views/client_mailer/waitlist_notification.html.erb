@@ -1,0 +1,44 @@
+<h1>Un créneau s'est libéré ! 🎉</h1>
+
+<p>Bonjour <%= @entry.contact_name %>,</p>
+
+<p>
+  Bonne nouvelle ! Un créneau s'est libéré chez <strong><%= @company.name %></strong>
+  pour la prestation <strong><%= @service.name %></strong>.
+</p>
+
+<% if @appointment %>
+<div class="info-box">
+  <div class="info-row">
+    <span class="info-label">Entreprise</span>
+    <span class="info-value"><%= @company.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Prestation</span>
+    <span class="info-value"><%= @service.name %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Créneau libéré</span>
+    <span class="info-value"><%= @appointment.scheduled_at.strftime("%A %d %B %Y à %Hh%M") %></span>
+  </div>
+  <div class="info-row">
+    <span class="info-label">Durée</span>
+    <span class="info-value"><%= @appointment.duration_minutes %> minutes</span>
+  </div>
+</div>
+<% end %>
+
+<p style="margin-top:24px;">
+  Vous étiez inscrit(e) en liste d'attente. Réservez dès maintenant avant que ce créneau ne soit pris !
+</p>
+
+<div style="text-align:center; margin:32px 0;">
+  <%= link_to "Réserver maintenant →", waitlist_confirm_url(token: @entry.token),
+        style: "background:#2C5F2E; color:#fff; padding:14px 28px; border-radius:8px;
+                text-decoration:none; font-weight:600; font-size:1rem; display:inline-block;" %>
+</div>
+
+<p style="font-size:0.82rem; color:#9b9b9b; text-align:center;">
+  ⏰ Ce lien est valable <strong>24 heures</strong>. Passé ce délai, le créneau sera proposé
+  à la personne suivante en liste d'attente.
+</p>

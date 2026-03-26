@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Arrière-plan gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" fill="url(#bgGradient)"/>
+  
+  <!-- Calendrier (logo PlanifyPro) -->
+  <g transform="translate(128, 128) scale(2)">
+    <!-- Cadre du calendrier -->
+    <rect x="8" y="16" width="112" height="112" rx="8" ry="8" fill="none" stroke="white" stroke-width="4"/>
+    
+    <!-- En-tête calendrier -->
+    <rect x="8" y="16" width="112" height="24" rx="8" ry="8" fill="white"/>
+    
+    <!-- Titre -->
+    <text x="64" y="33" font-size="12" font-weight="bold" fill="#6366f1" text-anchor="middle" font-family="Arial, sans-serif">
+      2026
+    </text>
+    
+    <!-- Jours colonnes -->
+    <line x1="24" y1="40" x2="24" y2="124" stroke="white" stroke-width="2"/>
+    <line x1="40" y1="40" x2="40" y2="124" stroke="white" stroke-width="2"/>
+    <line x1="56" y1="40" x2="56" y2="124" stroke="white" stroke-width="2"/>
+    <line x1="72" y1="40" x2="72" y2="124" stroke="white" stroke-width="2"/>
+    <line x1="88" y1="40" x2="88" y2="124" stroke="white" stroke-width="2"/>
+    <line x1="104" y1="40" x2="104" y2="124" stroke="white" stroke-width="2"/>
+    
+    <!-- Lignes horizontales -->
+    <line x1="8" y1="56" x2="120" y2="56" stroke="white" stroke-width="2"/>
+    <line x1="8" y1="72" x2="120" y2="72" stroke="white" stroke-width="2"/>
+    <line x1="8" y1="88" x2="120" y2="88" stroke="white" stroke-width="2"/>
+    <line x1="8" y1="104" x2="120" y2="104" stroke="white" stroke-width="2"/>
+    
+    <!-- Point rouge pour "RDV important" -->
+    <circle cx="32" cy="80" r="4" fill="#ff6b6b"/>
+    <circle cx="64" cy="96" r="4" fill="#51cf66"/>
+    <circle cx="96" cy="112" r="4" fill="#ffd93d"/>
+  </g>
+</svg>

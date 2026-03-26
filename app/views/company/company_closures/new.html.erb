@@ -1,0 +1,18 @@
+<% content_for :title, "Nouvelle fermeture ponctuelle" %>
+<% content_for :page_title, "Nouvelle fermeture ponctuelle" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Ajouter une fermeture ponctuelle</h1>
+    <p>Ce creneau sera bloque pour la prise de rendez-vous.</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "← Retour", company_company_closures_path, class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<div class="card" style="max-width:680px;">
+  <div class="card-body">
+    <%= render "form", company_closure: @company_closure %>
+  </div>
+</div>

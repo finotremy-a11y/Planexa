@@ -1,8 +1,11 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
+  include LocaleSwitcher
 
   layout :choose_layout
 
+  before_action :store_locale_from_param
+  around_action :switch_locale
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :check_company_suspension, if: :company_admin_signed_in?
@@ -16,7 +19,7 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    flash[:alert] = "Vous n'êtes pas autorisé à effectuer cette action."
+    flash[:alert] = t("errors.not_authorized")
     redirect_back(fallback_location: root_path)
   end
 
@@ -26,7 +29,7 @@ class ApplicationController < ActionController::Base
     return if request.path.start_with?("/company/abonnement", "/users/sign_out")
 
     redirect_to company_subscription_path,
-      alert: "Votre compte est suspendu. Veuillez régulariser votre abonnement."
+      alert: t("errors.company_suspended")
   end
 
   def company_admin_signed_in?
@@ -41,8 +44,8 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name role])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name role])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[first_name last_name role locale])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[first_name last_name role locale])
   end
 
   def after_sign_in_path_for(resource)
@@ -55,5 +58,17 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource_or_scope)
     root_path
+  end
+
+  def switch_locale(&action)
+    I18n.with_locale(resolve_locale, &action)
+  end
+
+  def store_locale_from_param
+    locale = params[:locale].to_s
+    return if locale.blank?
+    return unless LocaleSwitcher::SUPPORTED_LOCALES.include?(locale)
+
+    session[:locale] = locale
   end
 end

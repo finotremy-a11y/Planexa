@@ -3,6 +3,8 @@ class Payment < ApplicationRecord
   belongs_to :client_user, class_name: "User"
   belongs_to :company
 
+  has_one :invoice, dependent: :destroy
+
   enum :status, { pending: 0, succeeded: 1, failed: 2, refunded: 3 }
 
   monetize :amount_cents, with_currency: ->(p) { p.currency }

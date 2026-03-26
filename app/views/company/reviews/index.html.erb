@@ -1,0 +1,75 @@
+<% content_for :title, t("reviews.title") %>
+<% content_for :page_title, t("reviews.title") %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+  <div>
+    <% published_count = @company.reviews.published.count %>
+    <% avg = Review.average_rating_for(@company) %>
+    <% if avg %>
+      <span style="font-size:1.4rem; font-weight:700; color:var(--green-800);">
+        ★ <%= avg %>
+      </span>
+      <span style="color:var(--text-400); margin-left:8px;">
+        (<%= pluralize(published_count, t("reviews.count_one"), t("reviews.count_other")) %>)
+      </span>
+    <% else %>
+      <span style="color:var(--text-300);"><%= t("reviews.empty_state") %></span>
+    <% end %>
+  </div>
+</div>
+
+<% if @reviews.any? %>
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <% @reviews.each do |review| %>
+      <div class="card">
+        <div style="padding:20px 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+            <div>
+              <div style="font-weight:600;"><%= review.client_user.full_name %></div>
+              <div style="font-size:0.82rem; color:var(--text-400);">
+                <%= t("invoices.appointment_date", date: review.appointment.scheduled_at.strftime("%d/%m/%Y")) %>
+                — <%= review.appointment.service_type.name %>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="color:#f59e0b; font-size:1.1rem;">
+                <%= "★" * review.rating %><%= "☆" * (5 - review.rating) %>
+              </span>
+              <span class="badge <%= review.published? ? 'badge-success' : 'badge-warning' %>">
+                <%= review.published? ? t("reviews.published") : t("reviews.unpublished") %>
+              </span>
+            </div>
+          </div>
+
+          <% if review.comment.present? %>
+            <p style="color:var(--text-600); font-size:0.9rem; line-height:1.6; margin:0;">
+              "<%= review.comment %>"
+            </p>
+          <% end %>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+            <span style="font-size:0.78rem; color:var(--text-300);">
+              <%= t("reviews.submitted_date", date: review.submitted_at.strftime("%d/%m/%Y")) %>
+            </span>
+            <div style="display:flex; gap:8px;">
+              <%= link_to t("common.view"), company_review_path(review), class: "btn btn-secondary btn-sm" %>
+                <%= button_to t("common.delete"), company_review_path(review),
+                  method: :delete,
+                  class: "btn btn-danger btn-sm",
+                  data: { turbo_confirm: t("reviews.delete_confirmation") } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+<% else %>
+  <div class="card" style="padding:48px; text-align:center;">
+    <p style="color:var(--text-300); font-size:1rem;">
+      <%= t("reviews.no_reviews") %><br>
+      <small><%= t("reviews.auto_request_note") %></small>
+    </p>
+  </div>
+<% end %>

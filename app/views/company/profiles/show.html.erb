@@ -1,13 +1,13 @@
-<% content_for :title, "Profil entreprise" %>
-<% content_for :page_title, "Profil entreprise" %>
+<% content_for :title, t("profiles.title") %>
+<% content_for :page_title, t("profiles.title") %>
 
 <div class="page-header">
   <div class="page-header-left">
-    <h1>Profil entreprise</h1>
-    <p>Informations visibles par vos clients</p>
+    <h1><%= t("profiles.title") %></h1>
+    <p><%= t("profiles.subtitle") %></p>
   </div>
   <div class="page-header-actions">
-    <%= link_to "Modifier", edit_company_profile_path, class: "btn btn-primary" %>
+    <%= link_to t("common.edit"), edit_company_profile_path, class: "btn btn-primary" %>
   </div>
 </div>
 
@@ -15,24 +15,24 @@
   <div style="display:flex; flex-direction:column; gap:20px;">
     <div class="card">
       <div class="card-header">
-        <h3 style="font-family:var(--font-display);">Informations générales</h3>
+        <h3 style="font-family:var(--font-display);"><%= t("profiles.general_info") %></h3>
       </div>
       <div class="card-body">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
           <div>
-            <div class="form-label">Nom de l'entreprise</div>
+            <div class="form-label"><%= t("profiles.company_name") %></div>
             <div style="font-weight:500;"><%= @company.name %></div>
           </div>
           <div>
-            <div class="form-label">SIRET</div>
+            <div class="form-label"><%= t("common.siret") %></div>
             <div style="font-weight:500; font-family:monospace;"><%= @company.siret %></div>
           </div>
           <div>
-            <div class="form-label">Téléphone</div>
+            <div class="form-label"><%= t("common.phone") %></div>
             <div style="font-weight:500;"><%= @company.phone.presence || "—" %></div>
           </div>
           <div>
-            <div class="form-label">Site web</div>
+            <div class="form-label"><%= t("profiles.website") %></div>
             <% if @company.website.present? %>
               <a href="<%= @company.website %>" target="_blank" rel="noopener" style="color:var(--green-700); font-weight:500;">
                 <%= @company.website %>
@@ -41,19 +41,61 @@
               <div style="color:var(--text-300);">—</div>
             <% end %>
           </div>
+          <div>
+            <div class="form-label"><%= t("profiles.professional_category") %></div>
+            <div style="font-weight:500;">
+              <%= @company.healthcare_professional? ? t("profiles.healthcare_professional") : t("profiles.standard_business") %>
+            </div>
+          </div>
         </div>
 
         <div style="margin-top:16px;">
-          <div class="form-label">Adresse</div>
+          <div class="form-label"><%= t("common.address") %></div>
           <div style="font-weight:500;">
             <%= @company.address %><br>
             <%= @company.zip_code %> <%= @company.city %>
           </div>
         </div>
 
+        <% if @company.healthcare_professional? %>
+          <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <div class="form-label"><%= t("profiles.health_specialty") %></div>
+              <div style="font-weight:500;"><%= @company.health_specialty.presence || "—" %></div>
+            </div>
+            <div>
+              <div class="form-label"><%= t("profiles.convention_sector") %></div>
+              <div style="font-weight:500;">
+                <%= t("profiles.convention_sectors.#{@company.convention_sector}", default: "—") %>
+              </div>
+            </div>
+            <div>
+              <div class="form-label"><%= t("profiles.teleconsultation") %></div>
+              <div style="font-weight:500;">
+                <%= @company.teleconsultation_enabled? ? t("profiles.yes") : t("profiles.no") %>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px; display:grid; grid-template-columns:1fr; gap:12px;">
+            <div>
+              <div class="form-label">Accessibilite</div>
+              <div style="font-weight:500;"><%= @company.accessibility_info.presence || "—" %></div>
+            </div>
+            <div>
+              <div class="form-label">Informations pratiques</div>
+              <div style="font-weight:500;"><%= @company.practical_info.presence || "—" %></div>
+            </div>
+            <div>
+              <div class="form-label">Modalites d'annulation</div>
+              <div style="font-weight:500;"><%= @company.cancellation_policy.presence || "—" %></div>
+            </div>
+          </div>
+        <% end %>
+
         <% if @company.description.present? %>
           <div style="margin-top:16px;">
-            <div class="form-label">Description</div>
+            <div class="form-label"><%= t("common.description") %></div>
             <div style="background:var(--cream); padding:14px; border-radius:var(--radius-md);
                         line-height:1.7; font-size:0.9rem;">
               <%= @company.description %>
@@ -65,7 +107,7 @@
 
     <div class="card">
       <div class="card-header">
-        <h3 style="font-family:var(--font-display);">Prestations actives</h3>
+        <h3 style="font-family:var(--font-display);"><%= t("profiles.active_services") %></h3>
       </div>
       <div class="card-body">
         <% if @company.service_types.active.any? %>
@@ -78,8 +120,8 @@
           </div>
         <% else %>
           <p style="color:var(--text-300); font-size:0.85rem;">
-            Aucune prestation.
-            <%= link_to "Ajouter →", new_company_service_type_path, style: "color:var(--green-700);" %>
+            <%= t("profiles.no_services") %>
+            <%= link_to t("profiles.add_service"), new_company_service_type_path, style: "color:var(--green-700);" %>
           </p>
         <% end %>
       </div>
@@ -89,7 +131,7 @@
   <div>
     <div class="card" style="position:sticky; top:80px;">
       <div class="card-header">
-        <h3 style="font-family:var(--font-display); font-size:1rem;">Aperçu public</h3>
+        <h3 style="font-family:var(--font-display); font-size:1rem;"><%= t("profiles.public_preview") %></h3>
       </div>
       <div class="card-body" style="text-align:center;">
         <div style="width:64px; height:64px; background:var(--green-100);
@@ -102,8 +144,11 @@
         <div style="font-weight:600; margin-bottom:4px;"><%= @company.name %></div>
         <div style="font-size:0.82rem; color:var(--text-500); margin-bottom:16px;">
           📍 <%= @company.city %>
+          <% if @company.healthcare_professional? && @company.health_specialty.present? %>
+            <br><span style="font-size:0.78rem;"><%= @company.health_specialty %></span>
+          <% end %>
         </div>
-        <%= link_to "Voir ma fiche publique →",
+        <%= link_to t("profiles.view_public_page"),
               company_public_path(@company),
               class: "btn btn-secondary btn-sm",
               target: "_blank",

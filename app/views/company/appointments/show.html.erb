@@ -1,66 +1,80 @@
-<% content_for :title, "Rendez-vous ##{@appointment.id}" %>
-<% content_for :page_title, "Rendez-vous du #{@appointment.scheduled_at.strftime('%d/%m/%Y')}" %>
+<% content_for :title, t("appointments.show_title", id: @appointment.id) %>
+<% content_for :page_title, t("appointments.show_title", id: @appointment.id) %>
 
 <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
   <%# Main detail card %>
   <div class="card" style="flex:1; min-width:300px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <h3 style="margin:0;">Détails</h3>
+      <h3 style="margin:0;"><%= t("common.details") %></h3>
       <span class="badge badge-<%= @appointment.status %>">
         <%= @appointment.status.humanize %>
       </span>
     </div>
 
     <dl style="display:grid; grid-template-columns:auto 1fr; gap:8px 24px;">
-      <dt style="color:var(--text-400); white-space:nowrap;">Prestation</dt>
+      <dt style="color:var(--text-400); white-space:nowrap;"><%= t("common.service_type") %></dt>
       <dd><strong><%= @appointment.service_type.name %></strong></dd>
 
-      <dt style="color:var(--text-400);">Date</dt>
+      <dt style="color:var(--text-400);"><%= t("common.date") %></dt>
       <dd><%= @appointment.scheduled_at.strftime("%A %d %B %Y") %></dd>
 
-      <dt style="color:var(--text-400);">Horaire</dt>
+      <dt style="color:var(--text-400);"><%= t("appointments.time_label") %></dt>
       <dd><%= @appointment.scheduled_at.strftime("%H:%M") %> → <%= @appointment.ends_at.strftime("%H:%M") %></dd>
 
-      <dt style="color:var(--text-400);">Durée</dt>
+      <dt style="color:var(--text-400);"><%= t("common.duration") %></dt>
       <dd><%= @appointment.duration_minutes %> min</dd>
 
-      <dt style="color:var(--text-400);">Source</dt>
-      <dd><%= @appointment.online? ? "Réservation en ligne" : "Création manuelle" %></dd>
+      <dt style="color:var(--text-400);"><%= t("appointments.source") %></dt>
+      <dd><%= @appointment.online? ? t("appointments.online_booking") : t("appointments.manual_creation") %></dd>
+
+      <dt style="color:var(--text-400);"><%= t("appointments.reconfirmation") %></dt>
+      <dd>
+        <% if @appointment.reconfirmed? %>
+          <span class="badge badge-green"><%= t("appointments.reconfirmation_reconfirmed") %></span>
+          <span style="font-size:0.82rem; color:var(--text-400); margin-left:6px;">
+            <%= @appointment.reconfirmed_at.strftime("%d/%m/%Y %Hh%M") %>
+          </span>
+        <% elsif @appointment.reconfirmation_pending? %>
+          <span class="badge badge-gold"><%= t("appointments.reconfirmation_pending") %></span>
+        <% else %>
+          <span class="badge badge-grey"><%= t("appointments.reconfirmation_not_requested") %></span>
+        <% end %>
+      </dd>
 
       <% if @appointment.urgent? %>
-        <dt style="color:var(--text-400);">Urgence</dt>
-        <dd><span class="badge badge-danger">Urgent</span></dd>
+        <dt style="color:var(--text-400);"><%= t("common.urgency") %></dt>
+        <dd><span class="badge badge-danger"><%= t("appointments.urgent_label") %></span></dd>
       <% end %>
     </dl>
 
     <% if @appointment.client_notes.present? %>
       <hr style="margin:16px 0;">
-      <h4 style="margin-bottom:8px;">Notes client</h4>
+      <h4 style="margin-bottom:8px;"><%= t("appointments.client_notes") %></h4>
       <p style="color:var(--text-500); font-size:0.9rem;"><%= @appointment.client_notes %></p>
     <% end %>
 
     <% if @appointment.internal_notes.present? %>
       <hr style="margin:16px 0;">
-      <h4 style="margin-bottom:8px;">Notes internes</h4>
+      <h4 style="margin-bottom:8px;"><%= t("appointments.internal_notes") %></h4>
       <p style="color:var(--text-500); font-size:0.9rem;"><%= @appointment.internal_notes %></p>
     <% end %>
 
     <hr style="margin:20px 0;">
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <% if @appointment.pending? %>
-        <%= button_to "Confirmer", confirm_company_appointment_path(@appointment),
-              method: :patch, class: "btn btn-success btn-sm",
-              data: { turbo_confirm: "Confirmer ce rendez-vous ?" } %>
+          <%= button_to t("appointments.confirm_button"), confirm_company_appointment_path(@appointment),
+            method: :patch, class: "btn btn-success btn-sm",
+            data: { turbo_confirm: t("appointments.confirm_confirmation") } %>
       <% end %>
       <% unless @appointment.cancelled? || @appointment.completed? %>
-        <%= button_to "Marquer terminé", complete_company_appointment_path(@appointment),
+        <%= button_to t("appointments.mark_complete"), complete_company_appointment_path(@appointment),
               method: :patch, class: "btn btn-secondary btn-sm" %>
-        <%= button_to "Annuler", cancel_company_appointment_path(@appointment),
-              method: :patch, class: "btn btn-danger btn-sm",
-              data: { turbo_confirm: "Annuler ce rendez-vous ?" },
-              params: { reason: "Annulé par l'entreprise" } %>
+          <%= button_to t("common.cancel"), cancel_company_appointment_path(@appointment),
+            method: :patch, class: "btn btn-danger btn-sm",
+            data: { turbo_confirm: t("appointments.cancel_confirmation") },
+            params: { reason: t("appointments.canceled_by_company") } %>
       <% end %>
-      <%= link_to "Modifier", edit_company_appointment_path(@appointment), class: "btn btn-secondary btn-sm" %>
+      <%= link_to t("common.edit"), edit_company_appointment_path(@appointment), class: "btn btn-secondary btn-sm" %>
     </div>
   </div>
 
@@ -68,32 +82,32 @@
   <div style="display:flex; flex-direction:column; gap:16px; min-width:260px; max-width:320px;">
     <%# Client %>
     <div class="card">
-      <h4 style="margin-bottom:12px;">Client</h4>
+      <h4 style="margin-bottom:12px;"><%= t("common.client") %></h4>
       <% if @appointment.client_user %>
         <p style="margin:0;"><strong><%= @appointment.client_user.full_name %></strong></p>
         <p style="margin:4px 0; font-size:0.85rem; color:var(--text-400);"><%= @appointment.client_user.email %></p>
       <% else %>
-        <p style="color:var(--text-400); font-size:0.9rem;">Pas de compte client associé.</p>
+        <p style="color:var(--text-400); font-size:0.9rem;"><%= t("appointments.no_client_account") %></p>
       <% end %>
     </div>
 
     <%# Employee %>
     <div class="card">
-      <h4 style="margin-bottom:12px;">Employé assigné</h4>
+      <h4 style="margin-bottom:12px;"><%= t("appointments.assigned_employee") %></h4>
       <% if @appointment.employee %>
         <p style="margin:0;"><strong><%= @appointment.employee.full_name %></strong></p>
-        <%= link_to "Changer d'employé", edit_company_appointment_path(@appointment), class: "btn btn-link btn-sm", style: "padding:0; margin-top:8px;" %>
+        <%= link_to t("appointments.change_employee"), edit_company_appointment_path(@appointment), class: "btn btn-link btn-sm", style: "padding:0; margin-top:8px;" %>
       <% else %>
-        <p style="color:var(--text-400); font-size:0.9rem; margin-bottom:12px;">Aucun employé assigné.</p>
+        <p style="color:var(--text-400); font-size:0.9rem; margin-bottom:12px;"><%= t("appointments.no_employee_assigned") %></p>
         <%# Quick assign form %>
         <% if @company.employees.active.any? %>
           <%= form_with url: assign_employee_company_appointment_path(@appointment), method: :patch, local: false do |f| %>
             <div style="display:flex; gap:8px; align-items:center;">
               <%= f.select :employee_id,
                     @company.employees.active.map { |e| [e.full_name, e.id] },
-                    { prompt: "Choisir…" },
+                    { prompt: t("common.choose") },
                     class: "form-select form-select-sm", style: "flex:1;" %>
-              <%= f.submit "Assigner", class: "btn btn-primary btn-sm" %>
+              <%= f.submit t("common.assign"), class: "btn btn-primary btn-sm" %>
             </div>
           <% end %>
         <% end %>
@@ -103,5 +117,5 @@
 </div>
 
 <div style="margin-top:16px;">
-  <%= link_to "← Retour à la liste", company_appointments_path, class: "btn btn-link btn-sm" %>
+  <%= link_to t("common.back_to_list"), company_appointments_path, class: "btn btn-link btn-sm" %>
 </div>

@@ -1,0 +1,79 @@
+<% content_for :title, t("booking_groups.title") %>
+
+<% booking_groups_count = @booking_groups.respond_to?(:total_count) ? @booking_groups.total_count : @booking_groups.size %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1><%= t("booking_groups.subtitle") %></h1>
+    <p><%= pluralize(booking_groups_count, t("booking_groups.count_one"), t("booking_groups.count_other")) %></p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <% if @booking_groups.empty? %>
+      <p style="color:var(--grey-400); text-align:center; padding:40px 0;">
+        <%= t("booking_groups.empty_state") %>
+      </p>
+    <% else %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th><%= t("common.date") %></th>
+            <th><%= t("common.client") %></th>
+            <th><%= t("common.services") %></th>
+            <th><%= t("booking_groups.total_duration") %></th>
+            <th><%= t("common.amount") %></th>
+            <th><%= t("common.status") %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @booking_groups.each do |bg| %>
+            <tr>
+              <td><%= bg.created_at.strftime("%d/%m/%Y %Hh%M") %></td>
+              <td>
+                <% if bg.client_user %>
+                  <%= bg.client_user.first_name %> <%= bg.client_user.last_name %>
+                <% else %>
+                  <span style="color:var(--grey-400);">—</span>
+                <% end %>
+              </td>
+              <td>
+                <% bg.appointments.each do |appt| %>
+                  <span class="badge badge-blue" style="margin-right:4px;">
+                    <%= appt.service_type.name %>
+                  </span>
+                <% end %>
+              </td>
+              <td><%= bg.total_duration_minutes %> min</td>
+              <td>
+                <% if bg.total_amount_cents > 0 %>
+                  <%= number_to_currency(bg.total_amount_cents / 100.0, unit: "€",
+                        separator: ",", format: "%n %u") %>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td>
+                <% case bg.status %>
+                <% when "pending" %>
+                  <span class="badge badge-yellow"><%= t("statuses.pending") %></span>
+                <% when "confirmed" %>
+                  <span class="badge badge-green"><%= t("statuses.confirmed") %></span>
+                <% when "cancelled" %>
+                  <span class="badge badge-red"><%= t("statuses.cancelled") %></span>
+                <% when "completed" %>
+                  <span class="badge badge-grey"><%= t("statuses.completed") %></span>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to t("booking_groups.details_link"), company_booking_group_path(bg), class: "btn btn-sm btn-ghost" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

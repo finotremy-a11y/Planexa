@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: PlanifyPro Public API
+  version: v1
+  description: API REST publique pour integrer PlanifyPro avec des outils tiers.
+servers:
+  - url: https://api.planifypro.app
+    description: Production
+  - url: http://localhost:3000
+    description: Development
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/appointments:
+    get:
+      summary: Liste des rendez-vous
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Creer un rendez-vous
+      responses:
+        '201':
+          description: Cree
+  /api/v1/appointments/{id}:
+    get:
+      summary: Detail d'un rendez-vous
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+    patch:
+      summary: Modifier un rendez-vous
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: Annuler un rendez-vous
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /api/v1/employees:
+    get:
+      summary: Liste des employes
+      responses:
+        '200':
+          description: OK
+  /api/v1/service_types:
+    get:
+      summary: Liste des prestations
+      responses:
+        '200':
+          description: OK
+  /api/v1/availability:
+    get:
+      summary: Creneaux disponibles
+      parameters:
+        - in: query
+          name: service_type_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /api/v1/customers:
+    get:
+      summary: Liste des clients
+      responses:
+        '200':
+          description: OK
+  /api/v1/customers/{id}:
+    get:
+      summary: Fiche client
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /api/v1/webhooks:
+    get:
+      summary: Liste des webhooks
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Creer un webhook
+      responses:
+        '201':
+          description: Cree
+  /api/v1/webhooks/{id}:
+    delete:
+      summary: Supprimer un webhook
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK

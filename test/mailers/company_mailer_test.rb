@@ -92,4 +92,30 @@ class CompanyMailerTest < ActionMailer::TestCase
     mail = CompanyMailer.new_appointment(@appointment)
     assert_match "rendez-vous", mail.subject.downcase
   end
+
+  test "weekly_performance_summary est envoyé au owner" do
+    mail = CompanyMailer.weekly_performance_summary(@company)
+    assert_equal [ @company.user.email ], mail.to
+  end
+
+  test "weekly_performance_summary contient les metriques principales" do
+    period_start = 6.days.ago.beginning_of_day
+    period_end = Time.current.end_of_day
+
+    priced_service = create(:service_type, company: @company, price_cents: 2500)
+    create(:appointment, company: @company, service_type: priced_service,
+                         booking_source: :online, status: :confirmed, created_at: 2.days.ago)
+    create(:appointment, company: @company, service_type: priced_service,
+                         booking_source: :online, status: :cancelled, created_at: 3.days.ago, updated_at: 1.day.ago)
+    review_appointment = create(:appointment, company: @company, service_type: priced_service)
+    create(:review, :submitted, company: @company, appointment: review_appointment, published_at: 1.day.ago)
+
+    mail = CompanyMailer.weekly_performance_summary(@company, period_start: period_start, period_end: period_end)
+    body = mail.body.encoded
+
+    assert_match "Reservations", body
+    assert_match "Annulations", body
+    assert_match "Avis publies", body
+    assert_match(/CA estime<\/strong><br>\s*<span[^>]*>\d+[\s\d]*,\d{2}\s*€/m, body)
+  end
 end

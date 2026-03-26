@@ -7,8 +7,9 @@ class Company::EmployeesController < Company::BaseController
   end
 
   def show
-    @skills = @employee.employee_skills.includes(:service_type)
+    @skills    = @employee.employee_skills.includes(:service_type)
     @schedules = @employee.schedules.recurring.order(:day_of_week)
+    @absences  = @employee.employee_absences.order(starts_at: :desc)
   end
 
   def new

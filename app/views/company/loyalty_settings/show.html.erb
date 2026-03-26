@@ -1,0 +1,78 @@
+<% content_for :title, "Programme de fidélité" %>
+<% content_for :page_title, "Fidélité" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Programme de fidélité</h1>
+    <p>Configurez la récompense automatique de vos clients fidèles</p>
+  </div>
+</div>
+
+<%# ── Statistiques ── %>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+  <div class="card" style="padding:20px;text-align:center;">
+    <div style="font-size:28px;font-weight:700;color:var(--green-700);"><%= @total_points_awarded %></div>
+    <div style="font-size:13px;color:var(--grey-500);">Points distribués</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center;">
+    <div style="font-size:28px;font-weight:700;color:var(--green-700);"><%= @total_codes_generated %></div>
+    <div style="font-size:13px;color:var(--grey-500);">Codes générés</div>
+  </div>
+  <div class="card" style="padding:20px;text-align:center;">
+    <div style="font-size:28px;font-weight:700;color:var(--green-700);"><%= @active_codes %></div>
+    <div style="font-size:13px;color:var(--grey-500);">Codes actifs</div>
+  </div>
+</div>
+
+<%# ── Formulaire paramètres ── %>
+<div class="card" style="max-width:600px;">
+  <div class="card-header">
+    <h3 style="font-family:var(--font-display);">Paramètres</h3>
+  </div>
+  <div class="card-body">
+    <%= form_with(model: @setting, url: company_loyalty_settings_path, method: :patch) do |f| %>
+      <% if @setting.errors.any? %>
+        <div class="alert alert-danger" style="margin-bottom:16px;">
+          <strong><%= pluralize(@setting.errors.count, "erreur") %> :</strong>
+          <ul style="margin:8px 0 0;">
+            <% @setting.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <%= f.check_box :loyalty_enabled, class: "form-checkbox" %>
+          <span>Activer le programme de fidélité</span>
+        </label>
+        <p style="font-size:13px;color:var(--grey-400);margin-top:4px;">
+          Les clients cumuleront des points à chaque rendez-vous complété.
+        </p>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <%= f.label :points_per_appointment, "Points par rendez-vous", class: "form-label" %>
+        <%= f.number_field :points_per_appointment, min: 1, max: 1000, class: "form-input" %>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <%= f.label :loyalty_points_threshold, "Seuil pour obtenir un code (en points)", class: "form-label" %>
+        <%= f.number_field :loyalty_points_threshold, min: 1, max: 10000, class: "form-input" %>
+      </div>
+
+      <div class="form-group" style="margin-bottom:16px;">
+        <%= f.label :loyalty_discount_value_cents, "Valeur de la réduction (en centimes)", class: "form-label" %>
+        <%= f.number_field :loyalty_discount_value_cents, min: 100, step: 100, class: "form-input" %>
+        <p style="font-size:13px;color:var(--grey-400);margin-top:4px;">
+          Ex. : 1000 = 10,00 €
+        </p>
+      </div>
+
+      <div class="form-actions" style="margin-top:24px;">
+        <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

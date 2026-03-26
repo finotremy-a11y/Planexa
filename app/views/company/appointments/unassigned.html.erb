@@ -1,13 +1,13 @@
-<% content_for :title, "RDV non assignés" %>
-<% content_for :page_title, "Rendez-vous non assignés" %>
+<% content_for :title, t("appointments.unassigned_title") %>
+<% content_for :page_title, t("appointments.unassigned_subtitle") %>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
   <div style="display:flex; gap:8px;">
-    <%= link_to "Vue liste", company_appointments_path, class: "btn btn-secondary btn-sm" %>
-    <%= link_to "Calendrier", calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
-    <%= link_to "Non assignés", unassigned_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
+    <%= link_to t("appointments.list_view"), company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.calendar_view"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.unassigned_view"), unassigned_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
   </div>
-  <%= link_to "Nouveau RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+  <%= link_to t("appointments.new_short"), new_company_appointment_path, class: "btn btn-primary btn-sm" %>
 </div>
 
 <% if @appointments.any? %>
@@ -15,11 +15,11 @@
     <table class="table" style="margin:0;">
       <thead>
         <tr>
-          <th>Date &amp; Heure</th>
-          <th>Prestation</th>
-          <th>Client</th>
-          <th>Durée</th>
-          <th>Urgent</th>
+          <th><%= t("appointments.date_time_header") %></th>
+          <th><%= t("common.service_type") %></th>
+          <th><%= t("common.client") %></th>
+          <th><%= t("common.duration") %></th>
+          <th><%= t("appointments.urgent_label") %></th>
           <th></th>
         </tr>
       </thead>
@@ -40,7 +40,7 @@
             <td><%= appt.duration_minutes %> min</td>
             <td>
               <% if appt.urgent? %>
-                <span class="badge badge-danger">Urgent</span>
+                <span class="badge badge-danger"><%= t("appointments.urgent_label") %></span>
               <% else %>
                 <span style="color:var(--text-300);">—</span>
               <% end %>
@@ -54,11 +54,11 @@
                         style: "display:flex; gap:6px; align-items:center;" do |f| %>
                     <%= select_tag "employee_id",
                           options_from_collection_for_select(@company.employees.active.order(:last_name), :id, :full_name),
-                          prompt: "Assigner…", class: "form-select form-select-sm", style: "width:160px;" %>
-                    <%= submit_tag "Assigner", class: "btn btn-primary btn-sm" %>
+                          prompt: t("appointments.assign_placeholder"), class: "form-select form-select-sm", style: "width:160px;" %>
+                    <%= submit_tag t("common.assign"), class: "btn btn-primary btn-sm" %>
                   <% end %>
                 <% end %>
-                <%= link_to "Voir", company_appointment_path(appt), class: "btn btn-link btn-sm" %>
+                <%= link_to t("common.view"), company_appointment_path(appt), class: "btn btn-link btn-sm" %>
               </div>
             </td>
           </tr>
@@ -69,8 +69,8 @@
 <% else %>
   <div class="empty-state">
     <div style="font-size:3rem; margin-bottom:12px;">✅</div>
-    <h3>Aucun rendez-vous sans assignation</h3>
-    <p>Tous les rendez-vous ont un employé assigné.</p>
-    <%= link_to "Voir tous les RDV", company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <h3><%= t("appointments.no_unassigned") %></h3>
+    <p><%= t("appointments.all_assigned_text") %></p>
+    <%= link_to t("appointments.view_all_short"), company_appointments_path, class: "btn btn-secondary btn-sm" %>
   </div>
 <% end %>

@@ -33,8 +33,11 @@ class Admin::SubscriptionsControllerTest < ActionDispatch::IntegrationTest
 
   # — Cancel —
   test "PATCH cancel annule l'abonnement Stripe et suspend la company" do
-    Stripe::Subscription.stub(:cancel, true) do
+    Stripe::Subscription.stubs(:cancel).returns(true)
+    begin
       patch cancel_admin_subscription_path(@subscription)
+    ensure
+      Stripe::Subscription.unstub(:cancel)
     end
     assert @subscription.reload.canceled?
     assert @company.reload.suspended?
@@ -42,8 +45,11 @@ class Admin::SubscriptionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "PATCH cancel gère l'erreur Stripe gracieusement" do
-    Stripe::Subscription.stub(:cancel, ->(*_) { raise Stripe::StripeError, "API error" }) do
+    Stripe::Subscription.stubs(:cancel).raises(Stripe::StripeError.new("API error"))
+    begin
       patch cancel_admin_subscription_path(@subscription)
+    ensure
+      Stripe::Subscription.unstub(:cancel)
     end
     assert_not @subscription.reload.canceled?
     assert_redirected_to admin_subscription_path(@subscription)

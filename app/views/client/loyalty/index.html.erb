@@ -1,0 +1,48 @@
+<% content_for :title, "Ma fidélité" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Ma fidélité</h1>
+    <p>Suivez vos points et codes de réduction</p>
+  </div>
+</div>
+
+<% if @companies_with_loyalty.empty? %>
+  <div class="card" style="padding:48px;text-align:center;">
+    <p style="color:var(--grey-500);margin:0;">Aucun programme de fidélité actif pour le moment.</p>
+    <p style="color:var(--grey-400);margin-top:8px;font-size:14px;">
+      Prenez rendez-vous chez une entreprise participant au programme pour commencer à cumuler des points.
+    </p>
+  </div>
+<% else %>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;">
+    <% @companies_with_loyalty.each do |data| %>
+      <div class="card">
+        <div class="card-header">
+          <h3 style="font-family:var(--font-display);margin:0;"><%= data[:company].name %></h3>
+        </div>
+        <div class="card-body">
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-weight:600;"><%= data[:balance] %> pts</span>
+              <span style="color:var(--grey-500);font-size:13px;">Seuil : <%= data[:threshold] %> pts</span>
+            </div>
+            <div style="background:var(--grey-100);border-radius:8px;height:12px;overflow:hidden;">
+              <% pct = data[:threshold].positive? ? [ (data[:balance].to_f / data[:threshold] * 100).floor, 100 ].min : 0 %>
+              <div style="background:var(--green-600);height:100%%;width:<%= pct %>%%;border-radius:8px;transition:width 0.3s;"></div>
+            </div>
+          </div>
+
+          <% if data[:usable_codes].positive? %>
+            <div class="alert alert-success" style="margin-bottom:12px;padding:8px 12px;font-size:13px;">
+              🎁 <strong><%= data[:usable_codes] %></strong> code<%= data[:usable_codes] > 1 ? "s" : "" %> de réduction disponible<%= data[:usable_codes] > 1 ? "s" : "" %>
+            </div>
+          <% end %>
+
+          <%= link_to "Voir le détail →", client_loyalty_path(data[:company]),
+                class: "btn btn-outline", style: "width:100%;" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

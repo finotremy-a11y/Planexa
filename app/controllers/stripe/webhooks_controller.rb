@@ -1,6 +1,7 @@
 module Stripe
   class WebhooksController < ApplicationController
     # Désactiver CSRF pour les webhooks
+    skip_before_action :authenticate_user!
     skip_before_action :verify_authenticity_token
 
     def create
@@ -47,7 +48,7 @@ module Stripe
         invoice = event.data.object
         return unless invoice.subscription
 
-        subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+        subscription = ::Subscription.find_by(stripe_subscription_id: invoice.subscription)
         return unless subscription
 
         subscription.reactivate! if subscription.suspended? || subscription.past_due?
@@ -61,7 +62,7 @@ module Stripe
         invoice = event.data.object
         return unless invoice.subscription
 
-        subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+        subscription = ::Subscription.find_by(stripe_subscription_id: invoice.subscription)
         return unless subscription
 
         subscription.update!(status: :past_due)
@@ -70,7 +71,7 @@ module Stripe
       # ── Abonnement annulé ─────────────────────────────────────────────────
       when "customer.subscription.deleted"
         stripe_sub   = event.data.object
-        subscription = Subscription.find_by(stripe_subscription_id: stripe_sub.id)
+        subscription = ::Subscription.find_by(stripe_subscription_id: stripe_sub.id)
         return unless subscription
 
         subscription.update!(status: :canceled)
@@ -100,6 +101,9 @@ module Stripe
         CompanyMailer.new_appointment(appointment).deliver_later
         AppointmentReminderJob.set(wait_until: appointment.scheduled_at - 24.hours)
                               .perform_later(appointment.id)
+
+        # Génération automatique de la facture PDF
+        InvoiceGeneratorService.new(payment).call
 
       else
         Rails.logger.info "[Stripe Webhook] Événement non géré: #{event["type"]}"

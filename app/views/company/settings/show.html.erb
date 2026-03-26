@@ -142,6 +142,181 @@
       </div>
     </div>
 
+    <!-- Bloc rappels multi-canal -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">🔔 Rappels clients (multi-canal)</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Activez ou desactivez chaque canal de rappel 24h avant le rendez-vous
+          </p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius); margin-bottom:10px;">
+          <div>
+            <div style="font-weight:600; margin-bottom:4px;">Activer les rappels Email</div>
+            <div style="font-size:0.82rem; color:var(--text-500);">
+              Envoi d'un email de rappel aux clients 24h avant le rendez-vous.
+            </div>
+          </div>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+            <%= f.check_box :email_reminders_enabled,
+                  style: "width:20px; height:20px; cursor:pointer;",
+                  checked: @setting.email_reminders_enabled? %>
+            <span style="font-size:0.85rem; color:var(--text-500);">Active</span>
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius); margin-bottom:10px;">
+          <div>
+            <div style="font-weight:600; margin-bottom:4px;">Activer les rappels SMS</div>
+            <div style="font-size:0.82rem; color:var(--text-500);">
+              Vos clients reçoivent un SMS J-1 avant leur RDV (si leur numéro est renseigné et qu'ils n'ont pas désactivé ces notifications).
+            </div>
+          </div>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+            <%= f.check_box :sms_reminders_enabled,
+                  style: "width:20px; height:20px; cursor:pointer;",
+                  checked: @setting.sms_reminders_enabled? %>
+            <span style="font-size:0.85rem; color:var(--text-500);">Active</span>
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius);">
+          <div>
+            <div style="font-weight:600; margin-bottom:4px;">Activer les rappels Push</div>
+            <div style="font-size:0.82rem; color:var(--text-500);">
+              Notification push envoyee aux clients ayant installe l'application web.
+            </div>
+          </div>
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+            <%= f.check_box :push_reminders_enabled,
+                  style: "width:20px; height:20px; cursor:pointer;",
+                  checked: @setting.push_reminders_enabled? %>
+            <span style="font-size:0.85rem; color:var(--text-500);">Active</span>
+          </label>
+        </div>
+
+        <p style="font-size:0.78rem; color:var(--text-300); margin-top:8px;">
+          Le canal SMS necessite la configuration Twilio (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER).
+        </p>
+      </div>
+    </div>
+
+    <% if @company.healthcare_professional? %>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 style="font-family:var(--font-display);">🩺 Disponibilite medicale avancee</h3>
+            <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+              Parametrez les intervalles de consultation, buffers, surbooking controle et urgences.
+            </p>
+          </div>
+        </div>
+        <div class="card-body" style="display:grid; gap:14px;">
+          <div>
+            <label class="form-label">Intervalle de creneau (minutes)</label>
+            <%= f.select :slot_interval_minutes,
+                  options_for_select([ 5, 10, 15, 20, 30, 60 ], @setting.slot_interval_minutes),
+                  {},
+                  class: "input" %>
+          </div>
+
+          <div>
+            <label class="form-label">Buffer entre rendez-vous (minutes)</label>
+            <%= f.number_field :buffer_between_appointments_minutes,
+                  class: "input", min: 0, max: 120, step: 5 %>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--gray-50); border-radius:var(--radius);">
+            <div>
+              <div style="font-weight:600;">Autoriser le surbooking controle</div>
+              <div style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+                Permet d'accepter un chevauchement limite sur un creneau.
+              </div>
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+              <%= f.check_box :allow_controlled_overbooking,
+                    style: "width:20px; height:20px; cursor:pointer;" %>
+              <span style="font-size:0.85rem; color:var(--text-500);">Active</span>
+            </label>
+          </div>
+
+          <div>
+            <label class="form-label">Limite de surbooking par creneau</label>
+            <%= f.number_field :overbooking_limit_per_slot,
+                  class: "input", min: 0, max: 3, step: 1 %>
+          </div>
+
+          <div>
+            <label class="form-label">Capacite urgences par jour</label>
+            <%= f.number_field :emergency_daily_capacity,
+                  class: "input", min: 0, max: 50, step: 1 %>
+          </div>
+
+          <div style="padding-top:6px;">
+            <%= link_to "Gerer les fermetures ponctuelles du cabinet",
+                  company_company_closures_path,
+                  class: "btn btn-ghost" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 style="font-family:var(--font-display);">🧾 Traces d'envoi des rappels</h3>
+          <p style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
+            Derniers envois (succes, ignore, echec) sur les canaux email, SMS et push
+          </p>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <% if @recent_reminder_deliveries.any? %>
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:10px 14px; font-size:0.75rem; color:var(--text-400);">Canal</th>
+                <th style="text-align:left; padding:10px 14px; font-size:0.75rem; color:var(--text-400);">Statut</th>
+                <th style="text-align:left; padding:10px 14px; font-size:0.75rem; color:var(--text-400);">Rendez-vous</th>
+                <th style="text-align:left; padding:10px 14px; font-size:0.75rem; color:var(--text-400);">Date log</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_reminder_deliveries.each do |delivery| %>
+                <tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:10px 14px; font-size:0.84rem;"><%= delivery.channel.upcase %></td>
+                  <td style="padding:10px 14px; font-size:0.84rem;">
+                    <% badge = delivery.sent? ? "badge-green" : (delivery.failed? ? "badge-red" : "badge-grey") %>
+                    <span class="badge <%= badge %>"><%= delivery.status %></span>
+                  </td>
+                  <td style="padding:10px 14px; font-size:0.84rem; color:var(--text-500);">
+                    <%= delivery.appointment.scheduled_at.strftime("%d/%m %Hh%M") %>
+                  </td>
+                  <td style="padding:10px 14px; font-size:0.84rem; color:var(--text-500);">
+                    <%= delivery.created_at.strftime("%d/%m/%Y %Hh%M") %>
+                  </td>
+                </tr>
+                <% if delivery.error_message.present? %>
+                  <tr style="border-bottom:1px solid var(--border);">
+                    <td colspan="4" style="padding:8px 14px; font-size:0.78rem; color:#b91c1c;">
+                      <strong>Erreur:</strong> <%= delivery.error_message %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div style="padding:14px; color:var(--text-400); font-size:0.84rem;">
+            Aucune trace de rappel disponible pour le moment.
+          </div>
+        <% end %>
+      </div>
+    </div>
+
     <div style="display:flex; justify-content:flex-end; gap:10px;">
       <%= f.submit "Sauvegarder les réglages", class: "btn btn-primary btn-lg" %>
     </div>

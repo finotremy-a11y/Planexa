@@ -30,11 +30,37 @@ class Rack::Attack
     req.ip if req.path == "/users" && req.post?
   end
 
+  # ── Réservation multi-prestation : 10 tentatives/minute par IP ─────────
+  throttle("bookings/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if req.path.start_with?("/reservations") && req.post?
+  end
+
+  # ── Widget embarquable : 5 réservations/minute par IP ────────────────────
+  throttle("widget/ip", limit: 5, period: 1.minute) do |req|
+    req.ip if req.path.match?(%r{\A/widget/[^/]+/reservation\z}i) && req.post?
+  end
+
   # ── Webhooks Stripe : protégés séparément ────────────────────────────────
   # Les webhooks Stripe ont leur propre validation par signature,
   # on limite à 60 appels/minute par IP pour prévenir le flood.
   throttle("stripe_webhooks/ip", limit: 60, period: 1.minute) do |req|
     req.ip if req.path == "/stripe/webhooks"
+  end
+
+  # ── API publique : 1000 req/heure par Bearer token ──────────────────────
+  throttle("api/token", limit: 1000, period: 1.hour) do |req|
+    next unless req.path.start_with?("/api/v1/")
+
+    scheme, token = req.get_header("HTTP_AUTHORIZATION").to_s.split(" ", 2)
+    next unless scheme&.casecmp("Bearer")&.zero?
+    next if token.blank?
+
+    "api-token:#{Digest::SHA256.hexdigest(token)}"
+  end
+
+  # Fallback IP pour les appels sans Bearer token
+  throttle("api/ip", limit: 3000, period: 1.hour) do |req|
+    req.ip if req.path.start_with?("/api/v1/")
   end
 
   # ── Réponse pour les requêtes bloquées ────────────────────────────────────

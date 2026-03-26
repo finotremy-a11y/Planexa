@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,7 +25,7 @@
   <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>">
   <meta property="og:image"       content="<%= content_for?(:og_image) ? yield(:og_image) : og_image_url %>">
   <meta property="og:url"         content="<%= request.original_url %>">
-  <meta property="og:locale"      content="fr_FR">
+  <meta property="og:locale"      content="<%= I18n.locale == :fr ? 'fr_FR' : (I18n.locale == :es ? 'es_ES' : 'en_US') %>">
 
   <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary_large_image">
@@ -40,6 +40,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
   <link rel="shortcut icon" href="/favicon.ico">
   <meta name="theme-color" content="#2C5F2E">
+
+  <!-- PWA — Progressive Web App -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="PlanifyPro">
 
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -184,26 +191,26 @@
     <% end %>
 
     <div class="navbar-links">
-      <%= link_to "Rechercher", search_path, class: "navbar-link" %>
-      <%= link_to "Contact", contact_path, class: "navbar-link" %>
+      <%= render "shared/locale_switcher" %>
+      <%= link_to t("nav.search"), search_path, class: "navbar-link" %>
+      <%= link_to t("nav.contact"), contact_path, class: "navbar-link" %>
 
       <% if user_signed_in? %>
         <% case current_user.role %>
         <% when "company_admin" %>
-          <%= link_to "Mon dashboard", company_root_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to t("nav.my_dashboard"), company_root_path, class: "btn btn-secondary btn-sm" %>
         <% when "client" %>
-          <%= link_to "Mes RDV", client_root_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to t("nav.my_appointments"), client_root_path, class: "btn btn-secondary btn-sm" %>
         <% when "admin" %>
-          <%= link_to "Admin", admin_root_path, class: "btn btn-secondary btn-sm" %>
+          <%= link_to t("nav.admin"), admin_root_path, class: "btn btn-secondary btn-sm" %>
         <% end %>
 
-        <div style="position:relative;" data-controller="dropdown">
-          <button style="display:flex; align-items:center; gap:6px; background:var(--cream);
-                         border:1.5px solid var(--border); border-radius:var(--radius-md);
-                         padding:6px 12px; cursor:pointer; font-family:var(--font-body);
-                         font-size:0.85rem; font-weight:500;"
-                  data-action="click->dropdown#toggle"
-                  type="button">
+        <details style="position:relative;">
+          <summary style="display:flex; align-items:center; gap:6px; background:var(--cream);
+                          border:1.5px solid var(--border); border-radius:var(--radius-md);
+                          padding:6px 12px; cursor:pointer; font-family:var(--font-body);
+                          font-size:0.85rem; font-weight:500; list-style:none;"
+                   aria-label="Menu utilisateur">
             <div style="width:26px; height:26px; background:var(--green-800); border-radius:50%;
                         display:flex; align-items:center; justify-content:center;
                         font-size:0.7rem; font-weight:700; color:white;">
@@ -211,21 +218,20 @@
             </div>
             <%= current_user.first_name %>
             ▾
-          </button>
+          </summary>
 
-          <div data-dropdown-target="menu"
-               style="display:none; position:absolute; right:0; top:calc(100% + 6px);
+          <div style="position:absolute; right:0; top:calc(100% + 6px);
                       background:white; border:1px solid var(--border-light);
                       border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
                       min-width:180px; z-index:200; overflow:hidden;">
-            <%= link_to "Déconnexion", destroy_user_session_path,
+            <%= link_to t("nav.sign_out"), destroy_user_session_path,
                   data: { turbo_method: :delete },
                   style: "display:block; padding:10px 16px; font-size:0.88rem; color:#dc2626; text-decoration:none;" %>
           </div>
-        </div>
+        </details>
       <% else %>
-        <%= link_to "Se connecter", new_user_session_path, class: "navbar-link" %>
-        <%= link_to "Essai gratuit", new_user_registration_path,
+        <%= link_to t("nav.sign_in"), new_user_session_path, class: "navbar-link" %>
+        <%= link_to t("nav.free_trial"), new_user_registration_path,
               class: "btn btn-primary btn-sm" %>
       <% end %>
     </div>
@@ -250,36 +256,43 @@
           <span style="font-family:var(--font-display); font-size:1rem; font-weight:700; color:white;">Planify Pro</span>
         </div>
         <p style="font-size:0.82rem; line-height:1.7; max-width:300px; color:rgba(255,255,255,0.6);">
-          La plateforme de gestion de rendez-vous pour les artisans et entreprises de services.
+          <%= t("footer.description") %>
         </p>
       </div>
 
       <div>
-        <div class="public-footer-heading">Légal</div>
+        <div class="public-footer-heading"><%= t("footer.legal") %></div>
         <div class="public-footer-links">
-          <%= link_to "Mentions légales", mentions_legales_path %>
-          <%= link_to "CGU", cgu_path %>
-          <%= link_to "CGV", cgv_path %>
-          <%= link_to "Confidentialité", confidentialite_path %>
+          <%= link_to t("footer.legal_notice"), mentions_legales_path %>
+          <%= link_to t("footer.terms_of_use"), cgu_path %>
+          <%= link_to t("footer.terms_of_sale"), cgv_path %>
+          <%= link_to t("footer.privacy"), confidentialite_path %>
         </div>
       </div>
 
       <div>
         <div class="public-footer-heading">Planify Pro</div>
         <div class="public-footer-links">
-          <%= link_to "Rechercher", search_path %>
-          <%= link_to "Contact", contact_path %>
+          <%= link_to t("nav.search"), search_path %>
+          <%= link_to t("nav.contact"), contact_path %>
           <% unless user_signed_in? %>
-            <%= link_to "Créer un compte entreprise", new_user_registration_path %>
+            <%= link_to t("footer.create_company_account"), new_user_registration_path %>
           <% end %>
         </div>
       </div>
     </div>
 
     <div class="public-footer-bottom">
-      <span>© <%= Date.current.year %> <%= legal_business_name %> — Tous droits réservés</span>
-      <span>Fait avec soin en France</span>
+      <span><%= t("footer.copyright", year: Date.current.year, business: legal_business_name) %></span>
+      <span><%= t("footer.made_in_france") %></span>
     </div>
   </footer>
+
+  <!-- PWA Initialization -->
+  <script type="module">
+    import { initPWA } from '/assets/pwa/register.js';
+    // Initialize PWA features if user is online and has JS enabled
+    initPWA();
+  </script>
 </body>
 </html>

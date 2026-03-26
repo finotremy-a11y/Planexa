@@ -1,0 +1,70 @@
+<% content_for :title, "Liste d'attente — #{@company.name}" %>
+
+<div style="max-width:600px; margin:48px auto; padding:0 24px;">
+  <div class="card">
+    <div style="padding:32px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <div style="font-size:2rem; margin-bottom:8px;">📋</div>
+        <h1 style="font-family:var(--font-display); font-size:1.6rem; margin-bottom:8px;">
+          Inscription en liste d'attente
+        </h1>
+        <p style="color:var(--text-500); font-size:0.9rem;">
+          <strong><%= @company.name %></strong> — Aucun créneau disponible ?
+          Inscrivez-vous et soyez notifié(e) dès qu'une place se libère.
+        </p>
+      </div>
+
+      <%= form_with model: @entry, url: waitlist_entries_path, method: :post do |f| %>
+        <%= f.hidden_field :company_id, value: @company.id %>
+
+        <div class="form-group" style="margin-bottom:20px;">
+          <%= f.label :service_type_id, "Prestation souhaitée *",
+                style: "display:block; font-weight:600; margin-bottom:8px;" %>
+          <%= f.collection_select :service_type_id, @service_types, :id, :name,
+                { prompt: "— Choisir une prestation —" },
+                { class: "form-control", required: true } %>
+        </div>
+
+        <% unless user_signed_in? %>
+          <div class="form-group" style="margin-bottom:20px;">
+            <%= f.label :client_name, "Votre nom *",
+                  style: "display:block; font-weight:600; margin-bottom:8px;" %>
+            <%= f.text_field :client_name,
+                  class: "form-control",
+                  required: true,
+                  placeholder: "Jean Dupont" %>
+          </div>
+
+          <div class="form-group" style="margin-bottom:20px;">
+            <%= f.label :client_email, "Votre e-mail *",
+                  style: "display:block; font-weight:600; margin-bottom:8px;" %>
+            <%= f.email_field :client_email,
+                  class: "form-control",
+                  required: true,
+                  placeholder: "jean@exemple.fr" %>
+          </div>
+        <% end %>
+
+        <div class="form-group" style="margin-bottom:24px;">
+          <%= f.label :preferred_date, "Date préférée (optionnel)",
+                style: "display:block; font-weight:600; margin-bottom:8px;" %>
+          <%= f.date_field :preferred_date,
+                class: "form-control",
+                min: Date.tomorrow.to_s %>
+        </div>
+
+        <% if @entry.errors.any? %>
+          <div class="alert alert-danger" style="margin-bottom:16px;">
+            <% @entry.errors.full_messages.each do |msg| %>
+              <div><%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%= f.submit "M'inscrire en liste d'attente",
+              class: "btn btn-primary btn-lg",
+              style: "width:100%; justify-content:center;" %>
+      <% end %>
+    </div>
+  </div>
+</div>

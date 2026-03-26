@@ -45,6 +45,19 @@ class StripePaymentServiceTest < ActiveSupport::TestCase
     @service.create_payment_intent
   end
 
+  test "create_payment_intent facture uniquement l'acompte si configure" do
+    @service_type.update!(deposit_kind: :deposit_fixed_cents, deposit_value: 2000)
+    mock_intent = OpenStruct.new(id: "pi_deposit_test")
+
+    Stripe::PaymentIntent.expects(:create)
+      .with(has_entry(:amount, 2000), anything)
+      .returns(mock_intent)
+
+    @service.create_payment_intent
+
+    assert_equal 2000, Payment.last.amount_cents
+  end
+
   # — Erreurs de garde —
   test "lève une erreur si stripe_account_id absent" do
     company = create(:company, stripe_account_id: nil)

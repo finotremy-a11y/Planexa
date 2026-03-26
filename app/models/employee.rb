@@ -5,6 +5,7 @@ class Employee < ApplicationRecord
   has_many :service_types, through: :employee_skills
   has_many :schedules, dependent: :destroy
   has_many :appointments, dependent: :nullify
+  has_many :employee_absences, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
 
@@ -15,8 +16,8 @@ class Employee < ApplicationRecord
 
   def full_name = "#{first_name} #{last_name}"
 
-  def available_at?(datetime, duration_minutes)
-    AvailabilityChecker.new(self, datetime, duration_minutes).available?
+  def available_at?(datetime, duration_minutes, urgent: false)
+    AvailabilityChecker.new(self, datetime, duration_minutes, urgent: urgent).available?
   end
 
   def photo_url

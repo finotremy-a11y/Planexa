@@ -28,6 +28,15 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "GET index avec filtre categorie role ne plante pas" do
+    create(:user, :client)
+    create(:user, :company_admin)
+
+    get admin_users_path, params: { q: { role_eq: "client" } }
+
+    assert_response :success
+  end
+
   # — Show —
   test "GET show retourne 200" do
     user = create(:user)

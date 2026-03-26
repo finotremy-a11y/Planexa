@@ -1,52 +1,59 @@
-<% content_for :title, "Rechercher une entreprise" %>
-<% content_for :meta_description do %>Trouvez un artisan ou professionnel de service près de chez vous. Réservez en ligne en quelques clics sur Planify Pro.<% end %>
+<% content_for :title, t("search.meta.title") %>
+<% content_for :meta_description do %><%= t("search.meta.description") %><% end %>
 <% content_for :canonical, search_url %>
 
 <div style="background:var(--green-900); padding:48px 48px 32px;">
   <div style="max-width:800px; margin:0 auto;">
     <h1 style="font-family:var(--font-display); color:white; font-size:2rem; margin-bottom:8px;">
-      Trouvez un professionnel près de chez vous
+      <%= t("search.hero.heading") %>
     </h1>
     <p style="color:rgba(255,255,255,0.65); margin-bottom:28px;">
-      Artisans, services à domicile, professionnels qualifiés
+      <%= t("search.hero.subheading") %>
     </p>
 
     <%= form_with url: search_path, method: :get, local: true do |f| %>
       <div style="background:white; border-radius:var(--radius-lg); padding:20px; display:flex; flex-direction:column; gap:14px;">
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px;">
           <div class="form-group" style="margin:0;">
-            <%= f.label :name, "Nom de l'entreprise", class: "form-label" %>
+            <%= f.label :name, t("search.form.company_name_label"), class: "form-label" %>
             <%= f.text_field :name, value: @search_params[:name],
-                  class: "form-control", placeholder: "Ex: Plomberie Dupont" %>
+                  class: "form-control", placeholder: t("search.form.company_name_placeholder") %>
           </div>
           <div class="form-group" style="margin:0;">
-            <%= f.label :activity, "Domaine d'activité", class: "form-label" %>
+            <%= f.label :activity, t("search.form.activity_label"), class: "form-label" %>
             <%= f.text_field :activity, value: @search_params[:activity],
-                  class: "form-control", placeholder: "Ex: plomberie, électricité..." %>
+                  class: "form-control", placeholder: t("search.form.activity_placeholder") %>
           </div>
           <div class="form-group" style="margin:0;">
-            <%= f.label :city, "Ville", class: "form-label" %>
+            <%= f.label :city, t("search.form.city_label"), class: "form-label" %>
             <%= f.text_field :city, value: @search_params[:city],
-                  class: "form-control", placeholder: "Ex: Lyon" %>
+                  class: "form-control", placeholder: t("search.form.city_placeholder") %>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <%= f.label :specialty, t("search.form.specialty_label"), class: "form-label" %>
+            <%= f.select :specialty,
+                  options_for_select(@medical_specialties, @search_params[:specialty]),
+                  { include_blank: t("search.form.specialty_placeholder") },
+                  class: "form-control" %>
           </div>
         </div>
 
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:0.85rem; font-weight:500;">Prix max :</span>
+            <span style="font-size:0.85rem; font-weight:500;"><%= t("search.form.max_price_label") %></span>
             <%= f.number_field :max_price, value: @search_params[:max_price],
                   class: "form-control", style: "width:100px;",
-                  placeholder: "€", min: 0 %>
+                  placeholder: t("search.form.max_price_placeholder"), min: 0 %>
           </div>
 
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
             <%= f.check_box :urgent, checked: @search_params[:urgent] == "1" %>
             <span style="font-size:0.88rem; font-weight:500; color:var(--gold-700);">
-              🔴 Disponible rapidement (urgent)
+              🔴 <%= t("search.form.urgent_label") %>
             </span>
           </label>
 
-          <%= f.submit "Rechercher", class: "btn btn-primary", style: "margin-left:auto;" %>
+          <%= f.submit t("search.form.submit"), class: "btn btn-primary", style: "margin-left:auto;" %>
         </div>
       </div>
     <% end %>
@@ -56,9 +63,9 @@
 <div style="max-width:1100px; margin:32px auto; padding:0 24px;">
   <% if @companies.any? %>
     <div style="margin-bottom:16px; color:var(--text-500); font-size:0.9rem;">
-      <%= @pagy.count %> résultat<%= @pagy.count > 1 ? 's' : '' %>
+      <%= t("search.results.count", count: @pagy.count) %>
       <% if params[:urgent] == "1" %>
-        · <span style="color:var(--gold-700); font-weight:500;">disponibles rapidement</span>
+        · <span style="color:var(--gold-700); font-weight:500;"><%= t("search.results.urgent_only") %></span>
       <% end %>
     </div>
 
@@ -81,6 +88,18 @@
                 <div style="font-size:0.8rem; color:var(--text-500);">
                   📍 <%= company.city %>
                 </div>
+                <% if company.healthcare_professional? && company.health_specialty.present? %>
+                  <div style="font-size:0.78rem; color:var(--green-800); margin-top:4px;">
+                    🩺 <%= company.health_specialty %>
+                  </div>
+                <% end %>
+                <% stats = @company_review_stats[company.id] %>
+                <% if stats.present? && stats[:review_count].positive? %>
+                  <div style="font-size:0.78rem; color:var(--text-500); margin-top:4px;">
+                    ★ <strong style="color:#b7791f;"><%= stats[:avg_rating] %></strong>
+                    · <%= t("search.results.reviews_count", count: stats[:review_count]) %>
+                  </div>
+                <% end %>
               </div>
             </div>
 
@@ -102,7 +121,7 @@
               <% end %>
             </div>
 
-            <%= link_to "Voir et prendre RDV →",
+            <%= link_to t("search.results.view_and_book"),
                   company_public_path(company),
                   class: "btn btn-primary",
                   style: "width:100%; justify-content:center;" %>
@@ -121,14 +140,14 @@
     <div class="card">
       <div style="text-align:center; padding:48px;">
         <div style="font-size:3rem; margin-bottom:12px;">🔍</div>
-        <h3>Aucun résultat</h3>
-        <p style="color:var(--text-400);">Essayez avec d'autres critères de recherche.</p>
-        <%= link_to "Effacer les filtres", search_path, class: "btn btn-secondary", style: "margin-top:16px;" %>
+        <h3><%= t("search.empty.no_results_title") %></h3>
+        <p style="color:var(--text-400);"><%= t("search.empty.no_results_description") %></p>
+        <%= link_to t("search.empty.clear_filters"), search_path, class: "btn btn-secondary", style: "margin-top:16px;" %>
       </div>
     </div>
   <% else %>
     <div style="text-align:center; color:var(--text-500); padding:48px;">
-      Commencez votre recherche ci-dessus.
+      <%= t("search.empty.initial_hint") %>
     </div>
   <% end %>
 </div>

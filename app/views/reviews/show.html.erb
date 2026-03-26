@@ -1,0 +1,62 @@
+<% content_for :title, t("reviews.your_review", company: @review.company.name) %>
+
+<div style="max-width:600px; margin:48px auto; padding:0 24px;">
+  <div class="card">
+    <div style="padding:32px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <div style="font-size:2rem; margin-bottom:8px;">⭐</div>
+        <h1 style="font-family:var(--font-display); font-size:1.6rem; margin-bottom:8px;">
+          <%= t("reviews.your_review", company: @review.company.name) %>
+        </h1>
+        <p style="color:var(--text-500); font-size:0.9rem;">
+          <%= t("reviews.service_label_review") %> <strong><%= @review.appointment.service_type.name %></strong>
+          <%= t("reviews.reviewed_on", date: @review.appointment.scheduled_at.strftime("%d/%m/%Y")) %>
+        </p>
+      </div>
+
+      <%= form_with url: submit_review_path(@review.token), method: :post do |f| %>
+        <%# Star rating %>
+        <div style="margin-bottom:24px;">
+          <label style="display:block; font-weight:600; margin-bottom:12px; text-align:center;">
+            <%= t("reviews.rating_label") %>
+          </label>
+          <div style="display:flex; justify-content:center; gap:8px; font-size:2.5rem;"
+               data-controller="star-rating">
+            <% (1..5).each do |i| %>
+              <label style="cursor:pointer; transition:transform 0.1s;"
+                     data-action="mouseenter->star-rating#hover mouseleave->star-rating#reset">
+                <input type="radio" name="review[rating]" value="<%= i %>"
+                       style="display:none;" required
+                       data-star-rating-target="input">
+                <span style="color:#ccc;" data-star-rating-target="star" data-value="<%= i %>">★</span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Comment %>
+        <div class="form-group" style="margin-bottom:24px;">
+              <%= f.label :comment, t("reviews.comment_label"),
+                style: "display:block; font-weight:600; margin-bottom:8px;" %>
+          <%= f.text_area :comment,
+                rows: 4,
+                placeholder: t("reviews.comment_placeholder"),
+                class: "form-control",
+                style: "resize:vertical;" %>
+        </div>
+
+        <% if @review.errors.any? %>
+          <div class="alert alert-danger" style="margin-bottom:16px;">
+            <% @review.errors.full_messages.each do |msg| %>
+              <div><%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+          <%= f.submit t("reviews.submit_button"),
+              class: "btn btn-primary btn-lg",
+              style: "width:100%; justify-content:center;" %>
+      <% end %>
+    </div>
+  </div>
+</div>

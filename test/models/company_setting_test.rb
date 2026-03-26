@@ -52,4 +52,19 @@ class CompanySettingTest < ActiveSupport::TestCase
     setting = build(:company_setting, assignment_mode: :assignment_manual)
     assert_not setting.auto_assignment?
   end
+
+  test "invalide avec intervalle de creneau superieur a 60" do
+    setting = build(:company_setting, slot_interval_minutes: 90)
+    assert_not setting.valid?
+  end
+
+  test "invalide avec limite de surbooking negative" do
+    setting = build(:company_setting, overbooking_limit_per_slot: -1)
+    assert_not setting.valid?
+  end
+
+  test "allow_controlled_overbooking? retourne true quand active" do
+    setting = build(:company_setting, allow_controlled_overbooking: true)
+    assert setting.allow_controlled_overbooking?
+  end
 end

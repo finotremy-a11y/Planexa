@@ -1,5 +1,5 @@
-<% content_for :title, "Abonnement #{@subscription.id}" %>
-<% content_for :page_title, "Abonnement" %>
+<% content_for :title, t("admin.subscription_show_title", id: @subscription.id) %>
+<% content_for :page_title, t("admin.subscriptions_title") %>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
   <div>
@@ -7,35 +7,35 @@
       <%= @company.name %>
     </h1>
     <div style="font-size:0.84rem; color:#64748b;">
-      Abonnement #<%= @subscription.id %>
+      <%= t("admin.subscription_show_title", id: @subscription.id) %>
     </div>
   </div>
   <div style="display:flex; gap:10px;">
     <% if @subscription.canceled? %>
-      <span class="btn btn-ghost btn-sm" style="pointer-events:none; opacity:0.7;">Deja annule</span>
+      <span class="btn btn-ghost btn-sm" style="pointer-events:none; opacity:0.7;"><%= t("admin.already_canceled") %></span>
     <% else %>
-      <%= button_to "Annuler abonnement",
+      <%= button_to t("admin.cancel_subscription_button"),
             cancel_admin_subscription_path(@subscription),
             method: :patch,
             class: "btn btn-danger btn-sm",
-            data: { turbo_confirm: "Annuler cet abonnement Stripe ?" } %>
+            data: { turbo_confirm: t("admin.cancel_subscription_confirm") } %>
     <% end %>
-    <%= link_to "Voir entreprise", admin_company_path(@company), class: "btn btn-primary btn-sm" %>
-    <%= link_to "Retour", admin_subscriptions_path, class: "btn btn-ghost btn-sm" %>
+    <%= link_to t("admin.view_company_button"), admin_company_path(@company), class: "btn btn-primary btn-sm" %>
+    <%= link_to t("admin.back_link"), admin_subscriptions_path, class: "btn btn-ghost btn-sm" %>
   </div>
 </div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
   <div class="admin-table-wrapper">
-    <div class="admin-table-header"><h3>Details Stripe</h3></div>
+    <div class="admin-table-header"><h3><%= t("admin.stripe_details") %></h3></div>
     <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
       <% [
-        ["Statut", @subscription.status.humanize],
+        [t("common.status"), t("statuses.#{@subscription.status}", default: @subscription.status.humanize)],
         ["Subscription ID", @subscription.stripe_subscription_id],
         ["Price ID", @subscription.stripe_price_id],
-        ["Fin periode", @subscription.current_period_end&.strftime("%d/%m/%Y") || "-"],
-        ["Fin essai", @subscription.trial_ends_at&.strftime("%d/%m/%Y") || "-"],
-        ["Suspendu le", @subscription.suspended_at&.strftime("%d/%m/%Y %H:%M") || "-"]
+        [t("admin.period_end"), @subscription.current_period_end&.strftime("%d/%m/%Y") || "-"],
+        [t("admin.trial_end"), @subscription.trial_ends_at&.strftime("%d/%m/%Y") || "-"],
+        [t("admin.suspended_at"), @subscription.suspended_at&.strftime("%d/%m/%Y %H:%M") || "-"]
       ].each do |label, value| %>
         <div style="display:flex; justify-content:space-between; gap:14px;">
           <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>
@@ -48,14 +48,14 @@
   </div>
 
   <div class="admin-table-wrapper">
-    <div class="admin-table-header"><h3>Entreprise</h3></div>
+    <div class="admin-table-header"><h3><%= t("common.company") %></h3></div>
     <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
       <% [
-        ["Nom", @company.name],
-        ["SIRET", @company.siret],
-        ["Ville", @company.city],
-        ["Statut", @company.status.humanize],
-        ["Email", @company.user.email]
+        [t("common.name"), @company.name],
+        [t("common.siret"), @company.siret],
+        [t("admin.city_header"), @company.city],
+        [t("common.status"), (@company.active? ? t("admin.active_label") : t("admin.suspended_label"))],
+        [t("common.email_label"), @company.user.email]
       ].each do |label, value| %>
         <div style="display:flex; justify-content:space-between; gap:14px;">
           <span style="font-size:0.82rem; color:#64748b; font-weight:500;"><%= label %></span>

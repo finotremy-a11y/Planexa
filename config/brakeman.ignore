@@ -7,6 +7,14 @@
     {
       "fingerprint": "e0f4d734ddbf8dcfb16155ab8c33495edbad33e26474ac6e0fdf846e5fc4b55f",
       "note": "Admin::CompaniesController — protégé par require_admin!, unscoped find intentionnel"
+    },
+    {
+      "fingerprint": "dd8aa9e37778108f002dcd737dccccf5c7c8d8363f2c0e696928623aac044301",
+      "note": "Admin::ReviewsController — protégé par require_admin!, unscoped find intentionnel"
+    },
+    {
+      "fingerprint": "3f0c1df58b15061e1d9e31cafc926aa32d0b2f3f37acfa7a9100431ff2365dbd",
+      "note": "WaitlistEntriesController — Company.find public intentionnel (même pattern que companies#show)"
     }
   ]
 }

@@ -23,15 +23,21 @@ class Stripe::WebhooksControllerTest < ActionDispatch::IntegrationTest
     payload = stripe_event_payload(type, data_object)
     mock_event = Stripe::Event.construct_from(JSON.parse(payload))
 
-    Stripe::Webhook.stub(:construct_event, mock_event) do
+    Stripe::Webhook.stubs(:construct_event).returns(mock_event)
+    begin
       post_webhook(payload)
+    ensure
+      Stripe::Webhook.unstub(:construct_event)
     end
   end
 
   # — Signature invalide —
   test "retourne 422 si signature Stripe invalide" do
-    Stripe::Webhook.stub(:construct_event, ->(*_) { raise Stripe::SignatureVerificationError.new("bad sig", "header") }) do
+    Stripe::Webhook.stubs(:construct_event).raises(Stripe::SignatureVerificationError.new("bad sig", "header"))
+    begin
       post_webhook("{}", signature: "invalid")
+    ensure
+      Stripe::Webhook.unstub(:construct_event)
     end
     assert_response 422
   end

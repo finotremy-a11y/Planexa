@@ -1,5 +1,5 @@
 <% content_for :title, @company.name %>
-<% content_for :page_title, "Entreprise — #{@company.name}" %>
+<% content_for :page_title, "#{t("common.company")} — #{@company.name}" %>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
   <div>
@@ -12,47 +12,47 @@
   </div>
   <div style="display:flex; gap:10px;">
     <% if @company.active? %>
-      <%= button_to "Suspendre",
+      <%= button_to t("admin.suspend_button"),
             suspend_admin_company_path(@company),
             method: :patch,
             class: "btn btn-danger btn-sm",
-            data: { turbo_confirm: "Suspendre ce compte ?" } %>
+            data: { turbo_confirm: t("admin.suspend_confirm") } %>
     <% else %>
-      <%= button_to "Réactiver",
+      <%= button_to t("admin.reactivate_button"),
             reactivate_admin_company_path(@company),
             method: :patch,
             class: "btn btn-primary btn-sm" %>
     <% end %>
-    <%= link_to "← Retour", admin_companies_path, class: "btn btn-ghost btn-sm" %>
+    <%= link_to t("admin.back_link"), admin_companies_path, class: "btn btn-ghost btn-sm" %>
   </div>
 </div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
   <div class="admin-stat">
     <div class="admin-stat-value"><%= @company.employees.count %></div>
-    <div class="admin-stat-label">Employés</div>
+    <div class="admin-stat-label"><%= t("employees.title") %></div>
   </div>
   <div class="admin-stat">
     <div class="admin-stat-value"><%= @company.appointments.count %></div>
-    <div class="admin-stat-label">Rendez-vous total</div>
+    <div class="admin-stat-label"><%= t("admin.total_appointments_label") %></div>
   </div>
   <div class="admin-stat">
     <div class="admin-stat-value"><%= @company.service_types.count %></div>
-    <div class="admin-stat-label">Prestations</div>
+    <div class="admin-stat-label"><%= t("common.services") %></div>
   </div>
 </div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
   <div class="admin-table-wrapper">
-    <div class="admin-table-header"><h3>Informations</h3></div>
+    <div class="admin-table-header"><h3><%= t("admin.information") %></h3></div>
     <div style="padding:16px 20px; display:flex; flex-direction:column; gap:12px;">
       <% [
-        ["SIRET", @company.siret],
-        ["Email", @company.user.email],
-        ["Téléphone", @company.phone.presence || "—"],
-        ["Site web", @company.website.presence || "—"],
-        ["Inscription", @company.created_at.strftime("%d/%m/%Y")],
-        ["Statut", @company.status.humanize]
+        [t("common.siret"), @company.siret],
+        [t("common.email_label"), @company.user.email],
+        [t("common.phone"), @company.phone.presence || "—"],
+        [t("profiles.website"), @company.website.presence || "—"],
+        [t("admin.registered_header"), @company.created_at.strftime("%d/%m/%Y")],
+        [t("common.status"), (@company.active? ? t("admin.active_label") : t("admin.suspended_label"))]
       ].each do |label, value| %>
         <div style="display:flex; justify-content:space-between; font-size:0.88rem;">
           <span style="color:#64748b; font-weight:500;"><%= label %></span>
@@ -63,15 +63,15 @@
   </div>
 
   <div class="admin-table-wrapper">
-    <div class="admin-table-header"><h3>Abonnement</h3></div>
+    <div class="admin-table-header"><h3><%= t("admin.subscription_header") %></h3></div>
     <div style="padding:16px 20px;">
       <% if @subscription %>
         <div style="display:flex; flex-direction:column; gap:12px;">
           <% [
-            ["Statut", @subscription.status.humanize],
+            [t("common.status"), t("statuses.#{@subscription.status}", default: @subscription.status.humanize)],
             ["Stripe ID", @subscription.stripe_subscription_id],
-            ["Fin période", @subscription.current_period_end&.strftime("%d/%m/%Y") || "—"],
-            ["Fin essai", @subscription.trial_ends_at&.strftime("%d/%m/%Y") || "—"]
+            [t("admin.period_end"), @subscription.current_period_end&.strftime("%d/%m/%Y") || "—"],
+            [t("admin.trial_end"), @subscription.trial_ends_at&.strftime("%d/%m/%Y") || "—"]
           ].each do |label, value| %>
             <div style="display:flex; justify-content:space-between; font-size:0.88rem;">
               <span style="color:#64748b; font-weight:500;"><%= label %></span>
@@ -83,7 +83,7 @@
           <% end %>
         </div>
       <% else %>
-        <p style="color:#94a3b8; font-size:0.85rem;">Aucun abonnement.</p>
+        <p style="color:#94a3b8; font-size:0.85rem;"><%= t("admin.no_subscription_row") %>.</p>
       <% end %>
     </div>
   </div>
@@ -91,13 +91,13 @@
 
 <div class="admin-table-wrapper" style="margin-top:20px;">
   <div class="admin-table-header">
-    <h3>Derniers rendez-vous</h3>
+    <h3><%= t("admin.last_appointments") %></h3>
   </div>
   <% if @appointments.any? %>
     <table style="width:100%; border-collapse:collapse;">
       <thead>
         <tr style="background:#f8fafc;">
-          <% ["Date", "Prestation", "Client", "Employé", "Statut"].each do |header| %>
+          <% [t("common.date"), t("common.service_type"), t("common.client"), t("common.employee"), t("common.status")].each do |header| %>
             <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                        font-weight:600; text-transform:uppercase;
                        color:#94a3b8; border-bottom:1px solid #e2e8f0;">
@@ -131,7 +131,7 @@
               bg, fg = (colors[appointment.status] || "#f1f5f9,#64748b").split(',') %>
               <span style="font-size:0.72rem; font-weight:500; padding:2px 7px;
                            border-radius:99px; background:<%= bg %>; color:<%= fg %>;">
-                <%= appointment.status.humanize %>
+                <%= t("statuses.#{appointment.status}", default: appointment.status.humanize) %>
               </span>
             </td>
           </tr>
@@ -139,6 +139,6 @@
       </tbody>
     </table>
   <% else %>
-    <p style="padding:20px; color:#94a3b8; font-size:0.85rem;">Aucun rendez-vous.</p>
+    <p style="padding:20px; color:#94a3b8; font-size:0.85rem;"><%= t("appointments.empty_state") %></p>
   <% end %>
 </div>

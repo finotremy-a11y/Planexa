@@ -33,6 +33,17 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 2, User.roles[:admin]
   end
 
+  test "has correct locale enum values" do
+    assert_equal "fr", User.locales[:fr]
+    assert_equal "en", User.locales[:en]
+    assert_equal "es", User.locales[:es]
+  end
+
+  test "defaults locale to fr" do
+    user = create(:user)
+    assert_equal "fr", user.locale
+  end
+
   # — Methods —
   test "full_name retourne prénom + nom" do
     user = build(:user, first_name: "Jean", last_name: "Dupont")

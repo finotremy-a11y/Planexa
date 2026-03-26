@@ -57,4 +57,25 @@ class ServiceTypeTest < ActiveSupport::TestCase
     st = create(:service_type)
     assert_respond_to st, :appointments
   end
+
+  test "calcule un acompte fixe" do
+    st = create(:service_type, price_cents: 9000, deposit_kind: :deposit_fixed_cents, deposit_value: 3000)
+
+    assert st.deposit_required?
+    assert_equal 3000, st.deposit_amount_cents
+  end
+
+  test "calcule un acompte en pourcentage" do
+    st = create(:service_type, price_cents: 8000, deposit_kind: :deposit_percentage, deposit_value: 25)
+
+    assert st.deposit_required?
+    assert_equal 2000, st.deposit_amount_cents
+  end
+
+  test "invalide un pourcentage d'acompte hors bornes" do
+    st = build(:service_type, deposit_kind: :deposit_percentage, deposit_value: 120)
+
+    assert_not st.valid?
+    assert st.errors[:deposit_value].any?
+  end
 end

@@ -1,41 +1,41 @@
-<% content_for :title, "Dashboard Admin" %>
-<% content_for :page_title, "Dashboard" %>
+<% content_for :title, t("admin.dashboard_title") %>
+<% content_for :page_title, t("admin.dashboard_title") %>
 
 <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
   <div class="admin-stat" style="border-top:3px solid #2C5F2E;">
     <div class="admin-stat-value"><%= @total_companies %></div>
-    <div class="admin-stat-label">Entreprises totales</div>
-    <div class="admin-stat-trend up">+<%= @new_companies_30d %> ce mois</div>
+    <div class="admin-stat-label"><%= t("admin.total_companies") %></div>
+    <div class="admin-stat-trend up">+<%= @new_companies_30d %> <%= t("admin.this_month_trend") %></div>
   </div>
 
   <div class="admin-stat" style="border-top:3px solid #B8860B;">
     <div class="admin-stat-value"><%= @active_subs %></div>
-    <div class="admin-stat-label">Abonnements actifs</div>
-    <div class="admin-stat-trend up"><%= @trialing_subs %> en essai</div>
+    <div class="admin-stat-label"><%= t("admin.active_subscriptions") %></div>
+    <div class="admin-stat-trend up"><%= @trialing_subs %> <%= t("admin.in_trial") %></div>
   </div>
 
   <div class="admin-stat" style="border-top:3px solid #6366f1;">
     <div class="admin-stat-value"><%= @total_clients %></div>
-    <div class="admin-stat-label">Clients inscrits</div>
-    <div class="admin-stat-trend up">+<%= @new_clients_30d %> ce mois</div>
+    <div class="admin-stat-label"><%= t("admin.registered_clients") %></div>
+    <div class="admin-stat-trend up">+<%= @new_clients_30d %> <%= t("admin.this_month_trend") %></div>
   </div>
 
   <div class="admin-stat" style="border-top:3px solid #0ea5e9;">
     <div class="admin-stat-value"><%= number_to_currency(@mrr, unit:"€", separator:",", delimiter:" ", format:"%n %u") %></div>
-    <div class="admin-stat-label">MRR estimé</div>
+    <div class="admin-stat-label"><%= t("admin.estimated_mrr") %></div>
     <div class="admin-stat-trend">
-      <%= @past_due_subs.positive? ? "⚠️ #{@past_due_subs} impayé(s)" : "✓ Tout à jour" %>
+      <%= @past_due_subs.positive? ? "⚠️ #{t("admin.overdue_count", count: @past_due_subs)}" : "✓ #{t("admin.all_paid")}" %>
     </div>
   </div>
 </div>
 
 <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:24px;">
   <% [
-    ["Actifs",    @active_subs,    "#16a34a"],
-    ["Essai",     @trialing_subs,  "#B8860B"],
-    ["Impayés",   @past_due_subs,  "#dc2626"],
-    ["Suspendus", @suspended_companies, "#f97316"],
-    ["Annulés",   @canceled_subs,  "#94a3b8"]
+    [t("admin.status_active"),    @active_subs,    "#16a34a"],
+    [t("admin.status_trialing"),  @trialing_subs,  "#B8860B"],
+    [t("admin.status_overdue"),   @past_due_subs,  "#dc2626"],
+    [t("admin.status_suspended"), @suspended_companies, "#f97316"],
+    [t("admin.status_canceled"),  @canceled_subs,  "#94a3b8"]
   ].each do |label, count, color| %>
     <div style="background:white; border-radius:8px; padding:14px 16px;
                 border:1px solid #e2e8f0; border-left:4px solid <%= color %>;">
@@ -48,8 +48,8 @@
 <div style="display:grid; grid-template-columns:1fr 380px; gap:20px;">
   <div class="admin-table-wrapper">
     <div class="admin-table-header">
-      <h3>Dernières entreprises inscrites</h3>
-      <%= link_to "Voir tout →", admin_companies_path,
+      <h3><%= t("admin.recent_companies") %></h3>
+      <%= link_to t("common.see_all"), admin_companies_path,
             style: "font-size:0.82rem; color:#2C5F2E;" %>
     </div>
     <table style="width:100%; border-collapse:collapse;">
@@ -57,16 +57,16 @@
         <tr style="background:#f8fafc;">
           <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                      font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
-                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">Entreprise</th>
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;"><%= t("admin.company_header") %></th>
           <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                      font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
-                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">Statut</th>
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;"><%= t("admin.status_header") %></th>
           <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                      font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
-                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">Abonnement</th>
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;"><%= t("admin.subscription_header") %></th>
           <th style="padding:10px 16px; text-align:left; font-size:0.72rem;
                      font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
-                     color:#94a3b8; border-bottom:1px solid #e2e8f0;">Inscrit le</th>
+                     color:#94a3b8; border-bottom:1px solid #e2e8f0;"><%= t("admin.registered_header") %></th>
         </tr>
       </thead>
       <tbody>
@@ -86,16 +86,16 @@
                            border-radius:99px;
                            background:<%= company.active? ? '#dcfce7' : '#fee2e2' %>;
                            color:<%= company.active? ? '#16a34a' : '#dc2626' %>;">
-                <%= company.active? ? "Actif" : company.status.humanize %>
+                <%= company.active? ? t("admin.active_label") : t("admin.suspended_label") %>
               </span>
             </td>
             <td style="padding:12px 16px;">
               <% if company.subscription %>
                 <span style="font-size:0.75rem; color:#64748b;">
-                  <%= company.subscription.status.humanize %>
+                  <%= t("statuses.#{company.subscription.status}", default: company.subscription.status.humanize) %>
                 </span>
               <% else %>
-                <span style="font-size:0.75rem; color:#cbd5e1;">Aucun</span>
+                <span style="font-size:0.75rem; color:#cbd5e1;"><%= t("admin.no_subscription_row") %></span>
               <% end %>
             </td>
             <td style="padding:12px 16px; font-size:0.82rem; color:#64748b;">
@@ -109,9 +109,9 @@
 
   <div class="admin-table-wrapper">
     <div class="admin-table-header">
-      <h3>⚠️ Impayés</h3>
+      <h3>⚠️ <%= t("admin.overdue") %></h3>
       <span style="font-size:0.78rem; color:#dc2626; font-weight:600;">
-        <%= @overdue_subscriptions.count %> compte(s)
+        <%= t("admin.overdue_count", count: @overdue_subscriptions.count) %>
       </span>
     </div>
     <% if @overdue_subscriptions.any? %>
@@ -124,17 +124,17 @@
                 <%= subscription.company.name %>
               </div>
               <div style="font-size:0.75rem; color:#94a3b8;">
-                Depuis <%= subscription.current_period_end&.strftime("%d/%m") %>
+                <%= t("admin.since_label") %> <%= subscription.current_period_end&.strftime("%d/%m") %>
               </div>
             </div>
-            <%= link_to "Voir →", admin_company_path(subscription.company),
+            <%= link_to t("common.view"), admin_company_path(subscription.company),
                   style: "font-size:0.78rem; color:#2C5F2E;" %>
           </div>
         <% end %>
       </div>
     <% else %>
       <div style="padding:32px; text-align:center; color:#94a3b8; font-size:0.85rem;">
-        ✅ Aucun impayé
+        ✅ <%= t("admin.no_overdue") %>
       </div>
     <% end %>
   </div>

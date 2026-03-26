@@ -1,0 +1,107 @@
+<% content_for :title, t("booking_groups.show_title", id: @booking_group.id) %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1><%= t("booking_groups.show_title", id: @booking_group.id) %></h1>
+    <p><%= t("booking_groups.created_label", date: @booking_group.created_at.strftime("%d/%m/%Y")) %></p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to t("common.back"), company_booking_groups_path, class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 300px; gap:24px;">
+  <%# ── Détail des prestations ── %>
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);"><%= t("booking_groups.included_services") %></h3>
+    </div>
+    <div class="card-body">
+      <% @booking_group.appointments.order(:scheduled_at).each_with_index do |appt, idx| %>
+        <div style="display:flex; gap:12px; padding:12px 0;
+                    <%= 'border-bottom:1px solid var(--border);' unless idx == @booking_group.appointments.size - 1 %>">
+          <div style="width:28px; height:28px; border-radius:50%; background:var(--green-100);
+                      color:var(--green-700); display:flex; align-items:center;
+                      justify-content:center; font-weight:600; font-size:14px; flex-shrink:0;">
+            <%= idx + 1 %>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:500;"><%= appt.service_type.name %></div>
+            <div style="font-size:0.82rem; color:var(--text-400);">
+              <%= appt.scheduled_at.strftime("%Hh%M") %> — <%= appt.duration_minutes %> min
+              <% if appt.employee %>
+                — <%= appt.employee.first_name %> <%= appt.employee.last_name %>
+              <% end %>
+            </div>
+          </div>
+          <div>
+            <% case appt.status %>
+            <% when "pending" %>
+              <span class="badge badge-yellow"><%= t("statuses.pending") %></span>
+            <% when "confirmed" %>
+              <span class="badge badge-green"><%= t("statuses.confirmed") %></span>
+            <% when "cancelled" %>
+              <span class="badge badge-red"><%= t("statuses.cancelled") %></span>
+            <% when "completed" %>
+              <span class="badge badge-grey"><%= t("statuses.completed") %></span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Informations résumé ── %>
+  <div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-body">
+        <div style="margin-bottom:12px;">
+          <div style="font-size:0.8rem; color:var(--text-400);"><%= t("common.client") %></div>
+          <div style="font-weight:500;">
+            <% if @booking_group.client_user %>
+              <%= @booking_group.client_user.first_name %>
+              <%= @booking_group.client_user.last_name %>
+            <% else %>
+              <%= t("booking_groups.not_logged_in") %>
+            <% end %>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:0.8rem; color:var(--text-400);"><%= t("booking_groups.total_duration") %></div>
+          <div style="font-weight:500;"><%= @booking_group.total_duration_minutes %> min</div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:0.8rem; color:var(--text-400);"><%= t("booking_groups.total_amount") %></div>
+          <div style="font-weight:600; color:var(--green-800);">
+            <%= number_to_currency(@booking_group.total_amount_cents / 100.0, unit: "€",
+                  separator: ",", format: "%n %u") %>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; color:var(--text-400);"><%= t("common.status") %></div>
+          <div>
+            <% case @booking_group.status %>
+            <% when "pending" %>
+              <span class="badge badge-yellow"><%= t("statuses.pending") %></span>
+            <% when "confirmed" %>
+              <span class="badge badge-green"><%= t("statuses.confirmed") %></span>
+            <% when "cancelled" %>
+              <span class="badge badge-red"><%= t("statuses.cancelled") %></span>
+            <% when "completed" %>
+              <span class="badge badge-grey"><%= t("statuses.completed") %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if @booking_group.client_notes.present? %>
+      <div class="card">
+        <div class="card-body">
+          <div style="font-size:0.8rem; color:var(--text-400); margin-bottom:4px;"><%= t("booking_groups.client_notes") %></div>
+          <p><%= @booking_group.client_notes %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

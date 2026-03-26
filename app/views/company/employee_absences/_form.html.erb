@@ -1,0 +1,39 @@
+<%= form_with(model: absence, url: absence.persisted? ? company_employee_employee_absence_path(@employee, absence) : company_employee_employee_absences_path(@employee)) do |f| %>
+  <% if absence.errors.any? %>
+    <div class="alert alert-danger" style="margin-bottom:16px;">
+      <strong><%= pluralize(absence.errors.count, "erreur") %> :</strong>
+      <ul style="margin:8px 0 0;">
+        <% absence.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group" style="margin-bottom:16px;">
+    <%= f.label :reason, "Motif", class: "form-label" %>
+    <%= f.select :reason,
+          EmployeeAbsence::REASONS.map { |r| [I18n.t("employee_absence.reasons.#{r}", default: r.humanize), r] },
+          {}, class: "form-select" %>
+  </div>
+
+  <div class="form-group" style="margin-bottom:16px;">
+    <%= f.label :starts_at, "Début", class: "form-label" %>
+    <%= f.datetime_local_field :starts_at, class: "form-input", required: true %>
+  </div>
+
+  <div class="form-group" style="margin-bottom:16px;">
+    <%= f.label :ends_at, "Fin", class: "form-label" %>
+    <%= f.datetime_local_field :ends_at, class: "form-input", required: true %>
+  </div>
+
+  <div class="form-group" style="margin-bottom:16px;">
+    <%= f.label :note, "Note (optionnel)", class: "form-label" %>
+    <%= f.text_area :note, class: "form-input", rows: 3, placeholder: "Informations complémentaires…" %>
+  </div>
+
+  <div class="form-actions" style="margin-top:24px;">
+    <%= f.submit absence.persisted? ? "Mettre à jour" : "Ajouter l'absence", class: "btn btn-primary" %>
+    <%= link_to "Annuler", company_employee_employee_absences_path(@employee), class: "btn btn-ghost" %>
+  </div>
+<% end %>

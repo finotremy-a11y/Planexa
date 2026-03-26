@@ -1,0 +1,106 @@
+<% content_for :title, "Fidélité — #{@company.name}" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Fidélité — <%= @company.name %></h1>
+    <p><%= @setting.points_per_appointment %> points par rendez-vous complété</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "← Retour", client_loyalty_index_path, class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<%# ── Barre de progression ── %>
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-body">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+      <h3 style="font-family:var(--font-display);margin:0;"><%= @balance %> points</h3>
+      <span style="color:var(--grey-500);font-size:14px;">
+        Prochain code à <%= @setting.loyalty_points_threshold %> pts
+      </span>
+    </div>
+    <div style="background:var(--grey-100);border-radius:8px;height:16px;overflow:hidden;">
+      <div style="background:var(--green-600);height:100%%;width:<%= @progress %>%%;border-radius:8px;transition:width 0.3s;"></div>
+    </div>
+    <p style="color:var(--grey-400);font-size:13px;margin-top:6px;">
+      <% remaining = @setting.loyalty_points_threshold - @balance %>
+      <% if remaining > 0 %>
+        Encore <%= remaining %> points pour obtenir un code de réduction de
+        <%= number_to_currency(@setting.loyalty_discount_value_cents / 100.0, unit: "€", separator: ",", format: "%n %u") %>
+      <% else %>
+        🎉 Seuil atteint ! Un code de réduction a été généré.
+      <% end %>
+    </p>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+  <%# ── Codes de réduction ── %>
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Mes codes de réduction</h3>
+    </div>
+    <div class="card-body">
+      <% if @discount_codes.empty? %>
+        <p style="color:var(--grey-400);text-align:center;padding:24px 0;">Aucun code pour le moment.</p>
+      <% else %>
+        <% @discount_codes.each do |code| %>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--grey-100);">
+            <div>
+              <code style="font-size:15px;font-weight:600;color:var(--green-700);"><%= code.code %></code>
+              <span style="font-size:13px;color:var(--grey-500);margin-left:8px;">
+                − <%= code.discount_display %>
+              </span>
+            </div>
+            <div>
+              <% if code.usable? %>
+                <span class="badge badge-green">Actif</span>
+              <% elsif code.used? %>
+                <span class="badge badge-grey">Utilisé</span>
+              <% else %>
+                <span class="badge badge-red">Expiré</span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Historique des points ── %>
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Historique des points</h3>
+    </div>
+    <div class="card-body">
+      <% if @history.empty? %>
+        <p style="color:var(--grey-400);text-align:center;padding:24px 0;">Aucun historique.</p>
+      <% else %>
+        <% @history.each do |entry| %>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--grey-100);">
+            <div>
+              <span style="font-size:14px;">
+                <% case entry.reason %>
+                <% when "earned" %>
+                  ✅ Points gagnés
+                <% when "redeemed" %>
+                  🎁 Points utilisés
+                <% when "expired" %>
+                  ⏰ Points expirés
+                <% when "manual" %>
+                  ✏️ Ajustement manuel
+                <% end %>
+              </span>
+              <span style="font-size:12px;color:var(--grey-400);display:block;">
+                <%= entry.created_at.strftime("%d/%m/%Y à %Hh%M") %>
+              </span>
+            </div>
+            <span style="font-weight:600;color:<%= entry.points.positive? ? 'var(--green-700)' : 'var(--red-600)' %>;">
+              <%= entry.points.positive? ? "+#{entry.points}" : entry.points %>
+            </span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

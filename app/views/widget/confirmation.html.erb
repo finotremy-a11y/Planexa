@@ -1,0 +1,58 @@
+<div style="text-align:center; padding:24px 0 16px;">
+  <div style="display:inline-block; background:#d1fae5; border-radius:50%; width:56px; height:56px;
+               line-height:56px; font-size:1.8rem; margin-bottom:12px;">✓</div>
+  <h2 style="margin:0 0 6px; font-size:1.2rem; color:#065f46;">Réservation confirmée !</h2>
+  <p style="margin:0; color:#6b7280; font-size:0.875rem;">
+    Un récapitulatif vous a été envoyé par e-mail.
+  </p>
+</div>
+
+<div style="border:1.5px solid #e5e7eb; border-radius:8px; overflow:hidden; margin-bottom:20px;">
+  <div style="background:#f9fafb; padding:10px 14px; border-bottom:1px solid #e5e7eb;
+               font-weight:600; font-size:0.875rem;">
+    Récapitulatif de votre réservation
+  </div>
+  <div style="padding:12px 14px;">
+    <% @booking_group.appointments.order(:scheduled_at).each_with_index do |appt, i| %>
+      <div style="display:flex; align-items:start; justify-content:space-between;
+                   padding:<%= i > 0 ? "10px 0 0" : "0" %>; <%= i > 0 ? "border-top:1px solid #f3f4f6; margin-top:10px;" : "" %>">
+        <div>
+          <div style="font-weight:500; font-size:0.875rem;"><%= appt.service_type.name %></div>
+          <div style="color:#6b7280; font-size:0.8rem;">
+            🗓 <%= l(appt.scheduled_at, format: :long) rescue appt.scheduled_at.strftime("%d/%m/%Y à %H:%M") %>
+          </div>
+          <% if appt.employee %>
+            <div style="color:#6b7280; font-size:0.8rem;">
+              👤 <%= appt.employee.full_name %>
+            </div>
+          <% end %>
+        </div>
+        <% if appt.service_type.price_cents > 0 %>
+          <span style="font-weight:600; color:#065f46; font-size:0.875rem; white-space:nowrap;">
+            <%= number_to_currency(appt.service_type.price_cents / 100.0, unit: "€",
+                  separator: ",", delimiter: " ", format: "%n %u") %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div style="border-top:2px solid #e5e7eb; margin-top:12px; padding-top:10px;
+                 display:flex; justify-content:space-between; font-weight:700;">
+      <span>Total</span>
+      <span style="color:#065f46;">
+        <%= number_to_currency(@booking_group.total_amount_cents / 100.0, unit: "€",
+              separator: ",", delimiter: " ", format: "%n %u") %>
+      </span>
+    </div>
+  </div>
+</div>
+
+<%= link_to "← Nouvelle réservation",
+      widget_booking_path(company_token: params[:company_token]),
+      style: "display:block; text-align:center; color:#6b7280; font-size:0.875rem;
+              text-decoration:none;" %>
+
+<p style="text-align:center; margin-top:14px; font-size:0.72rem; color:#9ca3af;">
+  Propulsé par <a href="https://planifypro.app" target="_blank"
+    style="color:#6b7280; text-decoration:none;">PlanifyPro</a>
+</p>

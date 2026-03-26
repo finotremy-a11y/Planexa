@@ -1,0 +1,72 @@
+<% content_for :title, "Avis ##{@review.id}" %>
+<% content_for :page_title, "Avis client" %>
+
+<div style="max-width:760px;">
+  <div class="card" style="margin-bottom:16px;">
+    <div style="padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+        <div>
+          <h2 style="margin-bottom:4px;"><%= @review.client_user.full_name %></h2>
+          <small style="color:var(--text-400);">
+            <%= @review.company.name %> — Soumis le <%= @review.submitted_at.strftime("%d/%m/%Y à %H:%M") %>
+          </small>
+        </div>
+        <span class="badge <%= @review.published? ? 'badge-success' : 'badge-warning' %>">
+          <%= @review.published? ? "Publié" : "Non publié" %>
+        </span>
+      </div>
+
+      <dl style="display:grid; grid-template-columns:auto 1fr; gap:8px 24px; margin-bottom:20px;">
+        <dt style="color:var(--text-400);">Note</dt>
+        <dd>
+          <span style="color:#f59e0b; font-size:1.2rem;">
+            <%= "★" * @review.rating %><%= "☆" * (5 - @review.rating) %>
+          </span>
+          (<%= @review.rating %>/5)
+        </dd>
+
+        <dt style="color:var(--text-400);">Entreprise</dt>
+        <dd><%= link_to @review.company.name, admin_company_path(@review.company) %></dd>
+
+        <dt style="color:var(--text-400);">Prestation</dt>
+        <dd><%= @review.appointment.service_type.name %></dd>
+
+        <dt style="color:var(--text-400);">Date RDV</dt>
+        <dd><%= @review.appointment.scheduled_at.strftime("%A %d %B %Y") %></dd>
+
+        <% if @review.published_at %>
+          <dt style="color:var(--text-400);">Publié le</dt>
+          <dd><%= @review.published_at.strftime("%d/%m/%Y à %H:%M") %></dd>
+        <% end %>
+      </dl>
+
+      <% if @review.comment.present? %>
+        <div style="background:var(--gray-50); border-radius:var(--radius); padding:16px; margin-bottom:20px;">
+          <p style="margin:0; font-style:italic; color:var(--text-600); line-height:1.7;">
+            "<%= @review.comment %>"
+          </p>
+        </div>
+      <% end %>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <%= link_to "← Retour", admin_reviews_path, class: "btn btn-secondary btn-sm" %>
+
+        <% if @review.published? %>
+          <%= button_to "Dépublier", unpublish_admin_review_path(@review),
+                method: :patch,
+                class: "btn btn-warning btn-sm",
+                data: { turbo_confirm: "Dépublier cet avis ?" } %>
+        <% else %>
+          <%= button_to "Publier", publish_admin_review_path(@review),
+                method: :patch,
+                class: "btn btn-success btn-sm" %>
+        <% end %>
+
+        <%= button_to "Supprimer", admin_review_path(@review),
+              method: :delete,
+              class: "btn btn-danger btn-sm",
+              data: { turbo_confirm: "Supprimer définitivement cet avis ?" } %>
+      </div>
+    </div>
+  </div>
+</div>

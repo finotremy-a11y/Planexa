@@ -27,6 +27,7 @@ class Company::SettingsControllerTest < ActionDispatch::IntegrationTest
   test "GET show retourne 200" do
     get company_settings_path
     assert_response :success
+    assert_select "h3", text: "🔔 Rappels clients (multi-canal)"
   end
 
   # — Update —
@@ -35,13 +36,29 @@ class Company::SettingsControllerTest < ActionDispatch::IntegrationTest
       company_setting: {
         booking_mode:    "booking_public",
         payment_mode:    "payment_in_app",
-        assignment_mode: "assignment_automatic"
+        assignment_mode: "assignment_automatic",
+        email_reminders_enabled: "1",
+        sms_reminders_enabled: "0",
+        push_reminders_enabled: "1",
+        slot_interval_minutes: "20",
+        buffer_between_appointments_minutes: "10",
+        allow_controlled_overbooking: "1",
+        overbooking_limit_per_slot: "1",
+        emergency_daily_capacity: "4"
       }
     }
     setting = @company.reload.setting
     assert setting.booking_public?
     assert setting.payment_in_app?
     assert setting.assignment_automatic?
+    assert setting.email_reminders_enabled?
+    assert_not setting.sms_reminders_enabled?
+    assert setting.push_reminders_enabled?
+    assert_equal 20, setting.slot_interval_minutes
+    assert_equal 10, setting.buffer_between_appointments_minutes
+    assert setting.allow_controlled_overbooking?
+    assert_equal 1, setting.overbooking_limit_per_slot
+    assert_equal 4, setting.emergency_daily_capacity
     assert_redirected_to company_settings_path
   end
 

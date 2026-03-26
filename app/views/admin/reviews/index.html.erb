@@ -1,0 +1,67 @@
+<% content_for :title, "Modération des avis" %>
+<% content_for :page_title, "Avis clients" %>
+
+<div style="margin-bottom:24px;">
+  <div style="display:flex; gap:16px; flex-wrap:wrap;">
+    <div class="card" style="padding:16px 24px; flex:1; min-width:160px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700; color:var(--green-800);">
+        <%= Review.submitted.published.count %>
+      </div>
+      <div style="color:var(--text-400); font-size:0.82rem;">Publiés</div>
+    </div>
+    <div class="card" style="padding:16px 24px; flex:1; min-width:160px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700; color:var(--warning);">
+        <%= Review.submitted.where(published_at: nil).count %>
+      </div>
+      <div style="color:var(--text-400); font-size:0.82rem;">Non publiés</div>
+    </div>
+    <div class="card" style="padding:16px 24px; flex:1; min-width:160px; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700;">
+        <%= Review.submitted.average(:rating)&.round(1) || "—" %>
+      </div>
+      <div style="color:var(--text-400); font-size:0.82rem;">Note moyenne</div>
+    </div>
+  </div>
+</div>
+
+<% if @reviews.any? %>
+  <div class="card" style="overflow:hidden;">
+    <table class="table" style="margin:0;">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Entreprise</th>
+          <th>Note</th>
+          <th>Statut</th>
+          <th>Soumis le</th>
+          <th style="text-align:right;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reviews.each do |review| %>
+          <tr>
+            <td><%= review.client_user.full_name %></td>
+            <td><%= review.company.name %></td>
+            <td style="color:#f59e0b;"><%= "★" * review.rating %></td>
+            <td>
+              <span class="badge <%= review.published? ? 'badge-success' : 'badge-warning' %>">
+                <%= review.published? ? "Publié" : "Non publié" %>
+              </span>
+            </td>
+            <td style="font-size:0.85rem; color:var(--text-400);">
+              <%= review.submitted_at.strftime("%d/%m/%Y") %>
+            </td>
+            <td style="text-align:right;">
+              <%= link_to "Voir", admin_review_path(review), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+<% else %>
+  <div class="card" style="padding:48px; text-align:center;">
+    <p style="color:var(--text-300);">Aucun avis soumis pour le moment.</p>
+  </div>
+<% end %>

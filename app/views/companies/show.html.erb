@@ -1,5 +1,7 @@
 <% content_for :title, @company.name %>
 <% content_for :meta_description do %><%= @company.name %> — <%= @company.city %>. <%= truncate(@company.description, length: 120) if @company.description.present? %> Prenez rendez-vous en ligne sur Planify Pro.<% end %>
+<% schema_json = company_local_business_schema_json(@company, avg_rating: @avg_rating, review_count: @review_count) %>
+<%= tag.script(type: "application/ld+json") { json_escape(schema_json).html_safe } %>
 
 <div style="max-width:900px; margin:32px auto; padding:0 24px;">
 
@@ -14,6 +16,21 @@
         </div>
         <div style="flex:1;">
           <h1 style="margin-bottom:6px;"><%= @company.name %></h1>
+          <% if @company.healthcare_professional? %>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+              <% if @company.health_specialty.present? %>
+                <span class="badge badge-green">🩺 <%= @company.health_specialty %></span>
+              <% end %>
+              <% if @company.convention_sector.present? %>
+                <span class="badge badge-grey">
+                  <%= t("profiles.convention_sectors.#{@company.convention_sector}", default: @company.convention_sector.humanize) %>
+                </span>
+              <% end %>
+              <% if @company.teleconsultation_enabled? %>
+                <span class="badge badge-blue">Teleconsultation</span>
+              <% end %>
+            </div>
+          <% end %>
           <div style="display:flex; gap:16px; flex-wrap:wrap; color:var(--text-500); font-size:0.88rem; margin-bottom:12px;">
             <% if @company.address.present? %>
               <span>📍 <%= @company.address %>, <%= @company.city %> <%= @company.zip_code %></span>
@@ -73,6 +90,29 @@
       <% else %>
         <p style="color:var(--text-300);">Aucune prestation disponible pour le moment.</p>
       <% end %>
+
+      <% if @company.healthcare_professional? %>
+        <div class="card" style="margin-top:20px;">
+          <div class="card-body" style="display:grid; gap:14px;">
+            <h2 style="font-family:var(--font-display); margin:0; font-size:1.1rem;">Informations essentielles</h2>
+
+            <div>
+              <div style="font-size:0.8rem; color:var(--text-400); margin-bottom:4px;">Accessibilite</div>
+              <div style="line-height:1.6;"><%= @company.accessibility_info.presence || "Informations d'accessibilite disponibles a l'accueil du cabinet." %></div>
+            </div>
+
+            <div>
+              <div style="font-size:0.8rem; color:var(--text-400); margin-bottom:4px;">Informations pratiques</div>
+              <div style="line-height:1.6;"><%= @company.practical_info.presence || "Merci de vous presenter quelques minutes avant l'heure du rendez-vous." %></div>
+            </div>
+
+            <div>
+              <div style="font-size:0.8rem; color:var(--text-400); margin-bottom:4px;">Modalites d'annulation</div>
+              <div style="line-height:1.6;"><%= @company.cancellation_policy %></div>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <div>
@@ -82,11 +122,51 @@
         </div>
         <div class="card-body">
           <% if @setting.booking_public? %>
+            <% if @priority_slot.present? %>
+              <div style="background:var(--green-50); border:1px solid var(--green-200); border-radius:var(--radius-md); padding:14px; margin-bottom:14px;">
+                <div style="font-size:0.75rem; color:var(--green-800); font-weight:700; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:4px;">
+                  <%= t("company_public.next_slot.label") %>
+                </div>
+                <div style="font-size:0.9rem; font-weight:600; color:var(--text-700); margin-bottom:4px;">
+                  <%= l(@priority_slot[:scheduled_at], format: (I18n.exists?("time.formats.long") ? :long : :short)) %>
+                </div>
+                <div style="font-size:0.78rem; color:var(--text-500);">
+                  <%= @priority_slot[:service_type].name %>
+                </div>
+              </div>
+            <% end %>
+
             <% if user_signed_in? && current_user.client? %>
-              <%= link_to "Choisir un créneau →",
-                    new_appointment_path(company_id: @company.id),
-                    class: "btn btn-primary btn-lg",
-                    style: "width:100%; justify-content:center;" %>
+              <% if @priority_slot.present? %>
+                <%= link_to t("company_public.next_slot.cta"),
+                      new_appointment_path(
+                        company_id: @company.id,
+                        service_type_id: @priority_slot[:service_type].id,
+                        scheduled_at: @priority_slot[:scheduled_at].strftime("%Y-%m-%dT%H:%M")
+                      ),
+                      class: "btn btn-primary btn-lg",
+                      style: "width:100%; justify-content:center;",
+                      data: {
+                        tracking_event: "priority_slot_click",
+                        company_id: @company.id,
+                        slot_at: @priority_slot[:scheduled_at].iso8601
+                      } %>
+                <%= link_to t("company_public.next_slot.secondary_cta"),
+                      new_appointment_path(company_id: @company.id),
+                      class: "btn btn-secondary",
+                      style: "width:100%; justify-content:center; margin-top:8px;" %>
+              <% else %>
+                <%= link_to t("company_public.next_slot.fallback_cta"),
+                      new_appointment_path(company_id: @company.id),
+                      class: "btn btn-primary btn-lg",
+                      style: "width:100%; justify-content:center;" %>
+              <% end %>
+
+              <div style="margin-top:12px; text-align:center;">
+                <%= link_to "Pas de créneau ? S'inscrire en liste d'attente",
+                      new_waitlist_entry_path(company_id: @company.id),
+                      style: "font-size:0.82rem; color:var(--green-700); text-decoration:underline;" %>
+              </div>
             <% elsif user_signed_in? %>
               <p style="color:var(--text-500); font-size:0.85rem; text-align:center;">
                 La prise de RDV est réservée aux comptes clients.
@@ -102,6 +182,11 @@
               <%= link_to "Créer un compte gratuit", new_user_registration_path,
                     class: "btn btn-secondary",
                     style: "width:100%; justify-content:center;" %>
+              <div style="margin-top:12px; text-align:center;">
+                <%= link_to "Pas de créneau ? S'inscrire en liste d'attente",
+                      new_waitlist_entry_path(company_id: @company.id),
+                      style: "font-size:0.82rem; color:var(--green-700); text-decoration:underline;" %>
+              </div>
             <% end %>
           <% else %>
             <p style="color:var(--text-500); font-size:0.85rem; text-align:center;">
@@ -117,3 +202,37 @@
 
   </div>
 </div>
+
+<%# Reviews section %>
+<% if @reviews.any? %>
+  <div style="max-width:900px; margin:0 auto 40px; padding:0 24px;">
+    <h2 style="font-family:var(--font-display); margin-bottom:4px;">Avis clients</h2>
+    <% if @avg_rating %>
+      <p style="color:var(--text-400); margin-bottom:20px;">
+        <span style="color:#f59e0b; font-size:1.1rem;">★ <%= @avg_rating %></span>
+        &nbsp;—&nbsp; <%= @review_count %> avis
+      </p>
+    <% end %>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <% @reviews.each do |review| %>
+        <div class="card">
+          <div style="padding:16px 20px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <strong style="font-size:0.9rem;"><%= review.client_user.full_name %></strong>
+              <span style="color:#f59e0b;"><%= "\u2605" * review.rating %><%= "\u2606" * (5 - review.rating) %></span>
+            </div>
+            <% if review.comment.present? %>
+              <p style="margin:0; color:var(--text-600); font-size:0.88rem; line-height:1.6;">
+                "<%= review.comment %>"
+              </p>
+            <% end %>
+            <div style="font-size:0.76rem; color:var(--text-300); margin-top:8px;">
+              <%= review.appointment.service_type.name %> &bull;
+              <%= review.published_at.strftime("%B %Y") %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

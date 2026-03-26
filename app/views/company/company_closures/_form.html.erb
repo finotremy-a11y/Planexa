@@ -1,0 +1,39 @@
+<%= form_with model: [ :company, company_closure ], local: true do |f| %>
+  <% if company_closure.errors.any? %>
+    <div class="alert alert-danger" style="margin-bottom:16px;">
+      <strong>Impossible d'enregistrer la fermeture:</strong>
+      <ul style="margin:8px 0 0 18px;">
+        <% company_closure.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div style="display:grid; gap:14px;">
+    <div>
+      <label class="form-label">Debut de fermeture</label>
+      <%= f.datetime_local_field :starts_at, class: "input" %>
+    </div>
+
+    <div>
+      <label class="form-label">Fin de fermeture</label>
+      <%= f.datetime_local_field :ends_at, class: "input" %>
+    </div>
+
+    <div>
+      <label class="form-label">Motif (optionnel)</label>
+      <%= f.text_field :reason, class: "input", placeholder: "Conge, maintenance, formation..." %>
+    </div>
+
+    <div>
+      <label class="form-label">Note interne (optionnelle)</label>
+      <%= f.text_area :note, class: "input", rows: 3, placeholder: "Details visibles uniquement par votre equipe." %>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <%= link_to "Annuler", company_company_closures_path, class: "btn btn-ghost" %>
+      <%= f.submit "Enregistrer la fermeture", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>

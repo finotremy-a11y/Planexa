@@ -43,6 +43,20 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to confirmation_appointments_path(appointment_id: @appointment.id)
   end
 
+  test "GET new reste sur paiement si acompte requis meme en mode externe" do
+    @company.setting.update!(payment_mode: :payment_external)
+    @service.update!(price_cents: 9000)
+    @service.update!(deposit_kind: :deposit_fixed_cents, deposit_value: 2500)
+
+    mock_intent  = stub(client_secret: "pi_test_secret_stripe")
+    mock_service = stub(create_payment_intent: mock_intent)
+    StripePaymentService.stubs(:new).returns(mock_service)
+
+    get new_appointment_payment_path(appointment_id: @appointment.id)
+
+    assert_response :success
+  end
+
   test "GET new redirige vers la confirmation si déjà payé" do
     create(:payment, :succeeded,
            appointment: @appointment,
@@ -59,6 +73,21 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
 
     get new_appointment_payment_path(appointment_id: @appointment.id)
     assert_response :success
+  end
+
+  test "GET new affiche le resume acompte" do
+    @service.update!(price_cents: 9000)
+    @service.update!(deposit_kind: :deposit_fixed_cents, deposit_value: 3000)
+
+    mock_intent  = stub(client_secret: "pi_test_secret_stripe")
+    mock_service = stub(create_payment_intent: mock_intent)
+    StripePaymentService.stubs(:new).returns(mock_service)
+
+    get new_appointment_payment_path(appointment_id: @appointment.id)
+
+    assert_response :success
+    assert_includes response.body, "Acompte a payer"
+    assert_includes response.body, "Reste a regler sur place"
   end
 
   test "GET new gère une erreur Stripe et redirige vers la racine" do

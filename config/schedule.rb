@@ -14,3 +14,8 @@ end
 every 1.day, at: "8:00 am" do
   runner "TrialEndingReminderJob.perform_later"
 end
+
+# Chaque lundi à 8h30 : recap hebdomadaire de performance entreprise
+every :monday, at: "8:30 am" do
+  runner "WeeklyCompanyPerformanceEmailJob.perform_later"
+end

@@ -1,0 +1,26 @@
+<div id="notification_<%= notification.id %>"
+     style="display:flex; align-items:start; gap:12px;
+            padding:14px 16px;
+            background:<%= notification.read? ? '#fff' : '#f0fdf4' %>;
+            border-bottom:1px solid var(--border-light);
+            border-left:3px solid <%= notification.read? ? 'transparent' : 'var(--green-600)' %>;">
+  <div style="font-size:1.4rem; flex-shrink:0; margin-top:2px;"><%= notification.icon %></div>
+  <div style="flex:1; min-width:0;">
+    <p style="margin:0 0 2px; font-weight:<%= notification.read? ? '400' : '600' %>; font-size:0.9rem;">
+      <%= notification.summary_text %>
+    </p>
+    <p style="margin:0; font-size:0.78rem; color:var(--text-400);">
+      <%= time_ago_in_words(notification.created_at) %> ago
+    </p>
+    <% if notification.notifiable_type == "Appointment" && notification.notifiable %>
+      <% appt = notification.notifiable %>
+      <p style="margin:4px 0 0; font-size:0.8rem; color:var(--text-500);">
+        <%= appt.service_type.name rescue "—" %> —
+        <%= appt.scheduled_at.strftime("%d/%m/%Y à %H:%M") rescue "" %>
+      </p>
+    <% end %>
+  </div>
+  <% if !notification.read? %>
+    <div style="width:8px; height:8px; background:var(--green-600); border-radius:50%; flex-shrink:0; margin-top:6px;"></div>
+  <% end %>
+</div>

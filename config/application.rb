@@ -42,6 +42,11 @@ module PlanifyPro
     config.active_job.queue_adapter = :sidekiq
     config.exceptions_app = self.routes
 
+    # Internationalization
+    config.i18n.available_locales = %i[fr en es]
+    config.i18n.default_locale = :fr
+    config.i18n.fallbacks = [ :fr ]
+
     # Rate limiting via Rack::Attack
     config.middleware.use Rack::Attack
   end

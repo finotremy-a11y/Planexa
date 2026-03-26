@@ -1,0 +1,28 @@
+<% content_for :title, "Notifications" %>
+
+<div class="page-header">
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+    <h1>Notifications</h1>
+    <% if @notifications.any?(&:read?) == false %>
+      <%= button_to "Tout marquer comme lu",
+            mark_all_read_company_notifications_path,
+            method: :patch,
+            class: "btn btn-secondary btn-sm" %>
+    <% end %>
+  </div>
+</div>
+
+<div id="notifications_list">
+  <% if @notifications.empty? %>
+    <div class="card">
+      <div class="card-body" style="text-align:center; padding:48px; color:var(--text-400);">
+        <div style="font-size:2.5rem; margin-bottom:12px;">🔔</div>
+        <p style="margin:0; font-size:0.95rem;">Aucune notification pour le moment.</p>
+      </div>
+    </div>
+  <% else %>
+    <% @notifications.each do |notification| %>
+      <%= render "company/notifications/notification", notification: notification %>
+    <% end %>
+  <% end %>
+</div>

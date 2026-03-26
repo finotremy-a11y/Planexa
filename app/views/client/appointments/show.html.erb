@@ -1,0 +1,49 @@
+<% content_for :title, "Detail du rendez-vous" %>
+
+<div style="max-width:760px; margin:36px auto; padding:0 24px;">
+  <div class="page-header" style="margin-bottom:18px;">
+    <div class="page-header-left">
+      <h1>Detail du rendez-vous</h1>
+      <p style="color:var(--text-500);">Retrouvez les informations de votre prestation et reprenez rapidement une reservation.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-body">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 20px;">
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-400);">Entreprise</div>
+          <div style="font-weight:600;"><%= @appointment.company.name %></div>
+        </div>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-400);">Prestation</div>
+          <div style="font-weight:600;"><%= @appointment.service_type.name %></div>
+        </div>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-400);">Date et heure</div>
+          <div style="font-weight:600;"><%= @appointment.scheduled_at.strftime("%d/%m/%Y a %Hh%M") %></div>
+        </div>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-400);">Statut</div>
+          <div style="font-weight:600;"><%= t("statuses.#{@appointment.status}", default: @appointment.status.humanize) %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @rebooking_url.present? %>
+    <div class="card" style="margin-bottom:18px; border-color:var(--green-200);">
+      <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0 0 6px 0; font-size:1rem;">Reprendre rendez-vous en un clic</h2>
+          <p style="margin:0; color:var(--text-500); font-size:0.86rem;">
+            La meme entreprise et la meme prestation sont preselectionnees.
+          </p>
+        </div>
+        <%= link_to "Reprendre un rendez-vous similaire ->", @rebooking_url, class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= link_to "<- Retour a mes rendez-vous", client_appointments_path, class: "btn btn-secondary" %>
+</div>

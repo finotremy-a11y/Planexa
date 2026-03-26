@@ -1,6 +1,11 @@
 <% content_for :title, "Prendre rendez-vous" %>
 
-<div style="max-width:680px; margin:40px auto; padding:0 24px;">
+<%
+  selected_service = @service_types.find { |st| st.id == @appointment.service_type_id } || @service_types.first
+  company_address = [ @company.address, @company.zip_code, @company.city ].compact.join(" ").strip
+%>
+
+<div style="max-width:1060px; margin:40px auto; padding:0 24px;">
 
   <div style="margin-bottom:24px;">
     <h1 style="font-family:var(--font-display); margin-bottom:4px;">
@@ -15,68 +20,169 @@
   <%= form_with model: @appointment,
         url: appointments_path(company_id: @company.id),
         local: true do |f| %>
-    <div class="card">
-      <div class="card-body">
-        <% if @appointment.errors.any? %>
-          <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:var(--radius-md);
-                      padding:12px 16px; margin-bottom:20px; color:#dc2626;">
-            <% @appointment.errors.full_messages.each do |msg| %>
-              <div>• <%= msg %></div>
-            <% end %>
-          </div>
-        <% end %>
-
-        <div class="form-group">
-          <%= f.label :service_type_id, "Quelle prestation souhaitez-vous ?", class: "form-label" %>
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <% @service_types.each do |st| %>
-              <label style="display:flex; align-items:center; justify-content:space-between;
-                             padding:12px 16px; border:2px solid var(--border);
-                             border-radius:var(--radius-md); cursor:pointer;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <%= f.radio_button :service_type_id, st.id %>
-                  <div>
-                    <div style="font-weight:500;"><%= st.name %></div>
-                    <div style="font-size:0.78rem; color:var(--text-300);">⏱ <%= st.duration_minutes %> min</div>
-                  </div>
-                </div>
-                <% if st.price_cents > 0 %>
-                  <div style="font-weight:600; color:var(--green-800);">
-                    <%= number_to_currency(st.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
-                  </div>
-                <% end %>
-              </label>
-            <% end %>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <%= f.label :scheduled_at, "Date et heure souhaitées", class: "form-label" %>
-          <%= f.datetime_local_field :scheduled_at, class: "form-control",
-                min: Time.current.strftime("%Y-%m-%dT%H:%M") %>
-        </div>
-
-        <div class="form-group">
-          <%= f.label :client_notes, "Message (optionnel)", class: "form-label" %>
-          <%= f.text_area :client_notes, class: "form-control",
-                placeholder: "Décrivez votre besoin, accès, informations utiles...",
-                rows: 3 %>
-        </div>
-
-        <div style="margin-bottom:20px;">
-          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-            <%= f.check_box :urgent %>
-            <div>
-              <div style="font-weight:500; color:var(--gold-700);">🔴 Demande urgente</div>
-              <div style="font-size:0.8rem; color:var(--text-400);">Cochez si vous avez besoin d'un rendez-vous rapidement</div>
+    <div style="display:grid; grid-template-columns:1.45fr 1fr; gap:20px; align-items:start;">
+      <div class="card">
+        <div class="card-body">
+          <% if @appointment.errors.any? %>
+            <div style="background:#fef2f2; border:1px solid #fca5a5; border-radius:var(--radius-md);
+                        padding:12px 16px; margin-bottom:20px; color:#dc2626;">
+              <% @appointment.errors.full_messages.each do |msg| %>
+                <div>• <%= msg %></div>
+              <% end %>
             </div>
-          </label>
+          <% end %>
+
+          <div style="margin-bottom:14px; color:var(--text-500); font-size:0.86rem;">
+            <%= t("appointment_flow.new.step_hint") %>
+          </div>
+
+          <% if @service_types.one? %>
+            <%= f.hidden_field :service_type_id, value: @service_types.first.id %>
+            <div class="form-group">
+              <label class="form-label"><%= t("appointment_flow.shared.service") %></label>
+              <div style="padding:12px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg-secondary);">
+                <div style="font-weight:600;"><%= @service_types.first.name %></div>
+                <div style="font-size:0.8rem; color:var(--text-400); margin-top:2px;">
+                  <%= @service_types.first.duration_minutes %> min
+                  <% if @service_types.first.price_cents > 0 %>
+                    · <%= number_to_currency(@service_types.first.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="form-group">
+              <%= f.label :service_type_id, "Quelle prestation souhaitez-vous ?", class: "form-label" %>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <% @service_types.each do |st| %>
+                  <label style="display:flex; align-items:center; justify-content:space-between;
+                                 padding:12px 16px; border:2px solid var(--border);
+                                 border-radius:var(--radius-md); cursor:pointer;"
+                         data-service-card="true"
+                         data-service-id="<%= st.id %>">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <%= f.radio_button :service_type_id, st.id,
+                            checked: @appointment.service_type_id == st.id,
+                            data: {
+                              service_name: st.name,
+                              service_duration: st.duration_minutes,
+                              service_price: st.price_cents
+                            } %>
+                      <div>
+                        <div style="font-weight:500;"><%= st.name %></div>
+                        <div style="font-size:0.78rem; color:var(--text-300);"><%= st.duration_minutes %> min</div>
+                      </div>
+                    </div>
+                    <% if st.price_cents > 0 %>
+                      <div style="font-weight:600; color:var(--green-800);">
+                        <%= number_to_currency(st.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+                      </div>
+                    <% end %>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="form-group">
+            <%= f.label :scheduled_at, t("appointment_flow.shared.datetime"), class: "form-label" %>
+            <%= f.datetime_local_field :scheduled_at, class: "form-control",
+                  min: Time.current.strftime("%Y-%m-%dT%H:%M") %>
+          </div>
+
+          <details style="margin-top:10px; border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px;">
+            <summary style="cursor:pointer; font-weight:600; color:var(--text-600);">
+              <%= t("appointment_flow.new.optional_section") %>
+            </summary>
+
+            <div class="form-group" style="margin-top:12px;">
+              <%= f.label :client_notes, t("appointment_flow.new.optional_message"), class: "form-label" %>
+              <%= f.text_area :client_notes, class: "form-control",
+                    placeholder: t("appointment_flow.new.optional_message_placeholder"),
+                    rows: 3 %>
+            </div>
+
+            <div style="margin-bottom:4px;">
+              <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <%= f.check_box :urgent %>
+                <div>
+                  <div style="font-weight:500; color:var(--gold-700);"><%= t("appointment_flow.new.urgent_label") %></div>
+                  <div style="font-size:0.8rem; color:var(--text-400);"><%= t("appointment_flow.new.urgent_help") %></div>
+                </div>
+              </label>
+            </div>
+          </details>
+        </div>
+
+        <div style="padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end;">
+          <%= link_to "Annuler", company_public_path(@company), class: "btn btn-secondary" %>
+          <%= f.submit t("appointment_flow.new.submit"), class: "btn btn-primary btn-lg" %>
         </div>
       </div>
-      <div style="padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end;">
-        <%= link_to "Annuler", company_public_path(@company), class: "btn btn-secondary" %>
-        <%= f.submit "Confirmer la demande →", class: "btn btn-primary btn-lg" %>
+
+      <div class="card" style="position:sticky; top:84px;">
+        <div style="padding:16px 18px; border-bottom:1px solid var(--border);">
+          <h2 style="font-family:var(--font-display); margin:0; font-size:1rem;"><%= t("appointment_flow.new.critical_info_title") %></h2>
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; gap:12px;">
+            <span style="color:var(--text-400);"><%= t("appointment_flow.shared.service") %></span>
+            <strong id="summary-service-name" style="text-align:right;"><%= selected_service&.name || "-" %></strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:12px;">
+            <span style="color:var(--text-400);"><%= t("appointment_flow.shared.duration") %></span>
+            <strong id="summary-service-duration"><%= selected_service&.duration_minutes || "-" %> min</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:12px;">
+            <span style="color:var(--text-400);"><%= t("appointment_flow.shared.price") %></span>
+            <strong id="summary-service-price">
+              <% if selected_service&.price_cents.to_i > 0 %>
+                <%= number_to_currency(selected_service.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+              <% else %>
+                <%= t("appointment_flow.new.quote") %>
+              <% end %>
+            </strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+            <span style="color:var(--text-400);"><%= t("appointment_flow.shared.address") %></span>
+            <strong style="text-align:right;"><%= company_address.presence || @company.city %></strong>
+          </div>
+          <div style="padding-top:8px; border-top:1px solid var(--border); font-size:0.82rem; color:var(--text-500); line-height:1.5;">
+            <strong style="display:block; color:var(--text-700); margin-bottom:4px;"><%= t("appointment_flow.new.cancellation_title") %></strong>
+            <%= t("appointment_flow.new.cancellation_text") %>
+          </div>
+        </div>
       </div>
     </div>
   <% end %>
 </div>
+
+<script>
+  (function() {
+    const radios = document.querySelectorAll("input[name='appointment[service_type_id]']");
+    if (!radios.length) return;
+
+    const nameEl = document.getElementById("summary-service-name");
+    const durationEl = document.getElementById("summary-service-duration");
+    const priceEl = document.getElementById("summary-service-price");
+
+    const formatPrice = (cents) => {
+      const amount = Number(cents || 0);
+      if (!amount) return "<%= j(t('appointment_flow.new.quote')) %>";
+      return (amount / 100).toFixed(2).replace(".", ",") + " €";
+    };
+
+    const updateSummary = (radio) => {
+      nameEl.textContent = radio.dataset.serviceName || "-";
+      durationEl.textContent = (radio.dataset.serviceDuration || "-") + " min";
+      priceEl.textContent = formatPrice(radio.dataset.servicePrice);
+    };
+
+    const selected = Array.from(radios).find((r) => r.checked) || radios[0];
+    if (selected) updateSummary(selected);
+
+    radios.forEach((radio) => {
+      radio.addEventListener("change", () => updateSummary(radio));
+    });
+  })();
+</script>

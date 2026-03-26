@@ -1,0 +1,123 @@
+<% content_for :title, "Absences — #{@employee.full_name}" %>
+<% content_for :page_title, "Absences" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Absences — <%= @employee.full_name %></h1>
+    <p>Congés, arrêts maladie et indisponibilités</p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "+ Ajouter", new_company_employee_employee_absence_path(@employee),
+          class: "btn btn-primary" %>
+    <%= link_to "← Retour", company_employee_path(@employee), class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<%# Absence en cours %>
+<% if @active.any? %>
+  <div class="alert alert-warning" style="margin-bottom:24px;">
+    ⚠️ <%= @employee.first_name %> est actuellement en absence :
+    <% @active.each do |a| %>
+      <strong><%= a.reason_label %></strong>
+      jusqu'au <%= a.ends_at.strftime("%d/%m/%Y") %>.
+    <% end %>
+  </div>
+<% end %>
+
+<%# Absences à venir %>
+<% if @upcoming.any? %>
+  <div class="card" style="margin-bottom:24px;">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">À venir (<%= @upcoming.count %>)</h3>
+    </div>
+    <div class="table-wrapper" style="border:none; border-radius:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Motif</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Durée</th>
+            <th>Note</th>
+            <th style="width:100px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @upcoming.each do |absence| %>
+            <tr>
+              <td><span class="badge badge-warning"><%= absence.reason_label %></span></td>
+              <td><%= absence.starts_at.strftime("%d/%m/%Y %Hh%M") %></td>
+              <td><%= absence.ends_at.strftime("%d/%m/%Y %Hh%M") %></td>
+              <td><%= absence.duration_days %> j</td>
+              <td style="color:var(--text-400); font-size:0.85rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                <%= absence.note.presence || "—" %>
+              </td>
+              <td>
+                <div style="display:flex; gap:6px;">
+                  <%= link_to "Modifier",
+                        edit_company_employee_employee_absence_path(@employee, absence),
+                        class: "btn btn-ghost btn-sm" %>
+                  <%= button_to "Supprimer",
+                        company_employee_employee_absence_path(@employee, absence),
+                        method: :delete,
+                        class: "btn btn-danger btn-sm",
+                        data: { turbo_confirm: "Supprimer cette absence ?" } %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<%# Absences passées %>
+<% if @past.any? %>
+  <div class="card">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Passées (<%= @past.count %>)</h3>
+    </div>
+    <div class="table-wrapper" style="border:none; border-radius:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Motif</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Durée</th>
+            <th style="width:100px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @past.each do |absence| %>
+            <tr style="opacity:0.7;">
+              <td><span class="badge badge-grey"><%= absence.reason_label %></span></td>
+              <td><%= absence.starts_at.strftime("%d/%m/%Y") %></td>
+              <td><%= absence.ends_at.strftime("%d/%m/%Y") %></td>
+              <td><%= absence.duration_days %> j</td>
+              <td>
+                <%= button_to "Supprimer",
+                      company_employee_employee_absence_path(@employee, absence),
+                      method: :delete,
+                      class: "btn btn-danger btn-sm",
+                      data: { turbo_confirm: "Supprimer cette absence ?" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+
+<% if @upcoming.empty? && @past.empty? && @active.empty? %>
+  <div class="card" style="text-align:center; padding:48px;">
+    <p style="font-size:1.1rem; color:var(--text-300);">
+      Aucune absence enregistrée pour <%= @employee.full_name %>.
+    </p>
+    <%= link_to "+ Ajouter une absence",
+          new_company_employee_employee_absence_path(@employee),
+          class: "btn btn-primary", style: "margin-top:16px;" %>
+  </div>
+<% end %>

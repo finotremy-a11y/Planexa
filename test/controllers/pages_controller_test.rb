@@ -39,7 +39,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to contact_path
     follow_redirect!
-    assert_match "Message envoyé", response.body
+    assert_match(/Message envoy[eé]/i, response.body)
   end
 
   test "POST contact invalide affiche une alerte" do

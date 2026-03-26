@@ -1,0 +1,42 @@
+<% content_for :title, "Mon profil" %>
+
+<div style="max-width:640px; margin:40px auto; padding:0 24px;">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Mon profil</h1>
+    </div>
+    <div class="page-header-actions">
+      <%= link_to "Modifier", edit_client_profile_path, class: "btn btn-primary btn-sm" %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="padding:24px;">
+      <dl style="display:grid; grid-template-columns:auto 1fr; gap:12px 32px;">
+        <dt style="color:var(--text-400);">Prénom</dt>
+        <dd><%= @user.first_name %></dd>
+
+        <dt style="color:var(--text-400);">Nom</dt>
+        <dd><%= @user.last_name %></dd>
+
+        <dt style="color:var(--text-400);">Email</dt>
+        <dd><%= @user.email %></dd>
+
+        <dt style="color:var(--text-400);">Téléphone</dt>
+        <dd><%= @user.phone.presence || "—" %></dd>
+
+        <dt style="color:var(--text-400);"><%= t("profile.sms_reminders") %></dt>
+        <dd>
+          <% if @user.sms_opt_out? %>
+            <span class="badge badge-warning"><%= t("profile.disabled") %></span>
+          <% else %>
+            <span class="badge badge-success"><%= t("profile.enabled") %></span>
+          <% end %>
+        </dd>
+
+        <dt style="color:var(--text-400);"><%= t("locales.language") %></dt>
+        <dd><%= locale_name(@user.locale) %></dd>
+      </dl>
+    </div>
+  </div>
+</div>

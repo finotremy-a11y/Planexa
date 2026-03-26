@@ -1,0 +1,75 @@
+<% content_for :title, "Liste d'attente" %>
+<% content_for :page_title, "Liste d'attente" %>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+  <div>
+    <% pending_count = @company.waitlist_entries.pending.count %>
+    <% notified_count = @company.waitlist_entries.notified.count %>
+    <span style="color:var(--text-400); font-size:0.9rem;">
+      <strong><%= pending_count %></strong> en attente ·
+      <strong><%= notified_count %></strong> notifié<%= notified_count > 1 ? "s" : "" %>
+    </span>
+  </div>
+</div>
+
+<% if @entries.any? %>
+  <div style="display:flex; flex-direction:column; gap:16px;">
+    <% @entries.each do |entry| %>
+      <div class="card">
+        <div style="padding:20px 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+            <div>
+              <div style="font-weight:600;"><%= entry.contact_name %></div>
+              <div style="font-size:0.82rem; color:var(--text-400);">
+                <%= entry.contact_email %>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <% if entry.expired? %>
+                <span class="badge badge-danger">Expiré</span>
+              <% elsif entry.notified? %>
+                <span class="badge badge-warning">Notifié</span>
+              <% else %>
+                <span class="badge badge-success">En attente</span>
+              <% end %>
+            </div>
+          </div>
+
+          <div style="font-size:0.88rem; color:var(--text-600); margin-bottom:8px;">
+            <strong>Prestation :</strong> <%= entry.service_type.name %>
+            <% if entry.preferred_date.present? %>
+              · <strong>Date souhaitée :</strong> <%= entry.preferred_date.strftime("%d/%m/%Y") %>
+            <% end %>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+            <span style="font-size:0.78rem; color:var(--text-300);">
+              Inscrit le <%= entry.created_at.strftime("%d/%m/%Y à %Hh%M") %>
+              <% if entry.notified_at %>
+                · <%= t("waitlist.notified_date", date: entry.notified_at.strftime("%d/%m/%Y")) %>
+              <% end %>
+            </span>
+            <div style="display:flex; gap:8px;">
+              <%= link_to "Voir", company_waitlist_entry_path(entry), class: "btn btn-secondary btn-sm" %>
+              <% unless entry.expired? %>
+                <%= button_to "Retirer", company_waitlist_entry_path(entry),
+                      method: :delete,
+                      class: "btn btn-danger btn-sm",
+                      data: { turbo_confirm: "Retirer cette inscription de la liste d'attente ?" } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+<% else %>
+  <div class="card" style="padding:48px; text-align:center;">
+    <p style="color:var(--text-300); font-size:1rem;">
+      Aucune inscription en liste d'attente pour le moment.<br>
+      <small>Les clients peuvent s'inscrire quand aucun créneau n'est disponible.</small>
+    </p>
+  </div>
+<% end %>

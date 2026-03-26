@@ -1,47 +1,85 @@
-<% content_for :title, "Rendez-vous envoyé" %>
+<% content_for :title, t("confirmation.title") %>
 
-<div style="max-width:560px; margin:64px auto; padding:0 24px; text-align:center;">
-  <div style="font-size:4rem; margin-bottom:16px;">✅</div>
-  <h1 style="font-family:var(--font-display); margin-bottom:12px;">
-    Demande envoyée !
-  </h1>
-  <p style="color:var(--text-500); margin-bottom:32px; line-height:1.7;">
-    <% if @appointment.confirmed? %>
-      Votre rendez-vous est <strong>confirmé</strong>.
-      Vous recevrez un email de confirmation.
-    <% else %>
-      Votre demande a bien été reçue.
-      L'entreprise va confirmer votre rendez-vous.
-    <% end %>
-  </p>
+<%
+  starts_at_utc = @appointment.scheduled_at.utc.strftime("%Y%m%dT%H%M%SZ")
+  ends_at_utc = (@appointment.scheduled_at + @appointment.duration_minutes.minutes).utc.strftime("%Y%m%dT%H%M%SZ")
+  calendar_text = "RDV #{@appointment.company.name}"
+  calendar_details = "#{@appointment.service_type.name} via Planify Pro"
+  calendar_location = [ @appointment.company.address, @appointment.company.zip_code, @appointment.company.city ].compact.join(" ").strip
+  calendar_url = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=#{ERB::Util.url_encode(calendar_text)}&dates=#{starts_at_utc}/#{ends_at_utc}&details=#{ERB::Util.url_encode(calendar_details)}&location=#{ERB::Util.url_encode(calendar_location)}"
+%>
 
-  <div class="card" style="text-align:left; margin-bottom:24px;">
+<div style="max-width:760px; margin:56px auto; padding:0 24px;">
+  <div style="text-align:center; margin-bottom:26px;">
+    <div style="font-size:4rem; margin-bottom:16px;">✅</div>
+    <h1 style="font-family:var(--font-display); margin-bottom:12px;"><%= t("confirmation.heading") %></h1>
+    <p style="color:var(--text-500); margin-bottom:20px; line-height:1.7;">
+      <% if @appointment.confirmed? %>
+        <%= t("confirmation.confirmed_text") %>
+      <% else %>
+        <%= t("confirmation.pending_text") %>
+      <% end %>
+    </p>
+
+    <div style="display:inline-block; padding:10px 14px; background:var(--green-50); border:1px solid var(--green-200); border-radius:var(--radius-md); color:var(--green-800); font-size:0.88rem; font-weight:600;">
+      <%= t("appointment_flow.confirmation.reassurance") %>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:left; margin-bottom:16px;">
     <div class="card-body">
       <div style="display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-500);">Entreprise</span>
+          <span style="color:var(--text-500);"><%= t("confirmation.company_label") %></span>
           <strong><%= @appointment.company.name %></strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-500);">Prestation</span>
+          <span style="color:var(--text-500);"><%= t("confirmation.service_label") %></span>
           <strong><%= @appointment.service_type.name %></strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-500);">Date</span>
+          <span style="color:var(--text-500);"><%= t("confirmation.date_label") %></span>
           <strong><%= @appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %></strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span style="color:var(--text-500);">Durée</span>
+          <span style="color:var(--text-500);"><%= t("confirmation.duration_label") %></span>
           <strong><%= @appointment.duration_minutes %> min</strong>
         </div>
+
+        <% if @appointment.company.phone.present? %>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:var(--text-500);"><%= t("appointment_flow.shared.contact") %></span>
+            <strong><%= @appointment.company.phone %></strong>
+          </div>
+        <% end %>
+
+        <% if @appointment.company.address.present? %>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+            <span style="color:var(--text-500);"><%= t("appointment_flow.shared.address") %></span>
+            <strong style="text-align:right;"><%= @appointment.company.address %>, <%= @appointment.company.zip_code %> <%= @appointment.company.city %></strong>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
 
+  <div class="card" style="text-align:left; margin-bottom:24px;">
+    <div class="card-body">
+      <div style="font-weight:700; margin-bottom:8px;"><%= t("appointment_flow.confirmation.next_steps_title") %></div>
+      <ul style="margin:0; padding-left:18px; color:var(--text-600); line-height:1.7;">
+        <li><%= t("appointment_flow.confirmation.next_step_1") %></li>
+        <li><%= t("appointment_flow.confirmation.next_step_2") %></li>
+        <li><%= t("appointment_flow.confirmation.next_step_3") %></li>
+      </ul>
+    </div>
+  </div>
+
   <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+    <%= link_to t("appointment_flow.confirmation.calendar_cta"), calendar_url, class: "btn btn-secondary", target: "_blank", rel: "noopener" %>
+    <%= link_to t("appointment_flow.confirmation.reschedule_cta"), new_appointment_path(company_id: @appointment.company.id, service_type_id: @appointment.service_type_id), class: "btn btn-secondary" %>
     <% if user_signed_in? && current_user.client? %>
-      <%= link_to "Voir mes rendez-vous", client_appointments_path, class: "btn btn-primary" %>
+      <%= link_to t("confirmation.my_appointments_button"), client_appointments_path, class: "btn btn-primary" %>
     <% end %>
-    <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
+    <%= link_to t("confirmation.back_home"), root_path, class: "btn btn-secondary" %>
   </div>
 </div>

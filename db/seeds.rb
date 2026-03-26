@@ -45,11 +45,14 @@ puts "   ✓ Base nettoyée"
 # ═══════════════════════════════════════════════════════════════
 puts "\n👑 Création du compte admin..."
 
+admin_email = ENV.fetch("ADMIN_EMAIL", "admin@planifypro.fr").to_s.downcase.strip
+admin_password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanify2025!").to_s
+
 admin = User.create!(
   first_name:   "Admin",
   last_name:    "Planify",
-  email:        "admin@planifypro.fr",
-  password:     "AdminPlanify2025!",
+  email:        admin_email,
+  password:     admin_password,
   role:         :admin,
   confirmed_at: Time.current
 )
@@ -721,7 +724,7 @@ puts "     ↳ #{Subscription.past_due.count} impayé(s) ⚠️"
 
 puts "\n🔑 Comptes de connexion :"
 puts "\n  👑 ADMIN"
-puts "     admin@planifypro.fr  /  AdminPlanify2025!"
+puts "     #{admin_email}  /  #{admin_password}"
 
 puts "\n  🏢 ENTREPRISES  (mot de passe : Password123!)"
 puts "     plomberie@dupont.fr      → Plomberie Dupont    (public, externe, auto)"

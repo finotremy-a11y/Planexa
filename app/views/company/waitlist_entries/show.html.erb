@@ -1,0 +1,100 @@
+<% content_for :title, t("waitlist.show_title", name: @entry.contact_name) %>
+<% content_for :page_title, t("waitlist.show_subtitle") %>
+
+<div style="margin-bottom:24px;">
+  <%= link_to t("common.back_to_list"), company_waitlist_entries_path,
+        style: "color:var(--green-700); text-decoration:none; font-weight:500;" %>
+</div>
+
+<div class="card">
+  <div style="padding:28px 32px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h2 style="font-family:var(--font-display); font-size:1.3rem; margin:0;">
+        <%= @entry.contact_name %>
+      </h2>
+      <% if @entry.expired? %>
+        <span class="badge badge-danger"><%= t("waitlist.expired") %></span>
+      <% elsif @entry.notified? %>
+        <span class="badge badge-warning"><%= t("waitlist.notified") %></span>
+      <% else %>
+        <span class="badge badge-success"><%= t("waitlist.pending") %></span>
+      <% end %>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px 32px;">
+      <div>
+        <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+          <%= t("common.email_label") %>
+        </div>
+        <div style="font-weight:500;"><%= @entry.contact_email %></div>
+      </div>
+
+      <div>
+        <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+          <%= t("common.service_type") %>
+        </div>
+        <div style="font-weight:500;"><%= @entry.service_type.name %></div>
+      </div>
+
+      <div>
+        <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+          <%= t("waitlist.preferred_date_label") %>
+        </div>
+        <div style="font-weight:500;">
+          <%= @entry.preferred_date&.strftime("%d/%m/%Y") || t("waitlist.not_specified") %>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+          <%= t("waitlist.registered_date_label") %>
+        </div>
+        <div style="font-weight:500;">
+          <%= @entry.created_at.strftime("%d/%m/%Y à %Hh%M") %>
+        </div>
+      </div>
+
+      <% if @entry.notified_at %>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+            <%= t("waitlist.notified_date_label") %>
+          </div>
+          <div style="font-weight:500;">
+            <%= @entry.notified_at.strftime("%d/%m/%Y à %Hh%M") %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @entry.expired_at %>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+            <%= t("waitlist.expired_date_label") %>
+          </div>
+          <div style="font-weight:500;">
+            <%= @entry.expired_at.strftime("%d/%m/%Y à %Hh%M") %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @entry.client_user %>
+        <div>
+          <div style="font-size:0.78rem; color:var(--text-300); text-transform:uppercase; margin-bottom:4px;">
+            <%= t("waitlist.client_account") %>
+          </div>
+          <div style="font-weight:500;">
+            <%= @entry.client_user.full_name %> (<%= t("waitlist.registered_status") %>)
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <% unless @entry.expired? %>
+      <div style="margin-top:28px; padding-top:20px; border-top:1px solid var(--border);">
+          <%= button_to t("waitlist.remove_button"), company_waitlist_entry_path(@entry),
+            method: :delete,
+            class: "btn btn-danger",
+            data: { turbo_confirm: t("waitlist.remove_confirmation") } %>
+      </div>
+    <% end %>
+  </div>
+</div>

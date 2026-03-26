@@ -18,7 +18,7 @@
         </div>
         <div style="display:flex; justify-content:space-between;">
           <span style="color:var(--text-500);">Date</span>
-          <strong><%= l(@appointment.scheduled_at, format: :long) %></strong>
+          <strong><%= l(@appointment.scheduled_at, format: "%d/%m/%Y %H:%M") %></strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
           <span style="color:var(--text-500);">Statut</span>

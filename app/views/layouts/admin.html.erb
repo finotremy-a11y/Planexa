@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -170,50 +170,50 @@
       </div>
 
       <nav class="admin-nav">
-        <div class="admin-nav-label">Vue d'ensemble</div>
+        <div class="admin-nav-label"><%= t("admin_layout.overview") %></div>
 
         <%= link_to admin_root_path,
               class: "admin-link #{current_page?(admin_root_path) ? 'active' : ''}" do %>
-          📊 Dashboard
+          📊 <%= t("admin_layout.dashboard") %>
         <% end %>
 
-        <div class="admin-nav-label" style="margin-top:12px;">Gestion</div>
+        <div class="admin-nav-label" style="margin-top:12px;"><%= t("admin_layout.management") %></div>
 
         <%= link_to admin_companies_path,
               class: "admin-link #{controller_name == 'companies' ? 'active' : ''}" do %>
-          🏢 Entreprises
+          🏢 <%= t("admin_layout.companies") %>
         <% end %>
 
         <%= link_to admin_subscriptions_path,
               class: "admin-link #{controller_name == 'subscriptions' ? 'active' : ''}" do %>
-          💳 Abonnements
+          💳 <%= t("admin_layout.subscriptions") %>
         <% end %>
 
         <%= link_to admin_users_path,
               class: "admin-link #{controller_name == 'users' ? 'active' : ''}" do %>
-          👥 Utilisateurs
+          👥 <%= t("admin_layout.users") %>
         <% end %>
 
-        <div class="admin-nav-label" style="margin-top:12px;">Outils</div>
+        <div class="admin-nav-label" style="margin-top:12px;"><%= t("admin_layout.tools") %></div>
 
         <%= link_to admin_export_csv_path,
               class: "admin-link" do %>
-          📥 Export CSV
+          📥 <%= t("admin_layout.export_csv") %>
         <% end %>
 
         <%= link_to "/admin/sidekiq",
               class: "admin-link",
               target: "_blank",
               rel: "noopener" do %>
-          ⚙ Sidekiq
+          ⚙ <%= t("admin_layout.sidekiq") %>
         <% end %>
       </nav>
 
       <div class="admin-footer">
         <div style="font-size:0.78rem; color:rgba(255,255,255,0.3); margin-bottom:8px;">
-          Connecté en tant qu'admin
+          <%= t("admin_layout.connected_as_admin") %>
         </div>
-        <%= link_to "Déconnexion", destroy_user_session_path,
+        <%= link_to t("nav.sign_out"), destroy_user_session_path,
               data: { turbo_method: :delete },
               style: "font-size:0.82rem; color:rgba(255,255,255,0.4); text-decoration:none;" %>
       </div>
@@ -225,10 +225,11 @@
           <%= yield(:page_title) || controller_name.humanize %>
         </span>
         <div style="display:flex; gap:10px; align-items:center;">
+          <%= render "shared/locale_switcher" %>
           <span style="font-size:0.78rem; color:#94a3b8;">
             <%= Time.current.strftime("%d/%m/%Y %Hh%M") %>
           </span>
-          <%= link_to "← Voir le site", root_path,
+          <%= link_to t("admin_layout.view_site"), root_path,
                 style: "font-size:0.82rem; color:#64748b; text-decoration:none;",
                 target: "_blank",
                 rel: "noopener" %>

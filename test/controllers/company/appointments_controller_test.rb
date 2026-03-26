@@ -16,6 +16,21 @@ class Company::AppointmentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "GET index affiche l'etat de reconfirmation" do
+    create(:appointment,
+      company: @company,
+      service_type: @service,
+      status: :confirmed,
+      reconfirmation_requested_at: 3.hours.ago,
+      reconfirmed_at: 1.hour.ago
+    )
+
+    get company_appointments_path
+
+    assert_response :success
+    assert_includes response.body, "Reconfirmee"
+  end
+
   test "GET new retourne 200" do
     get new_company_appointment_path
     assert_response :success

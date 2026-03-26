@@ -21,9 +21,9 @@ class PagesController < ApplicationController
         contact_params[:message]
       ).deliver_later
 
-      redirect_to contact_path, notice: "Message envoyé ! Nous vous répondrons sous 48h."
+      redirect_to contact_path, notice: t("pages.contact.flash.success")
     else
-      redirect_to contact_path, alert: "Veuillez remplir tous les champs obligatoires."
+      redirect_to contact_path, alert: t("pages.contact.flash.error_required")
     end
   end
 end

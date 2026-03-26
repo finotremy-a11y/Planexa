@@ -1,0 +1,69 @@
+<% content_for :title, "Clients inactifs" %>
+<% content_for :page_title, "Clients inactifs" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Clients inactifs</h1>
+    <p>Identifiez les clients sans rendez-vous recent et relancez-les rapidement.</p>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:18px;">
+  <div class="card-body" style="padding:16px 20px;">
+    <%= form_with url: company_inactive_clients_path, method: :get, local: true do |f| %>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <label for="days" style="font-size:0.85rem; color:var(--text-600);">Inactifs depuis au moins</label>
+        <%= f.number_field :days, value: @inactivity_days, min: 7, max: 365, class: "form-control", style: "width:110px;" %>
+        <span style="font-size:0.85rem; color:var(--text-600);">jours</span>
+        <%= f.submit "Actualiser", class: "btn btn-secondary btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <h2 style="margin:0; font-size:1rem;">Liste des clients a relancer</h2>
+    <span class="badge badge-brown"><%= @inactive_clients.size %> client(s)</span>
+  </div>
+
+  <% if @inactive_clients.any? %>
+    <div class="table-wrapper" style="border:none; border-radius:0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Dernier rendez-vous</th>
+            <th>Historique</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @inactive_clients.each do |client| %>
+            <tr>
+              <td>
+                <strong><%= client.full_name %></strong>
+                <div style="font-size:0.78rem; color:var(--text-400);"><%= client.email %></div>
+              </td>
+              <td><%= Time.zone.parse(client.last_appointment_at.to_s).strftime("%d/%m/%Y") %></td>
+              <td><%= client.appointments_count %> rendez-vous</td>
+              <td>
+                <% subject = "On serait ravi de vous revoir chez #{@company.name}" %>
+                <% body = "Bonjour #{client.first_name},\n\nCela fait un moment depuis votre dernier rendez-vous. Vous pouvez reserver en ligne ici : #{company_public_url(@company)}\n\nA bientot !" %>
+                <%= link_to "Relancer par email ->",
+                      "mailto:#{client.email}?subject=#{CGI.escape(subject)}&body=#{CGI.escape(body)}",
+                      class: "btn btn-primary btn-sm" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="empty-state" style="padding:32px;">
+      <div class="empty-state-icon">✅</div>
+      <h3>Aucun client inactif</h3>
+      <p>Tous vos clients ont reserve recemment sur la periode selectionnee.</p>
+    </div>
+  <% end %>
+</div>

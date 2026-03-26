@@ -1,12 +1,12 @@
-<% content_for :title, "Modifier la prestation" %>
-<% content_for :page_title, "Prestations" %>
+<% content_for :title, t("services.edit_title") %>
+<% content_for :page_title, t("services.title") %>
 
 <div class="page-header">
   <div class="page-header-left">
-    <h1>Modifier <%= @service_type.name %></h1>
+    <h1><%= t("services.edit_title") %> — <%= @service_type.name %></h1>
   </div>
   <div class="page-header-actions">
-    <%= link_to "← Retour", company_service_types_path, class: "btn btn-ghost" %>
+    <%= link_to t("common.back_to_list"), company_service_types_path, class: "btn btn-ghost" %>
   </div>
 </div>
 

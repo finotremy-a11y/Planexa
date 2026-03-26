@@ -1,10 +1,10 @@
-<% content_for :title, "Contact" %>
+<% content_for :title, t("pages.contact.meta_title") %>
 
 <div style="max-width:920px; margin:48px auto; padding:0 24px;">
   <div class="page-header">
     <div class="page-header-left">
-      <h1>Nous contacter</h1>
-      <p>Une question ? Un problème ? On vous répond sous 48 h ouvrées.</p>
+      <h1><%= t("pages.contact.heading") %></h1>
+      <p><%= t("pages.contact.subheading") %></p>
     </div>
   </div>
 
@@ -14,38 +14,38 @@
         <%= form_with url: send_contact_path, method: :post, local: true do |form| %>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div class="form-group">
-              <label class="form-label">Nom <span style="color:#dc2626;">*</span></label>
-              <input type="text" name="name" class="form-control" placeholder="Jean Dupont" required value="<%= user_signed_in? ? current_user.full_name : '' %>">
+              <label class="form-label"><%= t("pages.contact.form.name_label") %> <span style="color:#dc2626;">*</span></label>
+              <input type="text" name="name" class="form-control" placeholder="<%= t("pages.contact.form.name_placeholder") %>" required value="<%= user_signed_in? ? current_user.full_name : '' %>">
             </div>
             <div class="form-group">
-              <label class="form-label">Email <span style="color:#dc2626;">*</span></label>
-              <input type="email" name="email" class="form-control" placeholder="jean@exemple.fr" required value="<%= user_signed_in? ? current_user.email : '' %>">
+              <label class="form-label"><%= t("pages.contact.form.email_label") %> <span style="color:#dc2626;">*</span></label>
+              <input type="email" name="email" class="form-control" placeholder="<%= t("pages.contact.form.email_placeholder") %>" required value="<%= user_signed_in? ? current_user.email : '' %>">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Sujet</label>
+            <label class="form-label"><%= t("pages.contact.form.subject_label") %></label>
             <%= form.select :subject,
                   [
-                    ["Choisir un sujet", ""],
-                    ["Question sur l'abonnement", "Question sur l'abonnement"],
-                    ["Problème technique", "Problème technique"],
-                    ["Question sur les fonctionnalités", "Question sur les fonctionnalités"],
-                    ["Signalement d'un bug", "Signalement d'un bug"],
-                    ["Demande de remboursement", "Demande de remboursement"],
-                    ["Autre", "Autre"]
+                    [t("pages.contact.form.subject_prompt"), ""],
+                    [t("pages.contact.form.subject_subscription"), t("pages.contact.form.subject_subscription")],
+                    [t("pages.contact.form.subject_technical"), t("pages.contact.form.subject_technical")],
+                    [t("pages.contact.form.subject_features"), t("pages.contact.form.subject_features")],
+                    [t("pages.contact.form.subject_bug"), t("pages.contact.form.subject_bug")],
+                    [t("pages.contact.form.subject_refund"), t("pages.contact.form.subject_refund")],
+                    [t("pages.contact.form.subject_other"), t("pages.contact.form.subject_other")]
                   ],
                   {},
                   class: "form-control" %>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Message <span style="color:#dc2626;">*</span></label>
-            <textarea name="message" class="form-control" rows="6" placeholder="Décrivez votre question ou problème..." required></textarea>
+            <label class="form-label"><%= t("pages.contact.form.message_label") %> <span style="color:#dc2626;">*</span></label>
+            <textarea name="message" class="form-control" rows="6" placeholder="<%= t("pages.contact.form.message_placeholder") %>" required></textarea>
           </div>
 
           <div style="display:flex; justify-content:flex-end;">
-            <button type="submit" class="btn btn-primary btn-lg">Envoyer le message →</button>
+            <button type="submit" class="btn btn-primary btn-lg"><%= t("pages.contact.form.submit") %></button>
           </div>
         <% end %>
       </div>
@@ -54,26 +54,26 @@
     <div style="display:flex; flex-direction:column; gap:16px;">
       <div class="card">
         <div class="card-body">
-          <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:16px;">Informations</h3>
+          <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:16px;"><%= t("pages.contact.info.title") %></h3>
           <div style="display:flex; flex-direction:column; gap:12px; font-size:0.88rem;">
             <div style="display:flex; gap:10px; align-items:flex-start;">
               <span style="font-size:1.1rem;">📧</span>
               <div>
-                <div style="font-weight:500; margin-bottom:2px;">Email</div>
+                <div style="font-weight:500; margin-bottom:2px;"><%= t("pages.contact.info.email_label") %></div>
                 <a href="mailto:<%= legal_contact_email %>" style="color:var(--green-700);"><%= legal_contact_email %></a>
               </div>
             </div>
             <div style="display:flex; gap:10px; align-items:flex-start;">
               <span style="font-size:1.1rem;">⏱</span>
               <div>
-                <div style="font-weight:500; margin-bottom:2px;">Délai de réponse</div>
-                <div style="color:var(--text-500);">Sous 48 h ouvrées</div>
+                <div style="font-weight:500; margin-bottom:2px;"><%= t("pages.contact.info.response_time_label") %></div>
+                <div style="color:var(--text-500);"><%= t("pages.contact.info.response_time_value") %></div>
               </div>
             </div>
             <div style="display:flex; gap:10px; align-items:flex-start;">
               <span style="font-size:1.1rem;">📍</span>
               <div>
-                <div style="font-weight:500; margin-bottom:2px;">Adresse</div>
+                <div style="font-weight:500; margin-bottom:2px;"><%= t("pages.contact.info.address_label") %></div>
                 <div style="color:var(--text-500);"><%= legal_owner_address %></div>
               </div>
             </div>
@@ -83,12 +83,12 @@
 
       <div class="card">
         <div class="card-body">
-          <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:12px;">Liens utiles</h3>
+          <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:12px;"><%= t("pages.contact.links.title") %></h3>
           <div style="display:flex; flex-direction:column; gap:8px; font-size:0.88rem;">
-            <%= link_to "CGU", cgu_path, style: "color:var(--green-700);" %>
-            <%= link_to "CGV", cgv_path, style: "color:var(--green-700);" %>
-            <%= link_to "Confidentialité", confidentialite_path, style: "color:var(--green-700);" %>
-            <%= link_to "Mentions légales", mentions_legales_path, style: "color:var(--green-700);" %>
+            <%= link_to t("footer.terms_of_use"), cgu_path, style: "color:var(--green-700);" %>
+            <%= link_to t("footer.terms_of_sale"), cgv_path, style: "color:var(--green-700);" %>
+            <%= link_to t("footer.privacy"), confidentialite_path, style: "color:var(--green-700);" %>
+            <%= link_to t("footer.legal_notice"), mentions_legales_path, style: "color:var(--green-700);" %>
           </div>
         </div>
       </div>

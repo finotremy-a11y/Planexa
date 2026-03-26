@@ -1,0 +1,52 @@
+<% content_for :title, t("reviews.show_title", name: @review.client_user.full_name) %>
+<% content_for :page_title, t("reviews.show_subtitle") %>
+
+<div style="max-width:700px;">
+  <div class="card" style="margin-bottom:16px;">
+    <div style="padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+        <div>
+          <h2 style="margin-bottom:4px;"><%= @review.client_user.full_name %></h2>
+          <small style="color:var(--text-400);">
+            <%= t("reviews.submitted_date", date: @review.submitted_at.strftime("%d/%m/%Y")) %>
+          </small>
+        </div>
+        <span class="badge <%= @review.published? ? 'badge-success' : 'badge-warning' %>">
+          <%= @review.published? ? t("reviews.published") : t("reviews.unpublished") %>
+        </span>
+      </div>
+
+      <dl style="display:grid; grid-template-columns:auto 1fr; gap:8px 24px; margin-bottom:20px;">
+        <dt style="color:var(--text-400);"><%= t("reviews.rating") %></dt>
+        <dd>
+          <span style="color:#f59e0b; font-size:1.2rem;">
+            <%= "★" * @review.rating %><%= "☆" * (5 - @review.rating) %>
+          </span>
+          (<%= @review.rating %>/5)
+        </dd>
+
+        <dt style="color:var(--text-400);"><%= t("common.service_type") %></dt>
+        <dd><%= @review.appointment.service_type.name %></dd>
+
+        <dt style="color:var(--text-400);"><%= t("reviews.appointment_date") %></dt>
+        <dd><%= @review.appointment.scheduled_at.strftime("%A %d %B %Y") %></dd>
+      </dl>
+
+      <% if @review.comment.present? %>
+        <div style="background:var(--gray-50); border-radius:var(--radius); padding:16px; margin-bottom:20px;">
+          <p style="margin:0; font-style:italic; color:var(--text-600); line-height:1.7;">
+            "<%= @review.comment %>"
+          </p>
+        </div>
+      <% end %>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <%= link_to t("reviews.back_to_list"), company_reviews_path, class: "btn btn-secondary btn-sm" %>
+          <%= button_to t("reviews.delete_button"), company_review_path(@review),
+            method: :delete,
+            class: "btn btn-danger btn-sm",
+            data: { turbo_confirm: t("reviews.delete_confirmation_final") } %>
+      </div>
+    </div>
+  </div>
+</div>

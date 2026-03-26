@@ -36,6 +36,26 @@ class AvailabilityCheckerTest < ActiveSupport::TestCase
     assert_not checker.available?
   end
 
+  test "indisponible si employé en absence sur le créneau" do
+    monday = next_monday_at(10)
+    create(:employee_absence,
+      employee:  @employee,
+      starts_at: monday - 1.day,
+      ends_at:   monday + 1.day)
+    checker = AvailabilityChecker.new(@employee, monday, 60)
+    assert_not checker.available?
+  end
+
+  test "disponible si absence ne couvre pas le créneau" do
+    monday = next_monday_at(10)
+    create(:employee_absence,
+      employee:  @employee,
+      starts_at: monday + 2.days,
+      ends_at:   monday + 4.days)
+    checker = AvailabilityChecker.new(@employee, monday, 60)
+    assert checker.available?
+  end
+
   private
 
   def next_monday_at(hour)

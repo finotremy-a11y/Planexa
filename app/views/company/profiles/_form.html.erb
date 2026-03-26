@@ -51,6 +51,68 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :professional_category, "Type d'activite", class: "form-label" %>
+        <%= f.select :professional_category,
+              [
+                ["Entreprise standard", "standard_business"],
+                ["Professionnel de sante", "healthcare_professional"]
+              ],
+              {},
+              class: "form-control" %>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <%= f.label :health_specialty, "Specialite", class: "form-label" %>
+            <%= f.select :health_specialty,
+              options_for_select(MedicalTaxonomy.specialties, @company.health_specialty),
+              { include_blank: "Selectionner une specialite" },
+              class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :convention_sector, "Conventionnement", class: "form-label" %>
+          <%= f.select :convention_sector,
+                [
+                  ["Non conventionne", "not_conventioned"],
+                  ["Secteur 1", "sector_1"],
+                  ["Secteur 2", "sector_2"]
+                ],
+                { include_blank: "Selectionner" },
+                class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:4px;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <%= f.check_box :teleconsultation_enabled %>
+          <span>Propose la teleconsultation</span>
+        </label>
+        <span class="form-hint">Activez uniquement si vous proposez des consultations a distance.</span>
+      </div>
+
+      <% if @company.healthcare_professional? %>
+        <div class="form-group">
+          <%= f.label :accessibility_info, "Accessibilite", class: "form-label" %>
+          <%= f.text_area :accessibility_info, class: "form-control", rows: 2,
+                placeholder: "Ascenseur, acces PMR, etage, parking, transports..." %>
+          <span class="form-hint">Visible publiquement pour rassurer avant la reservation.</span>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :practical_info, "Informations pratiques", class: "form-label" %>
+          <%= f.text_area :practical_info, class: "form-control", rows: 3,
+                placeholder: "Documents a apporter, duree moyenne, consignes avant consultation..." %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :cancellation_policy, "Modalites d'annulation", class: "form-label" %>
+          <%= f.text_area :cancellation_policy, class: "form-control", rows: 2,
+                placeholder: "Annulation sans frais jusqu'a 24h avant le rendez-vous..." %>
+          <span class="form-hint">Champ requis pour les profils sante.</span>
+        </div>
+      <% end %>
+
+      <div class="form-group">
         <%= f.label :description, "Description", class: "form-label" %>
         <%= f.text_area :description, class: "form-control", rows: 4,
               placeholder: "Décrivez votre activité, votre expérience, votre zone d'intervention..." %>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -188,39 +188,39 @@
       </div>
 
       <div class="auth-visual-content">
-        <h2>La gestion de rendez-vous pensée pour les pros du terrain</h2>
-        <p>
-          Centralisez vos réservations, coordonnez votre équipe et offrez une expérience
-          client plus fluide, du premier contact jusqu’au paiement.
-        </p>
+        <h2><%= t("auth_layout.title") %></h2>
+        <p><%= t("auth_layout.description") %></p>
 
         <div class="auth-features">
           <div class="auth-feature">
             <div class="auth-feature-icon">📅</div>
-            Planning intelligent et visibilité temps réel
+            <%= t("auth_layout.feature_planning") %>
           </div>
           <div class="auth-feature">
             <div class="auth-feature-icon">🌐</div>
-            Réservations en ligne 24h/24 depuis votre fiche publique
+            <%= t("auth_layout.feature_booking") %>
           </div>
           <div class="auth-feature">
             <div class="auth-feature-icon">💳</div>
-            Encaissement sécurisé via Stripe
+            <%= t("auth_layout.feature_payment") %>
           </div>
           <div class="auth-feature">
             <div class="auth-feature-icon">🔔</div>
-            Emails automatiques et rappels sans friction
+            <%= t("auth_layout.feature_reminders") %>
           </div>
         </div>
       </div>
 
       <div class="auth-visual-footer">
-        © <%= Date.current.year %> Planify Pro · 49 € / mois · 14 jours d’essai
+        <%= t("auth_layout.footer", year: Date.current.year) %>
       </div>
     </div>
 
     <div class="auth-form-panel">
       <div class="auth-form-container">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+          <%= render "shared/locale_switcher" %>
+        </div>
         <% flash.each do |type, message| %>
           <% css = { "notice" => "alert-success", "alert" => "alert-error", "warning" => "alert-warning" } %>
           <div class="alert <%= css[type] || 'alert-info' %>" style="margin-bottom:20px;">

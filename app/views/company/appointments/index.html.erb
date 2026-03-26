@@ -1,37 +1,37 @@
-<% content_for :title, "Rendez-vous" %>
-<% content_for :page_title, "Rendez-vous" %>
+<% content_for :title, t("appointments.title") %>
+<% content_for :page_title, t("appointments.title") %>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
   <div style="display:flex; gap:8px; flex-wrap:wrap;">
-    <%= link_to "Vue liste", company_appointments_path, class: "btn btn-secondary btn-sm #{controller.action_name == 'index' ? 'active' : ''}" %>
-    <%= link_to "Calendrier", calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
-    <%= link_to "Non assignés", unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.list_view"), company_appointments_path, class: "btn btn-secondary btn-sm #{controller.action_name == 'index' ? 'active' : ''}" %>
+    <%= link_to t("appointments.calendar_view"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.unassigned_view"), unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
   </div>
-  <%= link_to "Nouveau RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+  <%= link_to t("appointments.new_short"), new_company_appointment_path, class: "btn btn-primary btn-sm" %>
 </div>
 
 <%# Search / filters %>
 <%= search_form_for @q, url: company_appointments_path, html: { class: "search-form card", style: "margin-bottom:20px; padding:16px;" } do |f| %>
   <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
     <div>
-      <%= f.label :status_eq, "Statut", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.label :status_eq, t("common.status"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.select :status_eq,
-            [["Tous", nil], ["En attente", "pending"], ["Confirmé", "confirmed"],
-             ["Annulé", "cancelled"], ["Terminé", "completed"], ["Absent", "no_show"]],
+        [[t("common.all"), nil], [t("statuses.pending"), "pending"], [t("statuses.confirmed"), "confirmed"],
+         [t("statuses.cancelled"), "cancelled"], [t("statuses.completed"), "completed"], [t("statuses.no_show"), "no_show"]],
             { include_blank: false },
             class: "form-select form-select-sm" %>
     </div>
     <div>
-      <%= f.label :scheduled_at_gteq, "À partir du", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.label :scheduled_at_gteq, t("appointments.from_date"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.date_field :scheduled_at_gteq, class: "form-control form-control-sm" %>
     </div>
     <div>
-      <%= f.label :scheduled_at_lteq, "Jusqu'au", style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
+      <%= f.label :scheduled_at_lteq, t("appointments.to_date"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.date_field :scheduled_at_lteq, class: "form-control form-control-sm" %>
     </div>
     <div>
-      <%= f.submit "Filtrer", class: "btn btn-secondary btn-sm" %>
-      <%= link_to "Réinitialiser", company_appointments_path, class: "btn btn-link btn-sm" %>
+      <%= f.submit t("common.filter"), class: "btn btn-secondary btn-sm" %>
+      <%= link_to t("common.reset"), company_appointments_path, class: "btn btn-link btn-sm" %>
     </div>
   </div>
 <% end %>
@@ -41,12 +41,13 @@
     <table class="table" style="margin:0;">
       <thead>
         <tr>
-          <th>Date &amp; Heure</th>
-          <th>Client</th>
-          <th>Prestation</th>
-          <th>Employé</th>
-          <th>Statut</th>
-          <th>Source</th>
+          <th><%= t("appointments.date_time_header") %></th>
+          <th><%= t("common.client") %></th>
+          <th><%= t("common.service_type") %></th>
+          <th><%= t("common.employee") %></th>
+          <th><%= t("common.status") %></th>
+          <th><%= t("appointments.reconfirmation") %></th>
+          <th><%= t("appointments.source") %></th>
           <th style="text-align:right;"></th>
         </tr>
       </thead>
@@ -61,7 +62,7 @@
               <% if appt.client_user %>
                 <%= appt.client_user.full_name %>
               <% else %>
-                <span style="color:var(--text-400);">Sans compte</span>
+                <span style="color:var(--text-400);"><%= t("appointments.client_no_account") %></span>
               <% end %>
             </td>
             <td><%= appt.service_type.name %></td>
@@ -69,7 +70,7 @@
               <% if appt.employee %>
                 <%= appt.employee.full_name %>
               <% else %>
-                <span class="badge badge-warning">Non assigné</span>
+                <span class="badge badge-warning"><%= t("appointments.unassigned_label") %></span>
               <% end %>
             </td>
             <td>
@@ -78,12 +79,21 @@
               </span>
             </td>
             <td>
+              <% if appt.reconfirmed? %>
+                <span class="badge badge-green"><%= t("appointments.reconfirmation_reconfirmed") %></span>
+              <% elsif appt.reconfirmation_pending? %>
+                <span class="badge badge-gold"><%= t("appointments.reconfirmation_pending") %></span>
+              <% else %>
+                <span class="badge badge-grey"><%= t("appointments.reconfirmation_not_requested") %></span>
+              <% end %>
+            </td>
+            <td>
               <span style="font-size:0.8rem; color:var(--text-400);">
-                <%= appt.online? ? "En ligne" : "Manuel" %>
+                <%= appt.online? ? t("appointments.online") : t("appointments.manual") %>
               </span>
             </td>
             <td style="text-align:right;">
-              <%= link_to "Voir", company_appointment_path(appt), class: "btn btn-link btn-sm" %>
+              <%= link_to t("common.view"), company_appointment_path(appt), class: "btn btn-link btn-sm" %>
             </td>
           </tr>
         <% end %>
@@ -97,8 +107,8 @@
 <% else %>
   <div class="empty-state">
     <div style="font-size:3rem; margin-bottom:12px;">📭</div>
-    <h3>Aucun rendez-vous</h3>
-    <p>Créez votre premier rendez-vous ou attendez des réservations en ligne.</p>
-    <%= link_to "Créer un RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+    <h3><%= t("appointments.empty_state") %></h3>
+    <p><%= t("appointments.empty_state_text") %></p>
+    <%= link_to t("appointments.create_short"), new_company_appointment_path, class: "btn btn-primary btn-sm" %>
   </div>
 <% end %>

@@ -1,0 +1,18 @@
+<% content_for :title, "Nouvelle absence — #{@employee.full_name}" %>
+<% content_for :page_title, "Nouvelle absence" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Nouvelle absence</h1>
+    <p><%= @employee.full_name %></p>
+  </div>
+  <div class="page-header-actions">
+    <%= link_to "← Retour", company_employee_employee_absences_path(@employee), class: "btn btn-ghost" %>
+  </div>
+</div>
+
+<div class="card" style="max-width:560px;">
+  <div class="card-body">
+    <%= render "form", absence: @absence %>
+  </div>
+</div>

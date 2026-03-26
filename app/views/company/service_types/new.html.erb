@@ -1,13 +1,13 @@
-<% content_for :title, "Nouvelle prestation" %>
-<% content_for :page_title, "Prestations" %>
+<% content_for :title, t("services.new_title") %>
+<% content_for :page_title, t("services.title") %>
 
 <div class="page-header">
   <div class="page-header-left">
-    <h1>Nouvelle prestation</h1>
+    <h1><%= t("services.new_title") %></h1>
   </div>
   <div class="page-header-actions">
-    <%= link_to "← Retour", company_service_types_path, class: "btn btn-ghost" %>
+    <%= link_to t("common.back_to_list"), company_service_types_path, class: "btn btn-ghost" %>
   </div>
 </div>
 
-<%= render 'form', service_type: @service_type %>
+<%= render "form", service_type: @service_type, service_templates: @service_templates %>

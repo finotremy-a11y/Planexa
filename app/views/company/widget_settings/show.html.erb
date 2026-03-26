@@ -1,0 +1,105 @@
+<% content_for :title, "Widget de réservation" %>
+
+<div class="page-header">
+  <h1>Widget de réservation embarquable</h1>
+  <p style="color:var(--text-500);">
+    Intégrez votre formulaire de réservation sur votre site web avec un simple copier-coller.
+  </p>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-header">
+    <h2 style="margin:0; font-size:1rem;">Aperçu du widget</h2>
+  </div>
+  <div class="card-body">
+    <div style="background:#f9fafb; border:1px solid var(--border); border-radius:var(--radius-md);
+                padding:12px; text-align:center;">
+      <a href="<%= @widget_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+        🔗 Ouvrir le widget dans un nouvel onglet
+      </a>
+      <p style="margin:8px 0 0; font-size:0.8rem; color:var(--text-400);">
+        Token actuel : <code style="font-size:0.75rem;"><%= @company.widget_token %></code>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-header">
+    <h2 style="margin:0; font-size:1rem;">QR code de réservation</h2>
+  </div>
+  <div class="card-body">
+    <p style="color:var(--text-500); font-size:0.875rem; margin-bottom:12px;">
+      Imprimez ce QR code et affichez-le en boutique pour permettre à vos clients d'ouvrir directement votre fiche de réservation.
+    </p>
+    <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;">
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:12px;">
+        <%= raw(@booking_qr_svg) %>
+      </div>
+      <div style="flex:1; min-width:240px;">
+        <p style="font-size:0.82rem; color:var(--text-500); margin:0 0 8px 0;">Lien du QR code :</p>
+        <p style="margin:0 0 12px 0; word-break:break-all;"><%= @public_page_url %></p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <%= link_to "Ouvrir la fiche publique", @public_page_url, class: "btn btn-secondary btn-sm", target: "_blank", rel: "noopener noreferrer" %>
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">Imprimer le QR code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%# ── Code iFrame ── %>
+<div class="card" style="margin-bottom:24px;">
+  <div class="card-header">
+    <h2 style="margin:0; font-size:1rem;">Intégration iFrame <span style="background:#d1fae5; color:#065f46; border-radius:4px; padding:2px 7px; font-size:0.75rem; margin-left:6px;">Recommandé</span></h2>
+  </div>
+  <div class="card-body">
+    <p style="color:var(--text-500); font-size:0.875rem; margin-bottom:12px;">
+      Ajoutez ce code HTML là où vous souhaitez afficher le formulaire de réservation.
+    </p>
+    <div style="position:relative;">
+      <textarea id="iframe-code" readonly rows="3"
+                style="width:100%; font-family:monospace; font-size:0.78rem; padding:10px 12px;
+                       background:#1e293b; color:#e2e8f0; border-radius:var(--radius-md);
+                       border:none; resize:none; box-sizing:border-box;"
+      ><%= @iframe_code %></textarea>
+      <button onclick="copyToClipboard('iframe-code')"
+              style="position:absolute; top:8px; right:8px; padding:4px 10px;
+                     background:#334155; color:#e2e8f0; border:none; border-radius:4px;
+                     font-size:0.75rem; cursor:pointer;">
+        Copier
+      </button>
+    </div>
+  </div>
+</div>
+
+<%# ── Régénération du token ── %>
+<div class="card" style="border-color:#fca5a5;">
+  <div class="card-header" style="background:#fef2f2;">
+    <h2 style="margin:0; font-size:1rem; color:#b91c1c;">⚠ Zone de danger — Régénérer le token</h2>
+  </div>
+  <div class="card-body">
+    <p style="color:var(--text-500); font-size:0.875rem; margin-bottom:14px;">
+      Régénérer le token <strong>invalide immédiatement</strong> le code d'intégration actuel.
+      Vous devrez mettre à jour le code sur votre site après cette opération.
+    </p>
+    <%= button_to "Régénérer le token",
+          regenerate_token_company_widget_settings_path,
+          method: :post,
+          data: { confirm: "Êtes-vous sûr ? L'ancien code d'intégration cessera de fonctionner." },
+          class: "btn",
+          style: "background:#dc2626; color:#fff; border:none;" %>
+  </div>
+</div>
+
+<script>
+function copyToClipboard(id) {
+  const el = document.getElementById(id);
+  el.select();
+  document.execCommand('copy');
+  const btn = el.nextElementSibling;
+  const original = btn.textContent;
+  btn.textContent = '✓ Copié !';
+  setTimeout(() => { btn.textContent = original; }, 2000);
+}
+</script>

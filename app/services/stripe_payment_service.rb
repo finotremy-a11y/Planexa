@@ -12,9 +12,11 @@ class StripePaymentService
     raise "Compte Stripe non connecté" unless @company.stripe_account_id.present?
     raise "Onboarding Stripe incomplet" unless @company.stripe_onboarding_complete?
 
+    amount_to_charge = @appointment.payment_amount_cents
+
     intent = Stripe::PaymentIntent.create(
       {
-        amount:   @service.price_cents,
+        amount:   amount_to_charge,
         currency: "eur",
         transfer_data: {
           destination: @company.stripe_account_id
@@ -22,7 +24,8 @@ class StripePaymentService
         metadata: {
           appointment_id: @appointment.id,
           company_id:     @company.id,
-          service_name:   @service.name
+          service_name:   @service.name,
+          payment_scope:  @service.deposit_required? ? "deposit" : "full"
         },
         description: "#{@service.name} — #{@company.name}"
       },
@@ -34,7 +37,7 @@ class StripePaymentService
       client_user:              @appointment.client_user,
       company:                  @company,
       stripe_payment_intent_id: intent.id,
-      amount_cents:             @service.price_cents,
+      amount_cents:             amount_to_charge,
       currency:                 "eur",
       status:                   :pending
     )

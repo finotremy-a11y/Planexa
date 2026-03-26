@@ -35,6 +35,18 @@ class Company::AppointmentsController < Company::BaseController
     end
 
     if @appointment.save
+      MedicalAuditLogger.log!(
+        company: @company,
+        user: current_user,
+        action: "medical_appointment_created",
+        record: @appointment,
+        metadata: {
+          scheduled_at: @appointment.scheduled_at,
+          employee_id: @appointment.employee_id,
+          service_type_id: @appointment.service_type_id,
+          urgent: @appointment.urgent?
+        }
+      )
       @appointment.confirmed! if @company.setting.booking_private?
       redirect_to company_appointment_path(@appointment),
         notice: "Rendez-vous créé avec succès."
@@ -47,6 +59,17 @@ class Company::AppointmentsController < Company::BaseController
 
   def update
     if @appointment.update(appointment_params)
+      MedicalAuditLogger.log!(
+        company: @company,
+        user: current_user,
+        action: "medical_appointment_updated",
+        record: @appointment,
+        metadata: {
+          changed_fields: @appointment.saved_changes.keys,
+          scheduled_at: @appointment.scheduled_at,
+          urgent: @appointment.urgent?
+        }
+      )
       redirect_to company_appointment_path(@appointment), notice: "Rendez-vous mis à jour."
     else
       render :edit, status: :unprocessable_entity
@@ -60,11 +83,23 @@ class Company::AppointmentsController < Company::BaseController
 
   def cancel
     @appointment.update!(status: :cancelled, cancellation_reason: params[:reason])
+    MedicalAuditLogger.log!(
+      company: @company,
+      user: current_user,
+      action: "medical_appointment_cancelled",
+      record: @appointment,
+      metadata: {
+        cancellation_reason: @appointment.cancellation_reason
+      }
+    )
+    NotifyWaitlistJob.perform_later(@appointment.id)
     redirect_to company_appointments_path, notice: "Rendez-vous annulé."
   end
 
   def complete
     @appointment.completed!
+    ReviewRequestJob.set(wait: 2.hours).perform_later(@appointment.id)
+    AwardLoyaltyPointsJob.perform_later(@appointment.id)
     redirect_to company_appointment_path(@appointment), notice: "Rendez-vous marqué comme terminé."
   end
 

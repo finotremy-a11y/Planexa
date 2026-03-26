@@ -1,8 +1,8 @@
-<% content_for :title, "Créer un compte" %>
+<% content_for :title, t("auth.create_account") %>
 
 <div class="auth-form-header">
-  <h1>Créer votre compte</h1>
-  <p>Déjà inscrit ? <%= link_to "Se connecter", new_user_session_path %></p>
+  <h1><%= t("auth.create_your_account") %></h1>
+  <p><%= t("auth.already_registered") %> <%= link_to t("auth.sign_in"), new_user_session_path %></p>
 </div>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
@@ -15,7 +15,7 @@
   <% end %>
 
   <div class="form-group">
-    <div class="form-label" style="margin-bottom:10px;">Je suis...</div>
+    <div class="form-label" style="margin-bottom:10px;"><%= t("auth.i_am") %></div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
                      border:2px solid var(--border); border-radius:var(--radius-md);
@@ -24,8 +24,8 @@
         <%= f.radio_button :role, "client", checked: resource.role.blank? || resource.role == "client",
               style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
         <div>
-          <div style="font-weight:600; font-size:0.9rem;">Client</div>
-          <div style="font-size:0.75rem; color:var(--text-500);">Gratuit</div>
+          <div style="font-weight:600; font-size:0.9rem;"><%= t("auth.client") %></div>
+          <div style="font-size:0.75rem; color:var(--text-500);"><%= t("auth.free") %></div>
         </div>
       </label>
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
@@ -36,8 +36,8 @@
               checked: resource.role == "company_admin",
               style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
         <div>
-          <div style="font-weight:600; font-size:0.9rem;">Entreprise</div>
-          <div style="font-size:0.75rem; color:var(--gold-600);">14 j gratuits</div>
+          <div style="font-weight:600; font-size:0.9rem;"><%= t("auth.company") %></div>
+          <div style="font-size:0.75rem; color:var(--gold-600);"><%= t("auth.trial_14_days") %></div>
         </div>
       </label>
     </div>
@@ -45,41 +45,47 @@
 
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
     <div class="form-group">
-      <%= f.label :first_name, "Prénom", class: "form-label" %>
-      <%= f.text_field :first_name, class: "form-control", placeholder: "Jean", autocomplete: "given-name" %>
+      <%= f.label :first_name, t("auth.first_name"), class: "form-label" %>
+      <%= f.text_field :first_name, class: "form-control", placeholder: t("auth.first_name_placeholder"), autocomplete: "given-name" %>
     </div>
     <div class="form-group">
-      <%= f.label :last_name, "Nom", class: "form-label" %>
-      <%= f.text_field :last_name, class: "form-control", placeholder: "Dupont", autocomplete: "family-name" %>
+      <%= f.label :last_name, t("auth.last_name"), class: "form-label" %>
+      <%= f.text_field :last_name, class: "form-control", placeholder: t("auth.last_name_placeholder"), autocomplete: "family-name" %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :email, "Adresse email", class: "form-label" %>
+    <%= f.label :email, t("auth.email"), class: "form-label" %>
     <%= f.email_field :email, autofocus: true, autocomplete: "email",
-          class: "form-control", placeholder: "vous@exemple.fr" %>
+          class: "form-control", placeholder: t("auth.email_placeholder") %>
   </div>
 
   <div class="form-group">
-    <%= f.label :password, "Mot de passe", class: "form-label" %>
+    <%= f.label :locale, t("locales.language"), class: "form-label" %>
+    <%= f.select :locale,
+          LocaleSwitcher::SUPPORTED_LOCALES.map { |code| [locale_name(code), code] },
+          { selected: I18n.locale.to_s },
+          class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password, t("auth.password"), class: "form-label" %>
     <%= f.password_field :password, autocomplete: "new-password",
-          class: "form-control", placeholder: "8 caractères minimum" %>
-    <span class="form-hint">Minimum 8 caractères</span>
+          class: "form-control", placeholder: t("auth.password_minimum") %>
+    <span class="form-hint"><%= t("auth.password_minimum") %></span>
   </div>
 
   <div class="form-group">
-    <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "form-label" %>
+    <%= f.label :password_confirmation, t("auth.password_confirmation"), class: "form-label" %>
     <%= f.password_field :password_confirmation, autocomplete: "new-password",
-          class: "form-control", placeholder: "••••••••" %>
+          class: "form-control", placeholder: t("auth.password_placeholder") %>
   </div>
 
   <div style="font-size:0.78rem; color:var(--text-300); margin-bottom:16px; line-height:1.6;">
-    En créant un compte, vous acceptez nos
-    <%= link_to "CGU", cgu_path, style: "color:var(--green-700);" %> et notre
-    <%= link_to "politique de confidentialité", confidentialite_path, style: "color:var(--green-700);" %>.
+    <%= t("auth.accept_terms_html", terms: link_to(t("footer.terms_of_use"), cgu_path, style: "color:var(--green-700);"), privacy: link_to(t("footer.privacy"), confidentialite_path, style: "color:var(--green-700);")) %>
   </div>
 
-  <%= f.submit "Créer mon compte →", class: "btn btn-primary btn-lg",
+  <%= f.submit t("auth.create_account_cta"), class: "btn btn-primary btn-lg",
         style: "width:100%; justify-content:center;" %>
 <% end %>
 

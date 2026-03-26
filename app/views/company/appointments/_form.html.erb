@@ -1,7 +1,7 @@
 <%= form_with model: [@company, appointment], html: { class: "appointment-form" } do |f| %>
   <% if appointment.errors.any? %>
     <div class="alert alert-danger" style="margin-bottom:20px;">
-      <strong><%= pluralize(appointment.errors.count, "erreur") %> :</strong>
+      <strong><%= pluralize(appointment.errors.count, t("common.error_one"), t("common.error_other")) %> :</strong>
       <ul style="margin:8px 0 0 0; padding-left:20px;">
         <% appointment.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
@@ -12,68 +12,68 @@
 
   <div class="form-row">
     <div class="form-group">
-      <%= f.label :service_type_id, "Prestation" %>
+      <%= f.label :service_type_id, t("common.service_type") %>
       <%= f.collection_select :service_type_id,
-            @company.service_types.active.order(:name),
-            :id, :name,
-            { prompt: "Choisir une prestation…" },
+        @company.service_types.active.order(:name),
+        :id, :name,
+        { prompt: t("appointments.choose_service") },
             class: "form-select" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :employee_id, "Employé (optionnel)" %>
+      <%= f.label :employee_id, t("appointments.employee_optional") %>
       <%= f.collection_select :employee_id,
-            @company.employees.active.order(:last_name),
-            :id, :full_name,
-            { prompt: "Attribution automatique" },
+        @company.employees.active.order(:last_name),
+        :id, :full_name,
+        { prompt: t("appointments.auto_assignment") },
             class: "form-select" %>
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
-      <%= f.label :client_user_id, "Client (optionnel)" %>
+      <%= f.label :client_user_id, t("appointments.client_optional") %>
       <%= f.collection_select :client_user_id,
-            User.where(role: :client).order(:last_name).limit(200),
-            :id, :full_name,
-            { prompt: "Client sans compte" },
+        User.where(role: :client).order(:last_name).limit(200),
+        :id, :full_name,
+        { prompt: t("appointments.client_no_account") },
             class: "form-select" %>
     </div>
 
     <div class="form-group">
-      <%= f.label :duration_minutes, "Durée (minutes)" %>
+      <%= f.label :duration_minutes, t("appointments.duration_minutes") %>
       <%= f.number_field :duration_minutes, class: "form-control", min: 5, step: 5 %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :scheduled_at, "Date et heure" %>
+    <%= f.label :scheduled_at, t("appointments.date_time") %>
     <%= f.datetime_local_field :scheduled_at,
           class: "form-control",
           value: appointment.scheduled_at&.strftime("%Y-%m-%dT%H:%M") %>
   </div>
 
   <div class="form-group">
-    <%= f.label :client_notes, "Notes client" %>
+    <%= f.label :client_notes, t("appointments.client_notes") %>
     <%= f.text_area :client_notes, class: "form-control", rows: 3,
-          placeholder: "Informations transmises par le client…" %>
+      placeholder: t("appointments.client_notes_placeholder") %>
   </div>
 
   <div class="form-group">
-    <%= f.label :internal_notes, "Notes internes" %>
+    <%= f.label :internal_notes, t("appointments.internal_notes") %>
     <%= f.text_area :internal_notes, class: "form-control", rows: 3,
-          placeholder: "Notes visibles uniquement par votre équipe…" %>
+      placeholder: t("appointments.internal_notes_placeholder") %>
   </div>
 
   <div class="form-check" style="margin-bottom:20px;">
     <%= f.check_box :urgent, class: "form-check-input" %>
-    <%= f.label :urgent, "Marquer comme urgent", class: "form-check-label" %>
+    <%= f.label :urgent, t("appointments.mark_urgent"), class: "form-check-label" %>
   </div>
 
   <div style="display:flex; gap:8px;">
-    <%= f.submit appointment.new_record? ? "Créer le rendez-vous" : "Enregistrer",
+    <%= f.submit appointment.new_record? ? t("appointments.create_button") : t("common.save"),
           class: "btn btn-primary" %>
-    <%= link_to "Annuler",
+        <%= link_to t("common.cancel"),
           appointment.new_record? ? company_appointments_path : company_appointment_path(appointment),
           class: "btn btn-secondary" %>
   </div>

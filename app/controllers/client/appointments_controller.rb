@@ -11,12 +11,20 @@ class Client::AppointmentsController < Client::BaseController
     )
   end
 
-  def show; end
+  def show
+    return unless @appointment.completed?
+
+    @rebooking_url = new_appointment_path(
+      company_id: @appointment.company_id,
+      service_type_id: @appointment.service_type_id
+    )
+  end
 
   def destroy
     if @appointment.pending? || @appointment.confirmed?
       @appointment.update!(status: :cancelled, cancellation_reason: "Annulé par le client")
       ClientMailer.appointment_cancelled(@appointment).deliver_later
+      NotifyWaitlistJob.perform_later(@appointment.id)
       redirect_to client_appointments_path, notice: "Rendez-vous annulé."
     else
       redirect_to client_appointments_path, alert: "Ce rendez-vous ne peut plus être annulé."

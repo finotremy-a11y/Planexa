@@ -1,16 +1,15 @@
 module ApplicationHelper
   include Pagy::Frontend
+  include Chartkick::Helper
 
   # ── SEO ─────────────────────────────────────────────────────────────────────
 
   def default_meta_description
-    "Planify Pro — La plateforme de gestion de rendez-vous pour les artisans " \
-    "et entreprises de services. Planning en ligne, réservations clients, " \
-    "paiements sécurisés."
+    t("seo.default_meta_description")
   end
 
   def page_title(title = nil)
-    title.present? ? "#{title} — Planify Pro" : "Planify Pro — Gestion de rendez-vous pour professionnels"
+    title.present? ? "#{title} — Planify Pro" : t("seo.default_title")
   end
 
   def og_image_url
@@ -21,18 +20,20 @@ module ApplicationHelper
 
   def status_badge(status)
     map = {
-      "pending"   => [ "badge-gold",  "En attente" ],
-      "confirmed" => [ "badge-green", "Confirmé" ],
-      "cancelled" => [ "badge-red",   "Annulé" ],
-      "completed" => [ "badge-grey",  "Terminé" ],
-      "no_show"   => [ "badge-red",   "Absent" ],
-      "trialing"  => [ "badge-gold",  "Essai" ],
-      "active"    => [ "badge-green", "Actif" ],
-      "past_due"  => [ "badge-red",   "Impayé" ],
-      "suspended" => [ "badge-red",   "Suspendu" ],
-      "canceled"  => [ "badge-grey",  "Annulé" ]
+      "pending" => "badge-gold",
+      "confirmed" => "badge-green",
+      "cancelled" => "badge-red",
+      "completed" => "badge-grey",
+      "no_show" => "badge-red",
+      "trialing" => "badge-gold",
+      "active" => "badge-green",
+      "past_due" => "badge-red",
+      "suspended" => "badge-red",
+      "canceled" => "badge-grey"
     }
-    css, label = map[status.to_s] || [ "badge-grey", status.to_s.humanize ]
+
+    css = map[status.to_s] || "badge-grey"
+    label = t("statuses.#{status}", default: status.to_s.humanize)
     content_tag(:span, label, class: "badge #{css}")
   end
 
@@ -52,6 +53,14 @@ module ApplicationHelper
   def avatar_initials(name)
     parts = name.to_s.split.first(2)
     parts.map { |p| p[0].upcase }.join
+  end
+
+  def locale_name(locale_code)
+    t("locales.names.#{locale_code}", default: locale_code.to_s.upcase)
+  end
+
+  def locale_badge(locale_code)
+    locale_code.to_s.upcase
   end
 
   def legal_business_name
@@ -88,5 +97,60 @@ module ApplicationHelper
 
   def legal_city
     ENV.fetch("LEGAL_CITY", "Ville à configurer")
+  end
+
+  def company_local_business_schema_json(company, avg_rating: nil, review_count: nil)
+    payload = {
+      "@context" => "https://schema.org",
+      "@type" => "LocalBusiness",
+      "name" => company.name,
+      "description" => company.description,
+      "telephone" => company.phone,
+      "url" => company.website.presence || request.original_url,
+      "image" => company.logo_url,
+      "address" => {
+        "@type" => "PostalAddress",
+        "streetAddress" => company.address,
+        "addressLocality" => company.city,
+        "postalCode" => company.zip_code,
+        "addressCountry" => "FR"
+      },
+      "openingHoursSpecification" => company_opening_hours_specifications(company)
+    }.compact
+
+    if review_count.to_i.positive? && avg_rating.present?
+      payload["aggregateRating"] = {
+        "@type" => "AggregateRating",
+        "ratingValue" => avg_rating,
+        "reviewCount" => review_count
+      }
+    end
+
+    payload.to_json
+  end
+
+  private
+
+  def company_opening_hours_specifications(company)
+    day_map = {
+      0 => "Sunday",
+      1 => "Monday",
+      2 => "Tuesday",
+      3 => "Wednesday",
+      4 => "Thursday",
+      5 => "Friday",
+      6 => "Saturday"
+    }
+
+    company.schedules.available.recurring.group_by(&:day_of_week).map do |day_of_week, slots|
+      next if day_of_week.nil?
+
+      {
+        "@type" => "OpeningHoursSpecification",
+        "dayOfWeek" => "https://schema.org/#{day_map[day_of_week]}",
+        "opens" => slots.min_by(&:start_time).start_time.strftime("%H:%M"),
+        "closes" => slots.max_by(&:end_time).end_time.strftime("%H:%M")
+      }
+    end.compact.sort_by { |entry| entry["dayOfWeek"] }
   end
 end

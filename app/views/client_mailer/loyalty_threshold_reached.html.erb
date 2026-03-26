@@ -1,0 +1,32 @@
+<h1>Félicitations, vous avez gagné une récompense ! 🎉</h1>
+
+<p>Bonjour <%= @client.first_name %>,</p>
+
+<p>
+  Grâce à votre fidélité chez <strong><%= @company.name %></strong>,
+  vous avez atteint le seuil de points et un <strong>code de réduction</strong>
+  a été généré pour vous.
+</p>
+
+<% if @code %>
+  <div class="info-box">
+    <div class="info-row">
+      <span class="info-label">Votre code</span>
+      <span class="info-value"><strong><%= @code.code %></strong></span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Réduction</span>
+      <span class="info-value"><%= @code.discount_display %></span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Valable jusqu'au</span>
+      <span class="info-value"><%= @code.expires_at.strftime("%d/%m/%Y") %></span>
+    </div>
+  </div>
+<% end %>
+
+<p>
+  Présentez ce code lors de votre prochain rendez-vous pour en profiter.
+</p>
+
+<p>Merci de votre confiance !</p>

@@ -34,6 +34,29 @@ class Company::ServiceTypesControllerTest < ActionDispatch::IntegrationTest
   test "GET new retourne 200" do
     get new_company_service_type_path
     assert_response :success
+    assert_select "h2", text: "Assistant de creation rapide"
+  end
+
+  test "POST quick_create ajoute jusqu'a 3 templates" do
+    assert_difference("ServiceType.count", 3) do
+      post quick_create_company_service_types_path, params: {
+        template_keys: [ "consultation_express", "session_standard", "pack_premium" ]
+      }
+    end
+
+    assert_redirected_to company_service_types_path
+  end
+
+  test "POST quick_create ignore les templates deja crees" do
+    create(:service_type, company: @company, name: "Consultation express")
+
+    assert_difference("ServiceType.count", 1) do
+      post quick_create_company_service_types_path, params: {
+        template_keys: [ "consultation_express", "session_standard" ]
+      }
+    end
+
+    assert_redirected_to company_service_types_path
   end
 
   # — Create —
@@ -49,6 +72,23 @@ class Company::ServiceTypesControllerTest < ActionDispatch::IntegrationTest
       }
     end
     assert_redirected_to company_service_types_path
+  end
+
+  test "POST create enregistre la configuration d'acompte" do
+    post company_service_types_path, params: {
+      service_type: {
+        name: "Intervention premium",
+        duration_minutes: 60,
+        price_cents: 10_000,
+        deposit_kind: "deposit_percentage",
+        deposit_value: 30,
+        active: true
+      }
+    }
+
+    created = ServiceType.order(:id).last
+    assert_equal "deposit_percentage", created.deposit_kind
+    assert_equal 30, created.deposit_value
   end
 
   test "POST create avec paramètres invalides affiche le formulaire" do

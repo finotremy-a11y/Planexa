@@ -1,13 +1,13 @@
-<% content_for :title, "Calendrier" %>
-<% content_for :page_title, "Calendrier des rendez-vous" %>
+<% content_for :title, t("appointments.calendar_title") %>
+<% content_for :page_title, t("appointments.calendar_subtitle") %>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
   <div style="display:flex; gap:8px;">
-    <%= link_to "Vue liste", company_appointments_path, class: "btn btn-secondary btn-sm" %>
-    <%= link_to "Calendrier", calendar_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
-    <%= link_to "Non assignés", unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.list_view"), company_appointments_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to t("appointments.calendar_view"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
+    <%= link_to t("appointments.unassigned_view"), unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
   </div>
-  <%= link_to "Nouveau RDV", new_company_appointment_path, class: "btn btn-primary btn-sm" %>
+  <%= link_to t("appointments.new_short"), new_company_appointment_path, class: "btn btn-primary btn-sm" %>
 </div>
 
 <%# Calendar grid for current month %>
@@ -25,7 +25,7 @@
       <% next_month = today + 1.month %>
       <%= link_to "‹", calendar_company_appointments_path(month: prev_month.month, year: prev_month.year),
             class: "btn btn-secondary btn-sm" %>
-      <%= link_to "Aujourd'hui", calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
+      <%= link_to t("common.today"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
       <%= link_to "›", calendar_company_appointments_path(month: next_month.month, year: next_month.year),
             class: "btn btn-secondary btn-sm" %>
     </div>
@@ -33,7 +33,7 @@
 
   <%# Day-name headers %>
   <div style="display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--border);">
-    <% %w[Lun Mar Mer Jeu Ven Sam Dim].each do |day| %>
+    <% [t("employees.day_names")[1], t("employees.day_names")[2], t("employees.day_names")[3], t("employees.day_names")[4], t("employees.day_names")[5], t("employees.day_names")[6], t("employees.day_names")[0]].each do |day| %>
       <div style="text-align:center; padding:8px 4px; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">
         <%= day %>
       </div>
@@ -62,7 +62,7 @@
           <% end %>
         <% end %>
         <% if day_appts.size > 3 %>
-          <span style="font-size:0.7rem; color:var(--text-400);">+<%= day_appts.size - 3 %> de plus</span>
+          <span style="font-size:0.7rem; color:var(--text-400);">+<%= day_appts.size - 3 %> <%= t("common.more") %></span>
         <% end %>
       </div>
     <% end %>
@@ -73,7 +73,7 @@
 <% todays_appts = appts_by_date[today] || [] %>
 <% if todays_appts.any? %>
   <div class="card" style="margin-top:24px;">
-    <h4 style="margin-bottom:16px;">Rendez-vous aujourd'hui (<%= todays_appts.size %>)</h4>
+    <h4 style="margin-bottom:16px;"><%= t("appointments.today_appointments") %> (<%= todays_appts.size %>)</h4>
     <% todays_appts.sort_by(&:scheduled_at).each do |appt| %>
       <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
         <div>
@@ -82,10 +82,10 @@
           <% if appt.employee %>
             <span style="font-size:0.85rem; color:var(--text-400);">(<%=appt.employee.full_name %>)</span>
           <% else %>
-            <span class="badge badge-warning badge-sm">Non assigné</span>
+            <span class="badge badge-warning badge-sm"><%= t("appointments.unassigned_label") %></span>
           <% end %>
         </div>
-        <%= link_to "Voir", company_appointment_path(appt), class: "btn btn-link btn-sm" %>
+        <%= link_to t("common.view"), company_appointment_path(appt), class: "btn btn-link btn-sm" %>
       </div>
     <% end %>
   </div>

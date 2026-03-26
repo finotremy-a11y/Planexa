@@ -1,0 +1,63 @@
+fr:
+  devise:
+    confirmations:
+      confirmed: "Votre adresse e-mail a bien ete confirmee."
+      send_instructions: "Vous allez recevoir un e-mail avec les instructions de confirmation."
+      send_paranoid_instructions: "Si votre e-mail existe dans notre base, vous recevrez un e-mail de confirmation."
+    failure:
+      already_authenticated: "Vous etes deja connecte."
+      inactive: "Votre compte n'est pas encore active."
+      invalid: "%{authentication_keys} ou mot de passe invalide."
+      locked: "Votre compte est verrouille."
+      last_attempt: "Il vous reste une tentative avant le verrouillage de votre compte."
+      not_found_in_database: "%{authentication_keys} ou mot de passe invalide."
+      timeout: "Votre session a expire. Veuillez vous reconnecter."
+      unauthenticated: "Vous devez vous connecter ou creer un compte."
+      unconfirmed: "Vous devez confirmer votre e-mail avant de continuer."
+    mailer:
+      confirmation_instructions:
+        subject: "Instructions de confirmation"
+      reset_password_instructions:
+        subject: "Instructions de reinitialisation du mot de passe"
+      unlock_instructions:
+        subject: "Instructions de deblocage"
+      email_changed:
+        subject: "Adresse e-mail modifiee"
+      password_change:
+        subject: "Mot de passe modifie"
+    omniauth_callbacks:
+      failure: "Impossible de vous authentifier via %{kind} car \"%{reason}\"."
+      success: "Authentification %{kind} reussie."
+    passwords:
+      no_token: "Vous ne pouvez pas acceder a cette page sans lien de reinitialisation."
+      send_instructions: "Vous allez recevoir un e-mail avec les instructions de reinitialisation."
+      send_paranoid_instructions: "Si votre e-mail existe, vous recevrez un lien de reinitialisation."
+      updated: "Votre mot de passe a ete modifie. Vous etes maintenant connecte."
+      updated_not_active: "Votre mot de passe a ete modifie."
+    registrations:
+      destroyed: "Votre compte a ete supprime. A bientot !"
+      signed_up: "Bienvenue ! Votre compte a bien ete cree."
+      signed_up_but_inactive: "Votre compte est cree, mais il n'est pas encore active."
+      signed_up_but_locked: "Votre compte est cree, mais il est verrouille."
+      signed_up_but_unconfirmed: "Un e-mail de confirmation vient de vous etre envoye."
+      update_needs_confirmation: "Votre compte est mis a jour. Veuillez confirmer votre nouvelle adresse e-mail."
+      updated: "Votre compte a bien ete mis a jour."
+      updated_but_not_signed_in: "Votre compte est mis a jour, reconnectez-vous car votre mot de passe a change."
+    sessions:
+      signed_in: "Connexion reussie."
+      signed_out: "Deconnexion reussie."
+      already_signed_out: "Deconnexion reussie."
+    unlocks:
+      send_instructions: "Vous allez recevoir un e-mail de deblocage."
+      send_paranoid_instructions: "Si votre compte existe, vous recevrez un e-mail de deblocage."
+      unlocked: "Votre compte a ete de verrouille. Vous pouvez vous connecter."
+  errors:
+    messages:
+      already_confirmed: "etait deja confirme, essayez de vous connecter"
+      confirmation_period_expired: "doit etre confirme dans %{period}, demandez-en un nouveau"
+      expired: "a expire, veuillez en demander un nouveau"
+      not_found: "introuvable"
+      not_locked: "n'etait pas verrouille"
+      not_saved:
+        one: "1 erreur a empeche cet element d'etre enregistre :"
+        other: "%{count} erreurs ont empeche cet element d'etre enregistre :"

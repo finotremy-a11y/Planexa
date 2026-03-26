@@ -30,6 +30,14 @@ class Admin::CompaniesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "GET index avec filtre categorie statut ne plante pas" do
+    create(:company, status: :suspended)
+
+    get admin_companies_path, params: { q: { status_eq: "active" } }
+
+    assert_response :success
+  end
+
   # — Show —
   test "GET show retourne 200" do
     get admin_company_path(@company)

@@ -1,0 +1,105 @@
+<% content_for :title, "Factures" %>
+<% content_for :page_title, "Factures" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Factures</h1>
+    <p>Historique et export des factures clients</p>
+  </div>
+  <div class="page-header-actions" style="display:flex; gap:12px; align-items:center;">
+    <%# Sélecteur de mois %>
+    <%= form_tag company_invoices_path, method: :get, style: "display:flex; gap:8px; align-items:center;" do %>
+      <%= select_tag :month,
+            options_for_select((1..12).map { |m| [I18n.l(Date.new(2026, m, 1), format: "%B").capitalize, m] }, @month),
+            class: "form-select", style: "width:auto;" %>
+      <%= select_tag :year,
+            options_for_select((2024..Date.current.year).to_a.reverse, @year),
+            class: "form-select", style: "width:auto;" %>
+      <%= submit_tag "Filtrer", class: "btn btn-secondary btn-sm" %>
+    <% end %>
+    <%= link_to "⬇ Export CSV",
+          export_csv_company_invoices_path(year: @year, month: @month),
+          class: "btn btn-ghost btn-sm" %>
+  </div>
+</div>
+
+<%# ── Totaux du mois ────────────────────────────────────────────────── %>
+<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:32px;">
+  <div class="stat-card green">
+    <div class="stat-icon green">📄</div>
+    <div class="stat-value"><%= @invoices.size %></div>
+    <div class="stat-label">Factures</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-icon green">💶</div>
+    <div class="stat-value">
+      <%= number_to_currency(@total_ht / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+    </div>
+    <div class="stat-label">Total HT</div>
+  </div>
+  <div class="stat-card gold">
+    <div class="stat-icon gold">🧾</div>
+    <div class="stat-value">
+      <%= number_to_currency(@total_ttc / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+    </div>
+    <div class="stat-label">Total TTC</div>
+  </div>
+</div>
+
+<%# ── Tableau des factures ──────────────────────────────────────────── %>
+<% if @invoices.any? %>
+  <div class="card">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--bg-secondary); border-bottom:2px solid var(--border);">
+          <th style="padding:12px 16px; text-align:left; font-size:0.82rem; color:var(--text-400); font-weight:600;">N° Facture</th>
+          <th style="padding:12px 16px; text-align:left; font-size:0.82rem; color:var(--text-400); font-weight:600;">Date</th>
+          <th style="padding:12px 16px; text-align:left; font-size:0.82rem; color:var(--text-400); font-weight:600;">Client</th>
+          <th style="padding:12px 16px; text-align:right; font-size:0.82rem; color:var(--text-400); font-weight:600;">Montant HT</th>
+          <th style="padding:12px 16px; text-align:right; font-size:0.82rem; color:var(--text-400); font-weight:600;">TVA</th>
+          <th style="padding:12px 16px; text-align:right; font-size:0.82rem; color:var(--text-400); font-weight:600;">Total TTC</th>
+          <th style="padding:12px 16px; text-align:center; font-size:0.82rem; color:var(--text-400); font-weight:600;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @invoices.each do |invoice| %>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px 16px; font-weight:600; font-size:0.88rem;">
+              <%= invoice.invoice_number %>
+            </td>
+            <td style="padding:12px 16px; font-size:0.88rem; color:var(--text-500);">
+              <%= invoice.issued_at.strftime("%d/%m/%Y") %>
+            </td>
+            <td style="padding:12px 16px; font-size:0.88rem;">
+              <%= invoice.client_user&.full_name || "—" %>
+            </td>
+            <td style="padding:12px 16px; text-align:right; font-size:0.88rem;">
+              <%= number_to_currency(invoice.subtotal_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+            </td>
+            <td style="padding:12px 16px; text-align:right; font-size:0.88rem; color:var(--text-400);">
+              <%= number_to_currency(invoice.tax_amount_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+            </td>
+            <td style="padding:12px 16px; text-align:right; font-size:0.88rem; font-weight:600; color:var(--green-700);">
+              <%= number_to_currency(invoice.total_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+            </td>
+            <td style="padding:12px 16px; text-align:center;">
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <%= link_to "Voir", company_invoice_path(invoice), class: "btn btn-secondary btn-sm" %>
+                <% if invoice.pdf.attached? %>
+                  <%= link_to "PDF", download_company_invoice_path(invoice), class: "btn btn-ghost btn-sm" %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="card" style="padding:48px; text-align:center;">
+    <p style="color:var(--text-300); font-size:1rem;">
+      Aucune facture pour cette période.<br>
+      <small>Les factures sont générées automatiquement après chaque paiement confirmé.</small>
+    </p>
+  </div>
+<% end %>

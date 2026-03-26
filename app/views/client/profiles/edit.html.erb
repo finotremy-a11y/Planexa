@@ -1,0 +1,69 @@
+<% content_for :title, "Modifier mon profil" %>
+
+<div style="max-width:640px; margin:40px auto; padding:0 24px;">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Modifier mon profil</h1>
+    </div>
+  </div>
+
+  <%= form_with model: @user, url: client_profile_path, method: :patch, local: true do |f| %>
+    <div class="card">
+      <div style="padding:24px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-group">
+            <%= f.label :first_name, "Prénom", style: "display:block; font-weight:600; margin-bottom:6px;" %>
+            <%= f.text_field :first_name, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <%= f.label :last_name, "Nom", style: "display:block; font-weight:600; margin-bottom:6px;" %>
+            <%= f.text_field :last_name, class: "form-control" %>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <%= f.label :phone, t("profile.phone"), style: "display:block; font-weight:600; margin-bottom:6px;" %>
+          <%= f.tel_field :phone, class: "form-control", placeholder: t("profile.phone_placeholder") %>
+          <small style="color:var(--text-400);"><%= t("profile.phone_help") %></small>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <%= f.label :locale, t("locales.language"), style: "display:block; font-weight:600; margin-bottom:6px;" %>
+          <%= f.select :locale,
+                LocaleSwitcher::SUPPORTED_LOCALES.map { |code| [locale_name(code), code] },
+                {},
+                class: "form-control" %>
+        </div>
+
+        <div style="background:var(--gray-50); border-radius:var(--radius); padding:16px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:600; margin-bottom:4px;">Rappels SMS</div>
+              <div style="font-size:0.82rem; color:var(--text-500);">
+                Recevoir un SMS de rappel 24h avant chaque rendez-vous
+              </div>
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+              <%= f.check_box :sms_opt_out,
+                    style: "width:18px; height:18px; cursor:pointer;" %>
+              <span style="font-size:0.85rem; color:var(--text-500);">Désactiver les SMS</span>
+            </label>
+          </div>
+        </div>
+
+        <% if @user.errors.any? %>
+          <div class="alert alert-danger" style="margin-bottom:16px;">
+            <% @user.errors.full_messages.each do |msg| %>
+              <div><%= msg %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <%= link_to "Annuler", client_profile_path, class: "btn btn-secondary" %>
+          <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

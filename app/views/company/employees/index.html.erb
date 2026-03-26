@@ -1,14 +1,14 @@
-<% content_for :title, "Employés" %>
-<% content_for :page_title, "Employés" %>
+<% content_for :title, t("employees.title") %>
+<% content_for :page_title, t("employees.title") %>
 
 <div class="page-header">
   <div class="page-header-left">
-    <h1>Équipe</h1>
-    <p><%= @company.employees.count %> membre<%= @company.employees.count != 1 ? 's' : '' %> au total</p>
+    <h1><%= t("employees.team_title") %></h1>
+    <p><%= pluralize(@company.employees.count, t("employees.member_one"), t("employees.member_other")) %></p>
   </div>
   <div class="page-header-actions">
     <%= link_to new_company_employee_path, class: "btn btn-primary" do %>
-      + Ajouter un employé
+      <%= t("employees.add_button") %>
     <% end %>
   </div>
 </div>
@@ -31,14 +31,14 @@
               <div>
                 <h3 style="font-size:1rem; margin-bottom:2px;"><%= employee.full_name %></h3>
                 <div style="font-size:0.78rem; color:var(--text-300);">
-                  <%= employee.email.presence || "Pas d'email" %>
+                  <%= employee.email.presence || t("common.no_email") %>
                 </div>
               </div>
             </div>
             <% if employee.active? %>
-              <span class="badge badge-green">Actif</span>
+              <span class="badge badge-green"><%= t("employees.active") %></span>
             <% else %>
-              <span class="badge badge-red">Inactif</span>
+              <span class="badge badge-red"><%= t("employees.inactive") %></span>
             <% end %>
           </div>
 
@@ -46,7 +46,7 @@
           <div style="margin-bottom:16px;">
             <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase;
                         letter-spacing:0.06em; color:var(--text-300); margin-bottom:8px;">
-              Aptitudes
+              <%= t("employees.skills") %>
             </div>
             <% if employee.service_types.any? %>
               <div style="display:flex; flex-wrap:wrap; gap:6px;">
@@ -59,19 +59,19 @@
                 <% end %>
               </div>
             <% else %>
-              <span style="font-size:0.82rem; color:var(--text-300);">Aucune aptitude</span>
+              <span style="font-size:0.82rem; color:var(--text-300);"><%= t("employees.no_skills") %></span>
             <% end %>
           </div>
 
           <!-- Actions -->
           <div style="display:flex; gap:8px; border-top:1px solid var(--border-light); padding-top:14px;">
-            <%= link_to "Voir", company_employee_path(employee), class: "btn btn-secondary btn-sm" %>
-            <%= link_to "Horaires", company_employee_schedules_path(employee), class: "btn btn-ghost btn-sm" %>
-            <%= link_to employee.active? ? "Désactiver" : "Activer",
-                  toggle_active_company_employee_path(employee),
-                  data: { turbo_method: :patch },
-                  class: "btn btn-ghost btn-sm",
-                  style: "margin-left:auto; color:#{employee.active? ? '#dc2626' : 'var(--green-700)'};" %>
+            <%= link_to t("common.view"), company_employee_path(employee), class: "btn btn-secondary btn-sm" %>
+            <%= link_to t("employees.schedules_label"), company_employee_schedules_path(employee), class: "btn btn-ghost btn-sm" %>
+            <%= link_to employee.active? ? t("employees.deactivate") : t("employees.activate"),
+              toggle_active_company_employee_path(employee),
+              data: { turbo_method: :patch },
+              class: "btn btn-ghost btn-sm",
+              style: "margin-left:auto; color:#{employee.active? ? '#dc2626' : 'var(--green-700)'};" %>
           </div>
         </div>
       </div>
@@ -81,9 +81,9 @@
   <div class="card">
     <div class="empty-state">
       <div class="empty-state-icon">👥</div>
-      <h3>Aucun employé</h3>
-      <p>Ajoutez vos premiers collaborateurs pour commencer à gérer les rendez-vous.</p>
-      <%= link_to "+ Ajouter un employé", new_company_employee_path,
+      <h3><%= t("employees.empty_state") %></h3>
+      <p><%= t("employees.empty_state_text") %></p>
+      <%= link_to t("employees.add_first"), new_company_employee_path,
             class: "btn btn-primary", style: "margin-top:16px;" %>
     </div>
   </div>

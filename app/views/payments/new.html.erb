@@ -1,7 +1,7 @@
-<% content_for :title, "Paiement" %>
+<% content_for :title, t("payment.title") %>
 
 <div style="max-width:520px; margin:48px auto; padding:0 24px;">
-  <h1 style="font-family:var(--font-display); margin-bottom:8px;">Paiement sécurisé</h1>
+  <h1 style="font-family:var(--font-display); margin-bottom:8px;"><%= t("payment.title") %></h1>
   <p style="color:var(--text-500); margin-bottom:32px;">
     <%= @appointment.service_type.name %> — <%= @appointment.company.name %>
   </p>
@@ -9,21 +9,31 @@
   <div class="card" style="margin-bottom:20px;">
     <div class="card-body">
       <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-        <span style="color:var(--text-500);">Prestation</span>
+        <span style="color:var(--text-500);"><%= t("payment.service_label") %></span>
         <strong><%= @appointment.service_type.name %></strong>
       </div>
       <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-        <span style="color:var(--text-500);">Date</span>
+        <span style="color:var(--text-500);"><%= t("payment.date_label") %></span>
         <strong><%= @appointment.scheduled_at.strftime("%d/%m/%Y à %Hh%M") %></strong>
       </div>
       <div style="border-top:1px solid var(--border-light); padding-top:12px; margin-top:4px;
                   display:flex; justify-content:space-between;">
-        <span style="font-weight:600;">Total</span>
+        <span style="font-weight:600;"><%= @appointment.service_type.deposit_required? ? "Acompte a payer" : t("payment.total_label") %></span>
         <strong style="font-size:1.2rem; color:var(--green-800);">
-          <%= number_to_currency(@appointment.service_type.price_cents / 100.0,
+          <%= number_to_currency(@appointment.payment_amount_cents / 100.0,
                 unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
         </strong>
       </div>
+
+      <% if @appointment.service_type.deposit_required? %>
+        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.86rem; color:var(--text-500);">
+          <span>Reste a regler sur place</span>
+          <strong>
+            <%= number_to_currency((@appointment.service_type.price_cents - @appointment.payment_amount_cents) / 100.0,
+                  unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          </strong>
+        </div>
+      <% end %>
     </div>
   </div>
 
@@ -32,11 +42,11 @@
       <div id="payment-element" style="margin-bottom:20px;"></div>
       <div id="payment-errors" class="alert alert-error" style="display:none; margin-bottom:16px;"></div>
       <button id="submit-payment" class="btn btn-primary btn-lg" style="width:100%; justify-content:center;">
-        Payer <%= number_to_currency(@appointment.service_type.price_cents / 100.0,
-              unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
+          <%= t("payment.pay_button", amount: number_to_currency(@appointment.payment_amount_cents / 100.0,
+            unit: "€", separator: ",", delimiter: " ", format: "%n %u")) %>
       </button>
       <p style="font-size:0.75rem; color:var(--text-300); text-align:center; margin-top:12px;">
-        🔒 Paiement sécurisé par Stripe
+          🔒 <%= t("payment.stripe_notice") %>
       </p>
     </div>
   </div>
@@ -66,7 +76,7 @@
     const btn = document.getElementById('submit-payment');
     const errors = document.getElementById('payment-errors');
     btn.disabled = true;
-    btn.textContent = 'Traitement en cours...';
+    btn.textContent = '<%= j t("payment.processing") %>';
     errors.style.display = 'none';
 
     const { error } = await stripe.confirmPayment({
@@ -80,7 +90,7 @@
       errors.textContent = error.message;
       errors.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Réessayer';
+      btn.textContent = '<%= j t("payment.retry_button") %>';
     }
   });
 </script>

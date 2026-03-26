@@ -11,7 +11,7 @@ class ContactMailer < ApplicationMailer
       to: ENV.fetch("EMAIL_CONTACT", "contact@planifypro.fr"),
       from: ENV.fetch("MAIL_FROM", "Planify Pro <noreply@planifypro.fr>"),
       reply_to: email,
-      subject: "[Contact Planify Pro] #{subject.presence || 'Nouveau message'}"
+      subject: t("mailers.contact.new_message.subject", subject: subject.presence || t("mailers.contact.new_message.default_subject"))
     )
   end
 end
