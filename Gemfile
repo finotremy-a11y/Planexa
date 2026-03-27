@@ -85,4 +85,4 @@ group :test do
 end
 
 gem "rack-attack"             # Rate limiting & throttling
-gem "connection_pool", "~> 2.4"
+gem "connection_pool", "~> 3.0"
