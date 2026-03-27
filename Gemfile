@@ -45,7 +45,7 @@ gem "sentry-sidekiq"          # Erreurs dans les jobs Sidekiq
 gem "sitemap_generator"       # Génération automatique sitemap.xml
 
 # ── Utilitaires ───────────────────────────────────────────────────────────────
-gem "money-rails", "~> 1.15"  # Gestion montants en centimes
+gem "money-rails", "~> 3.0"   # Gestion montants en centimes
 gem "whenever", require: false  # Cron jobs
 gem "twilio-ruby", "~> 7.0"    # SMS reminders
 gem "chartkick"                 # Graphiques analytiques
