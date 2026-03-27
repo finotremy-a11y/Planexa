@@ -34,7 +34,7 @@ gem "activestorage-cloudinary-service"
 
 # ── Recherche & Filtres ───────────────────────────────────────────────────────
 gem "ransack"             # Filtres dynamiques
-gem "pagy", "~> 9.0"      # Pagination
+gem "pagy", "~> 43.4"     # Pagination
 
 # ── Monitoring ────────────────────────────────────────────────────────────────
 gem "sentry-ruby"             # Monitoring erreurs production
