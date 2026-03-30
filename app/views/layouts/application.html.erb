@@ -65,8 +65,12 @@
       gap: 16px;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 120;
       box-shadow: var(--shadow-sm);
+    }
+
+    body.navbar-menu-open {
+      overflow: hidden;
     }
 
     .navbar-brand {
@@ -235,7 +239,7 @@
         visibility: hidden;
         pointer-events: none;
         transition: opacity 0.18s ease, visibility 0.18s ease;
-        z-index: 105;
+        z-index: 110;
       }
 
       .navbar-mobile-overlay.open {
