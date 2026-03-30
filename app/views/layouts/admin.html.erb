@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Admin — Planexa</title>
+  <!-- PWA — Progressive Web App -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Planexa">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -250,5 +256,11 @@
     </div>
 
   </div>
+
+  <!-- PWA Initialization -->
+  <script type="module">
+    import { initPWA } from '/assets/pwa/register.js';
+    initPWA();
+  </script>
 </body>
 </html>

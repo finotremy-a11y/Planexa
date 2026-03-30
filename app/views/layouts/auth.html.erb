@@ -11,6 +11,12 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="shortcut icon" href="/favicon.ico">
   <meta name="theme-color" content="#2C5F2E">
+  <!-- PWA — Progressive Web App -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Planexa">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -232,5 +238,11 @@
       </div>
     </div>
   </div>
+
+  <!-- PWA Initialization -->
+  <script type="module">
+    import { initPWA } from '/assets/pwa/register.js';
+    initPWA();
+  </script>
 </body>
 </html>
