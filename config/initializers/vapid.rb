@@ -10,6 +10,10 @@
 vapid_key_public = ENV.fetch('VAPID_PUBLIC_KEY', nil)
 vapid_key_private = ENV.fetch('VAPID_PRIVATE_KEY', nil)
 
+precompiling_assets = defined?(Rake) &&
+  Rake.respond_to?(:application) &&
+  Rake.application.top_level_tasks.any? { |task| task.start_with?("assets:") }
+
 # En dev/test, fallback non bloquant pour eviter de casser le boot
 if !Rails.env.production? && (vapid_key_public.blank? || vapid_key_private.blank?)
   vapid_key_public ||= "dev_vapid_public_key"
@@ -19,8 +23,14 @@ end
 
 # Valider que les clés VAPID existent en production
 if Rails.env.production?
-  raise "VAPID_PUBLIC_KEY is required in production" if vapid_key_public.blank?
-  raise "VAPID_PRIVATE_KEY is required in production" if vapid_key_private.blank?
+  if precompiling_assets && (vapid_key_public.blank? || vapid_key_private.blank?)
+    # Build-time fallback to avoid failing `assets:precompile` in container builds.
+    vapid_key_public ||= "build_vapid_public_key"
+    vapid_key_private ||= "build_vapid_private_key"
+  else
+    raise "VAPID_PUBLIC_KEY is required in production" if vapid_key_public.blank?
+    raise "VAPID_PRIVATE_KEY is required in production" if vapid_key_private.blank?
+  end
 end
 
 # Stocker dans Rails.configuration pour accès global
