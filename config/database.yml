@@ -15,11 +15,32 @@ test:
   url: <%= ENV["TEST_DATABASE_URL"] || ENV["DATABASE_URL"] %>
 
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
-  # Supabase pooler (transaction mode, port 6543) is not compatible with
-  # PostgreSQL prepared statements across pooled connections.
-  prepared_statements: false
-  advisory_locks: false
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    # Supabase pooler (transaction mode, port 6543) is not compatible with
+    # PostgreSQL prepared statements across pooled connections.
+    prepared_statements: false
+    advisory_locks: false
+
+  # Rails 8 solid components expect dedicated DB roles. By default, they can
+  # share the main production database unless dedicated URLs are provided.
+  cache:
+    <<: *default
+    url: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    prepared_statements: false
+    advisory_locks: false
+
+  queue:
+    <<: *default
+    url: <%= ENV["QUEUE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    prepared_statements: false
+    advisory_locks: false
+
+  cable:
+    <<: *default
+    url: <%= ENV["CABLE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    prepared_statements: false
+    advisory_locks: false
   # Supabase connection pooling (port 6543) recommandé en production
   # DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-eu-west-3.pooler.supabase.com:6543/postgres

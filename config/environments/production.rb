@@ -46,8 +46,15 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Use Redis cache when available on Render, otherwise fallback to memory.
+  # Solid Cache requires a dedicated `cache` DB config which may not exist.
+  if ENV["SOLID_CACHE_ENABLED"] == "true"
+    config.cache_store = :solid_cache_store
+  elsif ENV["REDIS_URL"].to_s != ""
+    config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"] }
+  else
+    config.cache_store = :memory_store
+  end
 
   # Use Sidekiq for Active Job (matches Render worker service in render.yaml + Procfile).
   config.active_job.queue_adapter = :sidekiq
