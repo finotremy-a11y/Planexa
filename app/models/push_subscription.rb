@@ -14,6 +14,11 @@ class PushSubscription < ApplicationRecord
 
   # Envoyer une notification push à cet utilisateur
   def send_notification(title:, body:, icon: nil, tag: 'planify-pro', data: {})
+    unless Rails.configuration.vapid[:enabled]
+      Rails.logger.info("Push notifications are disabled: missing VAPID configuration")
+      return
+    end
+
     WebPush.payload_send(
       endpoint: endpoint,
       message: {

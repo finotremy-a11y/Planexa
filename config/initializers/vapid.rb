@@ -30,13 +30,15 @@ if Rails.env.production?
     vapid_key_public ||= "build_vapid_public_key"
     vapid_key_private ||= "build_vapid_private_key"
   else
-    raise "VAPID_PUBLIC_KEY is required in production" if vapid_key_public.blank?
-    raise "VAPID_PRIVATE_KEY is required in production" if vapid_key_private.blank?
+    if vapid_key_public.blank? || vapid_key_private.blank?
+      Rails.logger.warn("VAPID keys are missing in production; push notifications are disabled until keys are configured.")
+    end
   end
 end
 
 # Stocker dans Rails.configuration pour accès global
 Rails.configuration.vapid = {
+  enabled: vapid_key_public.present? && vapid_key_private.present?,
   public_key: vapid_key_public,
   private_key: vapid_key_private,
   subject: ENV.fetch('VAPID_SUBJECT', nil).presence ||

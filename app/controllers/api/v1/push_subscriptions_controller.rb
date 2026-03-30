@@ -13,6 +13,14 @@ module Api
       # GET /api/v1/push_subscriptions/vapid_key
       # Retourne la clé publique VAPID pour les notifications push
       def vapid_key
+        unless Rails.configuration.vapid[:enabled]
+          render json: {
+            status: "error",
+            message: "Push notifications are not configured"
+          }, status: :service_unavailable
+          return
+        end
+
         render json: {
           vapidPublicKey: Rails.configuration.vapid[:public_key]
         }
