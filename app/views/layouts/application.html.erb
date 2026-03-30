@@ -349,8 +349,11 @@
         var button = document.getElementById('navbarHamburger');
         var links = document.getElementById('navbarLinks');
         if (!button || !links) return;
+        if (button.dataset.hamburgerBound === 'true') return;
+        button.dataset.hamburgerBound = 'true';
 
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
           var isOpen = links.classList.toggle('open');
           button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         });
@@ -364,7 +367,6 @@
       }
 
       document.addEventListener('turbo:load', initPublicHamburger);
-      document.addEventListener('DOMContentLoaded', initPublicHamburger);
     })();
   </script>
 </body>
