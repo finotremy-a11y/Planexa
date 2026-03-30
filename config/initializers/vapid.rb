@@ -7,8 +7,10 @@
 #   puts "Public key: #{vapid_key[:public_key]}"
 #   puts "Private key: #{vapid_key[:private_key]}"
 
-vapid_key_public = ENV.fetch('VAPID_PUBLIC_KEY', nil)
-vapid_key_private = ENV.fetch('VAPID_PRIVATE_KEY', nil)
+vapid_key_public = ENV.fetch('VAPID_PUBLIC_KEY', nil).presence ||
+  Rails.application.credentials.dig(:vapid, :public_key).presence
+vapid_key_private = ENV.fetch('VAPID_PRIVATE_KEY', nil).presence ||
+  Rails.application.credentials.dig(:vapid, :private_key).presence
 
 precompiling_assets = defined?(Rake) &&
   Rake.respond_to?(:application) &&
@@ -37,5 +39,7 @@ end
 Rails.configuration.vapid = {
   public_key: vapid_key_public,
   private_key: vapid_key_private,
-  subject: ENV.fetch('VAPID_SUBJECT', "mailto:support@planifypro.app")
+  subject: ENV.fetch('VAPID_SUBJECT', nil).presence ||
+    Rails.application.credentials.dig(:vapid, :subject).presence ||
+    "mailto:support@planexa.fr"
 }
