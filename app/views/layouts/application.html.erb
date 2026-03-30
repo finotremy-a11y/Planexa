@@ -130,6 +130,10 @@
       color: var(--text-900);
     }
 
+    .navbar-mobile-overlay {
+      display: none;
+    }
+
     .public-footer {
       background: linear-gradient(180deg, var(--green-900) 0%, #122c14 100%);
       color: rgba(255,255,255,0.6);
@@ -189,7 +193,7 @@
         left: 20px;
         right: 20px;
         width: auto;
-        display: none;
+        display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
@@ -200,14 +204,44 @@
         box-shadow: var(--shadow-lg);
         padding: 10px;
         z-index: 110;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-10px) scale(0.98);
+        transform-origin: top right;
+        transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
       }
 
       .navbar-links.open {
-        display: flex;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
       }
 
       .navbar-hamburger {
         display: inline-flex;
+        position: relative;
+        z-index: 130;
+      }
+
+      .navbar-mobile-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(17, 24, 20, 0.24);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.18s ease, visibility 0.18s ease;
+        z-index: 105;
+      }
+
+      .navbar-mobile-overlay.open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
       }
 
       .navbar-link,
@@ -234,7 +268,7 @@
       <span class="navbar-brand-name">Planexa</span>
     <% end %>
 
-    <button class="navbar-hamburger" id="navbarHamburger" aria-label="Menu" aria-expanded="false">
+    <button class="navbar-hamburger" id="navbarHamburger" aria-label="Menu" aria-expanded="false" aria-controls="navbarLinks" type="button">
       ☰
     </button>
 
@@ -285,6 +319,7 @@
       <% end %>
     </div>
   </nav>
+  <div class="navbar-mobile-overlay" id="navbarMobileOverlay" aria-hidden="true"></div>
 
   <% flash.each do |type, message| %>
     <% css = { "notice" => "alert-success", "alert" => "alert-error" } %>
@@ -348,22 +383,57 @@
       function initPublicHamburger() {
         var button = document.getElementById('navbarHamburger');
         var links = document.getElementById('navbarLinks');
-        if (!button || !links) return;
-        if (button.dataset.hamburgerBound === 'true') return;
-        button.dataset.hamburgerBound = 'true';
+        var overlay = document.getElementById('navbarMobileOverlay');
+        if (!button || !links || !overlay) return;
 
-        button.addEventListener('click', function (event) {
+        if (window.publicHamburgerCleanup) {
+          window.publicHamburgerCleanup();
+        }
+
+        function closeMenu() {
+          links.classList.remove('open');
+          overlay.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('navbar-menu-open');
+        }
+
+        function handleButtonClick(event) {
           event.stopPropagation();
           var isOpen = links.classList.toggle('open');
+          overlay.classList.toggle('open', isOpen);
           button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        });
+          document.body.classList.toggle('navbar-menu-open', isOpen);
+        }
 
-        document.addEventListener('click', function (event) {
+        function handleDocumentClick(event) {
           if (!links.classList.contains('open')) return;
           if (button.contains(event.target) || links.contains(event.target)) return;
-          links.classList.remove('open');
-          button.setAttribute('aria-expanded', 'false');
-        });
+          closeMenu();
+        }
+
+        function handleResize() {
+          if (window.innerWidth > 768) {
+            closeMenu();
+          }
+        }
+
+        function handleOverlayClick() {
+          closeMenu();
+        }
+
+        button.addEventListener('click', handleButtonClick);
+        document.addEventListener('click', handleDocumentClick);
+        overlay.addEventListener('click', handleOverlayClick);
+        window.addEventListener('resize', handleResize);
+
+        window.publicHamburgerCleanup = function () {
+          closeMenu();
+          button.removeEventListener('click', handleButtonClick);
+          document.removeEventListener('click', handleDocumentClick);
+          overlay.removeEventListener('click', handleOverlayClick);
+          window.removeEventListener('resize', handleResize);
+          window.publicHamburgerCleanup = null;
+        };
       }
 
       document.addEventListener('turbo:load', initPublicHamburger);
