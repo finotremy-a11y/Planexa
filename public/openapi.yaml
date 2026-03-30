@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: PlanifyPro Public API
+  title: Planexa Public API
   version: v1
-  description: API REST publique pour integrer PlanifyPro avec des outils tiers.
+  description: API REST publique pour integrer Planexa avec des outils tiers.
 servers:
-  - url: https://api.planifypro.app
+  - url: https://planexa.fr
     description: Production
   - url: http://localhost:3000
     description: Development

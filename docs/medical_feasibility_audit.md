@@ -1,7 +1,7 @@
 # Audit de faisabilite medecins / docteurs (G1)
 
 Date: 24/03/2026
-Auteur: Produit / Tech Planify Pro
+Auteur: Produit / Tech Planexa
 
 ## 1) Perimetre et hypothese
 

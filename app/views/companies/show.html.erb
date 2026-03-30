@@ -1,5 +1,5 @@
 <% content_for :title, @company.name %>
-<% content_for :meta_description do %><%= @company.name %> — <%= @company.city %>. <%= truncate(@company.description, length: 120) if @company.description.present? %> Prenez rendez-vous en ligne sur Planify Pro.<% end %>
+<% content_for :meta_description do %><%= @company.name %> — <%= @company.city %>. <%= truncate(@company.description, length: 120) if @company.description.present? %> Prenez rendez-vous en ligne sur Planexa.<% end %>
 <% schema_json = company_local_business_schema_json(@company, avg_rating: @avg_rating, review_count: @review_count) %>
 <%= tag.script(type: "application/ld+json") { json_escape(schema_json).html_safe } %>
 

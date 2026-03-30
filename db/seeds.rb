@@ -1,4 +1,4 @@
-# db/seeds.rb — Seed Complet Planify Pro
+# db/seeds.rb — Seed Complet Planexa
 # ============================================================
 # Lance avec : rails db:seed
 # Réinitialise tout : rails db:seed:replant
@@ -6,7 +6,7 @@
 # COMPTES DE TEST CRÉÉS :
 # ─────────────────────────────────────────────────────────────
 # ADMIN
-#   admin@planifypro.fr          / AdminPlanify2025!
+#   admin@planexa.fr          / AdminPlanexa2025!
 #
 # ENTREPRISES (toutes avec abonnement actif)
 #   plomberie@dupont.fr          / Password123!   → Plomberie Dupont & Fils
@@ -23,7 +23,7 @@
 #   emma.petit@test.fr           / Password123!
 # ─────────────────────────────────────────────────────────────
 
-puts "\n🌱 Démarrage du seed complet Planify Pro..."
+puts "\n🌱 Démarrage du seed complet Planexa..."
 puts "=" * 55
 
 # ── Nettoyage (ordre important pour les FK) ───────────────────
@@ -45,8 +45,8 @@ puts "   ✓ Base nettoyée"
 # ═══════════════════════════════════════════════════════════════
 puts "\n👑 Création du compte admin..."
 
-admin_email = ENV.fetch("ADMIN_EMAIL", "admin@planifypro.fr").to_s.downcase.strip
-admin_password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanify2025!").to_s
+admin_email = ENV.fetch("ADMIN_EMAIL", "admin@planexa.fr").to_s.downcase.strip
+admin_password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanexa2025!").to_s
 
 admin = User.create!(
   first_name:   "Admin",

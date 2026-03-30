@@ -3,7 +3,7 @@
 <p>Bonjour <%= @user.first_name %>,</p>
 
 <p>
-  Nous n'avons pas pu prélever le montant de votre abonnement Planify Pro
+  Nous n'avons pas pu prélever le montant de votre abonnement Planexa
   pour l'entreprise <strong><%= @company.name %></strong>.
 </p>
 
@@ -17,7 +17,7 @@
   Si le paiement reste en échec, votre compte sera suspendu.
 </p>
 
-<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/abonnement" class="btn">
+<a href="<%= ENV.fetch('APP_HOST', 'https://planexa.fr') %>/company/abonnement" class="btn">
   Mettre à jour mon moyen de paiement →
 </a>
 

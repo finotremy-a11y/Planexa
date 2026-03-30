@@ -1,4 +1,4 @@
-/** Service Worker — PlanifyPro PWA
+/** Service Worker — Planexa PWA
  *  Stratégies de cache:
  *  - Cache-First: assets statiques (CSS, JS, images)
  *  - Network-First: pages dynamiques (dashboard, RDV)
@@ -6,7 +6,7 @@
  *  - Offline fallback: /offline.html
  */
 
-const CACHE_VERSION = 'planify-pro-v1';
+const CACHE_VERSION = 'planexa-v1';
 const STATIC_CACHE = `${CACHE_VERSION}:static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}:dynamic`;
 const OFFLINE_PAGE = '/offline.html';
@@ -36,7 +36,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((cacheName) => cacheName.startsWith('planify-pro-') && cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE)
+          .filter((cacheName) => cacheName.startsWith('planexa-') && cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE)
           .map((cacheName) => caches.delete(cacheName))
       );
     }).then(() => {
@@ -168,7 +168,7 @@ self.addEventListener('message', (event) => {
   if (type === 'CLEAR_CACHE') {
     caches.keys().then((cacheNames) => {
       cacheNames.forEach((cacheName) => {
-        if (cacheName.startsWith('planify-pro-')) {
+        if (cacheName.startsWith('planexa-')) {
           caches.delete(cacheName);
         }
       });
@@ -187,7 +187,7 @@ self.addEventListener('push', (event) => {
     notificationData = event.data.json();
   } catch {
     notificationData = {
-      title: 'PlanifyPro',
+      title: 'Planexa',
       body: event.data.text()
     };
   }
@@ -198,7 +198,7 @@ self.addEventListener('push', (event) => {
     body: body || '',
     icon: icon || '/icons/icon-192x192.png',
     badge: badge || '/icons/icon-192x192.png',
-    tag: tag || 'planify-pro-notification',
+    tag: tag || 'planexa-notification',
     data: data || {},
     requireInteraction: false,
     actions: [
@@ -216,7 +216,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(title || 'PlanifyPro', options)
+    self.registration.showNotification(title || 'Planexa', options)
   );
 });
 

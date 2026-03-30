@@ -32,8 +32,8 @@ class WebhookDispatcherService
     uri = URI.parse(webhook.url)
     request = Net::HTTP::Post.new(uri.request_uri)
     request["Content-Type"] = "application/json"
-    request["X-PlanifyPro-Event"] = event
-    request["X-PlanifyPro-Signature"] = webhook.signature_for(payload_json)
+    request["X-Planexa-Event"] = event
+    request["X-Planexa-Signature"] = webhook.signature_for(payload_json)
     request.body = payload_json
 
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", read_timeout: 5, open_timeout: 5) do |http|

@@ -2,7 +2,7 @@
 
 # Contrôleur du widget de réservation embarquable (iFrame / script).
 # Accessible depuis n'importe quel site tiers via un token d'entreprise unique.
-# Le layout `widget` supprime la navigation PlanifyPro pour une intégration propre.
+# Le layout `widget` supprime la navigation Planexa pour une intégration propre.
 class WidgetController < ApplicationController
   layout "widget"
 

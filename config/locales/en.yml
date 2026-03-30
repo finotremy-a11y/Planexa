@@ -1,7 +1,7 @@
 en:
   seo:
-    default_meta_description: "Planify Pro - Appointment management platform for local service businesses."
-    default_title: "Planify Pro - Appointment management for professionals"
+    default_meta_description: "Planexa - Appointment management platform for local service businesses."
+    default_title: "Planexa - Appointment management for professionals"
 
   locale:
     changed: "Language updated."
@@ -43,8 +43,8 @@ en:
 
   home:
     meta:
-      title: "Planify Pro - Appointment management for professionals"
-      description: "Planify Pro - Manage your appointments online. Smart planning, customer bookings, and team management. 14-day free trial for artisans and service businesses."
+      title: "Planexa - Appointment management for professionals"
+      description: "Planexa - Manage your appointments online. Smart planning, customer bookings, and team management. 14-day free trial for artisans and service businesses."
     hero:
       badge: "For artisans and service professionals"
       title_html: "Manage your appointments<br>like a pro"
@@ -52,7 +52,7 @@ en:
       cta_trial: "Start 14-day free trial"
       cta_search: "Find a business"
     features:
-      heading: "Why choose Planify Pro?"
+      heading: "Why choose Planexa?"
       subheading: "A solution designed for artisans and service businesses that want to work more efficiently."
       items:
         planning:
@@ -114,7 +114,7 @@ en:
   search:
     meta:
       title: "Find a business"
-      description: "Find an artisan or service professional near you. Book online in just a few clicks with Planify Pro."
+      description: "Find an artisan or service professional near you. Book online in just a few clicks with Planexa."
     hero:
       heading: "Find a professional near you"
       subheading: "Artisans, home services, qualified professionals"
@@ -148,7 +148,7 @@ en:
     landing:
       meta:
         title: "%{activity} in %{city}"
-        description: "Find %{activity} professionals in %{city} and book online in a few clicks with Planify Pro."
+        description: "Find %{activity} professionals in %{city} and book online in a few clicks with Planexa."
       kicker: "Local guide"
       heading: "%{activity} in %{city}"
       intro: "Browse a curated list of businesses specialized in %{activity} in %{city}, compare their services, and book online quickly."
@@ -181,7 +181,7 @@ en:
     feature_booking: "24/7 online booking from your public profile"
     feature_payment: "Secure payments with Stripe"
     feature_reminders: "Automatic emails and frictionless reminders"
-    footer: "© %{year} Planify Pro - EUR 49/month - 14-day trial"
+    footer: "© %{year} Planexa - EUR 49/month - 14-day trial"
 
   auth:
     sign_in: "Sign in"
@@ -252,7 +252,7 @@ en:
     invoices: "Invoices"
     company_profile: "Company profile"
     administrator: "Administrator"
-    breadcrumb_prefix: "Planify Pro"
+    breadcrumb_prefix: "Planexa"
     notifications: "Notifications"
     see_all: "See all"
     no_notifications: "No notifications"
@@ -307,21 +307,21 @@ en:
         subject: "Great news! You unlocked a reward at %{company}"
     company:
       welcome_trial:
-        subject: "Welcome to Planify Pro - Your free trial starts now!"
+        subject: "Welcome to Planexa - Your free trial starts now!"
       trial_ending_soon:
-        subject: "Your Planify Pro trial ends in %{days_left} days"
+        subject: "Your Planexa trial ends in %{days_left} days"
       payment_failed:
         subject: "Payment failed - Action required"
       account_suspended:
-        subject: "Your Planify Pro account has been suspended"
+        subject: "Your Planexa account has been suspended"
       account_reactivated:
-        subject: "Your Planify Pro account is reactivated"
+        subject: "Your Planexa account is reactivated"
       subscription_canceled:
-        subject: "Your Planify Pro subscription was canceled"
+        subject: "Your Planexa subscription was canceled"
       new_appointment:
         subject: "New appointment - %{datetime}"
       weekly_performance_summary:
-        subject: "Your weekly Planify Pro summary"
+        subject: "Your weekly Planexa summary"
         heading: "Weekly performance - %{company}"
         period: "Period from %{from} to %{to}"
         formula: "Estimated revenue: sum of online bookings for the week, excluding cancellations."
@@ -333,7 +333,7 @@ en:
           estimated_revenue: "Estimated revenue"
     contact:
       new_message:
-        subject: "[Planify Pro Contact] %{subject}"
+        subject: "[Planexa Contact] %{subject}"
         default_subject: "New message"
 
   activerecord:
@@ -556,9 +556,9 @@ en:
 
   subscriptions:
     title: "My subscription"
-    success_message: "Your subscription is active — welcome to Planify Pro!"
+    success_message: "Your subscription is active — welcome to Planexa!"
     cancelled_message: "The payment process was cancelled. You can try again at any time."
-    plan_name: "Planify Pro Subscription"
+    plan_name: "Planexa Subscription"
     plan: "Plan"
     pro_plan: "Pro — €49 / month"
     trial_ends: "Trial ends"

@@ -36,7 +36,7 @@ function showUpdatePrompt(registration) {
   message.className = 'pwa-update-prompt';
   message.innerHTML = `
     <div class="pwa-update-content">
-      <p>Une nouvelle version de PlanifyPro est disponible !</p>
+      <p>Une nouvelle version de Planexa est disponible !</p>
       <button class="pwa-update-btn-update">Mettre à jour</button>
       <button class="pwa-update-btn-dismiss">Plus tard</button>
     </div>
@@ -80,7 +80,7 @@ export function setupInstallPrompt() {
   });
 
   window.addEventListener('appinstalled', () => {
-    console.log('PlanifyPro installed');
+    console.log('Planexa installed');
     deferredPrompt = null;
     // Envoyer un événement analytics
     if (window.gtag) {
@@ -95,10 +95,10 @@ function showInstallPrompt() {
   banner.innerHTML = `
     <div class="pwa-install-content">
       <div class="pwa-install-icon">
-        <img src="/icons/icon-192x192.png" alt="PlanifyPro" />
+        <img src="/icons/icon-192x192.png" alt="Planexa" />
       </div>
       <div class="pwa-install-text">
-        <h3>Installer PlanifyPro</h3>
+        <h3>Installer Planexa</h3>
         <p>Accédez à l'app directement depuis votre écran d'accueil</p>
       </div>
       <div class="pwa-install-actions">

@@ -4,7 +4,7 @@
   starts_at_utc = @appointment.scheduled_at.utc.strftime("%Y%m%dT%H%M%SZ")
   ends_at_utc = (@appointment.scheduled_at + @appointment.duration_minutes.minutes).utc.strftime("%Y%m%dT%H%M%SZ")
   calendar_text = "RDV #{@appointment.company.name}"
-  calendar_details = "#{@appointment.service_type.name} via Planify Pro"
+  calendar_details = "#{@appointment.service_type.name} via Planexa"
   calendar_location = [ @appointment.company.address, @appointment.company.zip_code, @appointment.company.city ].compact.join(" ").strip
   calendar_url = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=#{ERB::Util.url_encode(calendar_text)}&dates=#{starts_at_utc}/#{ends_at_utc}&details=#{ERB::Util.url_encode(calendar_details)}&location=#{ERB::Util.url_encode(calendar_location)}"
 %>

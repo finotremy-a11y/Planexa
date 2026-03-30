@@ -3,8 +3,8 @@
 namespace :admin do
   desc "Bootstrap or update admin user from ADMIN_EMAIL and ADMIN_PASSWORD"
   task bootstrap: :environment do
-    email = ENV.fetch("ADMIN_EMAIL", "admin@planifypro.fr").to_s.downcase.strip
-    password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanify2025!").to_s
+    email = ENV.fetch("ADMIN_EMAIL", "admin@planexa.fr").to_s.downcase.strip
+    password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanexa2025!").to_s
 
     if email.blank? || password.blank?
       abort "ADMIN_EMAIL and ADMIN_PASSWORD must be present"

@@ -22,7 +22,7 @@ class Api::V1::WebhooksControllerTest < ActionDispatch::IntegrationTest
       post "/api/v1/webhooks",
         params: {
           webhook: {
-            url: "https://example.com/hooks/planifypro",
+            url: "https://example.com/hooks/planexa",
             events: ["appointment.created", "appointment.cancelled"],
             active: true
           }
@@ -38,7 +38,7 @@ class Api::V1::WebhooksControllerTest < ActionDispatch::IntegrationTest
     post "/api/v1/webhooks",
       params: {
         webhook: {
-          url: "https://example.com/hooks/planifypro",
+          url: "https://example.com/hooks/planexa",
           events: ["appointment.created"]
         }
       },

@@ -3,7 +3,7 @@
 <p>Bonjour <%= @user.first_name %>,</p>
 
 <p>
-  Votre période d'essai gratuit sur <strong>Planify Pro</strong> touche à sa fin.
+  Votre période d'essai gratuit sur <strong>Planexa</strong> touche à sa fin.
   À partir du <%= (Time.current + @days_left.days).strftime("%d/%m/%Y") %>,
   votre abonnement de <strong>49 € / mois</strong> sera automatiquement activé.
 </p>
@@ -14,6 +14,6 @@
   depuis votre espace entreprise.
 </div>
 
-<a href="<%= ENV.fetch('APP_HOST', 'https://planifypro.fr') %>/company/abonnement" class="btn">
+<a href="<%= ENV.fetch('APP_HOST', 'https://planexa.fr') %>/company/abonnement" class="btn">
   Gérer mon abonnement →
 </a>

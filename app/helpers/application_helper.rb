@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def page_title(title = nil)
-    title.present? ? "#{title} — Planify Pro" : t("seo.default_title")
+    title.present? ? "#{title} — Planexa" : t("seo.default_title")
   end
 
   def og_image_url
@@ -64,7 +64,7 @@ module ApplicationHelper
   end
 
   def legal_business_name
-    ENV.fetch("LEGAL_BUSINESS_NAME", "Planify Pro")
+    ENV.fetch("LEGAL_BUSINESS_NAME", "Planexa")
   end
 
   def legal_owner_name
@@ -80,7 +80,7 @@ module ApplicationHelper
   end
 
   def legal_contact_email
-    ENV.fetch("EMAIL_CONTACT", ENV.fetch("LEGAL_CONTACT_EMAIL", "contact@planifypro.fr"))
+    ENV.fetch("EMAIL_CONTACT", ENV.fetch("LEGAL_CONTACT_EMAIL", "contact@planexa.fr"))
   end
 
   def legal_dpo_email

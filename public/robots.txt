@@ -26,4 +26,4 @@ Disallow: /rails/
 Disallow: /*.json$
 
 # Sitemap
-Sitemap: https://planifypro.fr/sitemap.xml.gz
+Sitemap: https://planexa.fr/sitemap.xml.gz
