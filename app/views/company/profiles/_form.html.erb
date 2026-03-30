@@ -28,7 +28,7 @@
         <%= f.text_field :address, class: "form-control", placeholder: "12 rue des Artisans" %>
       </div>
 
-      <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
+      <div class="responsive-grid-2-1" style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
         <div class="form-group">
           <%= f.label :city, "Ville", class: "form-label" %>
           <%= f.text_field :city, class: "form-control", placeholder: "Lyon" %>
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
           <%= f.label :phone, "Téléphone", class: "form-label" %>
           <%= f.phone_field :phone, class: "form-control", placeholder: "04 78 00 00 00" %>
@@ -61,7 +61,7 @@
               class: "form-control" %>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
         <div class="form-group">
           <%= f.label :health_specialty, "Specialite", class: "form-label" %>
             <%= f.select :health_specialty,
@@ -120,7 +120,7 @@
       </div>
     </div>
 
-    <div class="card-footer" style="display:flex; gap:10px; justify-content:flex-end;">
+    <div class="card-footer responsive-form-actions" style="display:flex; gap:10px; justify-content:flex-end;">
       <%= link_to "Annuler", company_profile_path, class: "btn btn-ghost" %>
       <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
     </div>

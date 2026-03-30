@@ -209,6 +209,24 @@ a:hover { color: var(--green-600); }
 
 .form-control::placeholder { color: var(--text-300); }
 
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-900);
+  background: white;
+  transition: var(--transition);
+  outline: none;
+}
+
+.form-select:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(44,95,46,0.12);
+}
+
 textarea.form-control { resize: vertical; min-height: 100px; }
 
 select.form-control {
@@ -473,12 +491,92 @@ tbody tr:hover { background: var(--cream); transition: var(--transition); }
 .radio-card-content h4 { font-size: 0.95rem; margin-bottom: 2px; }
 .radio-card-content p { font-size: 0.82rem; color: var(--text-500); margin: 0; }
 
+.responsive-grid-2,
+.responsive-grid-2-1,
+.responsive-grid-145-1,
+.responsive-form-actions,
+.responsive-wrap,
+.responsive-break,
+.service-option-row,
+.service-option-main,
+.service-option-price,
+.booking-summary-row,
+.booking-summary-value {
+  min-width: 0;
+}
+
+.responsive-break {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .page-header { flex-direction: column; }
   .page-header-actions { width: 100%; }
   .stat-card { padding: 18px; }
   .stat-value { font-size: 1.6rem; }
+
+  .card-header,
+  .card-body,
+  .card-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .btn {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 16px;
+  }
+
+  .responsive-grid-2,
+  .responsive-grid-2-1,
+  .responsive-grid-145-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .responsive-form-actions {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .responsive-form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .responsive-wrap {
+    flex-wrap: wrap;
+  }
+
+  .service-option-row {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 8px;
+  }
+
+  .service-option-main {
+    width: 100%;
+  }
+
+  .service-option-price {
+    width: 100%;
+    text-align: left;
+  }
+
+  .booking-summary-row {
+    align-items: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .booking-summary-value {
+    text-align: left !important;
+  }
 }
 
 /* ── Responsive Mobile (Phase 9) ─────────────────────────────────────────── */

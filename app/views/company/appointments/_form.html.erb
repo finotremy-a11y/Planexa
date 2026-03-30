@@ -70,7 +70,7 @@
     <%= f.label :urgent, t("appointments.mark_urgent"), class: "form-check-label" %>
   </div>
 
-  <div style="display:flex; gap:8px;">
+  <div class="responsive-form-actions" style="display:flex; gap:8px;">
     <%= f.submit appointment.new_record? ? t("appointments.create_button") : t("common.save"),
           class: "btn btn-primary" %>
         <%= link_to t("common.cancel"),

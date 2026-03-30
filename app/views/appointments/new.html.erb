@@ -20,7 +20,7 @@
   <%= form_with model: @appointment,
         url: appointments_path(company_id: @company.id),
         local: true do |f| %>
-    <div style="display:grid; grid-template-columns:1.45fr 1fr; gap:20px; align-items:start;">
+    <div class="responsive-grid-145-1" style="display:grid; grid-template-columns:1.45fr 1fr; gap:20px; align-items:start;">
       <div class="card">
         <div class="card-body">
           <% if @appointment.errors.any? %>
@@ -55,12 +55,12 @@
               <%= f.label :service_type_id, "Quelle prestation souhaitez-vous ?", class: "form-label" %>
               <div style="display:flex; flex-direction:column; gap:8px;">
                 <% @service_types.each do |st| %>
-                  <label style="display:flex; align-items:center; justify-content:space-between;
+                  <label class="service-option-row" style="display:flex; align-items:center; justify-content:space-between;
                                  padding:12px 16px; border:2px solid var(--border);
                                  border-radius:var(--radius-md); cursor:pointer;"
                          data-service-card="true"
                          data-service-id="<%= st.id %>">
-                    <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="service-option-main" style="display:flex; align-items:center; gap:10px;">
                       <%= f.radio_button :service_type_id, st.id,
                             checked: @appointment.service_type_id == st.id,
                             data: {
@@ -74,7 +74,7 @@
                       </div>
                     </div>
                     <% if st.price_cents > 0 %>
-                      <div style="font-weight:600; color:var(--green-800);">
+                      <div class="service-option-price" style="font-weight:600; color:var(--green-800);">
                         <%= number_to_currency(st.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
                       </div>
                     <% end %>
@@ -114,7 +114,7 @@
           </details>
         </div>
 
-        <div style="padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end;">
+        <div class="responsive-form-actions" style="padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end;">
           <%= link_to "Annuler", company_public_path(@company), class: "btn btn-secondary" %>
           <%= f.submit t("appointment_flow.new.submit"), class: "btn btn-primary btn-lg" %>
         </div>
@@ -125,17 +125,17 @@
           <h2 style="font-family:var(--font-display); margin:0; font-size:1rem;"><%= t("appointment_flow.new.critical_info_title") %></h2>
         </div>
         <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
-          <div style="display:flex; justify-content:space-between; gap:12px;">
+          <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.service") %></span>
-            <strong id="summary-service-name" style="text-align:right;"><%= selected_service&.name || "-" %></strong>
+            <strong id="summary-service-name" class="booking-summary-value responsive-break" style="text-align:right;"><%= selected_service&.name || "-" %></strong>
           </div>
-          <div style="display:flex; justify-content:space-between; gap:12px;">
+          <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.duration") %></span>
-            <strong id="summary-service-duration"><%= selected_service&.duration_minutes || "-" %> min</strong>
+            <strong id="summary-service-duration" class="booking-summary-value"><%= selected_service&.duration_minutes || "-" %> min</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; gap:12px;">
+          <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.price") %></span>
-            <strong id="summary-service-price">
+            <strong id="summary-service-price" class="booking-summary-value">
               <% if selected_service&.price_cents.to_i > 0 %>
                 <%= number_to_currency(selected_service.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               <% else %>
@@ -143,9 +143,9 @@
               <% end %>
             </strong>
           </div>
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+          <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.address") %></span>
-            <strong style="text-align:right;"><%= company_address.presence || @company.city %></strong>
+            <strong class="booking-summary-value responsive-break" style="text-align:right;"><%= company_address.presence || @company.city %></strong>
           </div>
           <div style="padding-top:8px; border-top:1px solid var(--border); font-size:0.82rem; color:var(--text-500); line-height:1.5;">
             <strong style="display:block; color:var(--text-700); margin-bottom:4px;"><%= t("appointment_flow.new.cancellation_title") %></strong>
