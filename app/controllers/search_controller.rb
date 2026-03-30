@@ -2,9 +2,60 @@ class SearchController < ApplicationController
   skip_before_action :authenticate_user!
   include Pagy::Backend
 
+  BUSINESS_SPECIALTIES = [
+    "Coiffure",
+    "Barbier",
+    "Esthetique",
+    "Massage bien-etre",
+    "Onglerie",
+    "Maquillage",
+    "Tatouage",
+    "Photographie",
+    "Coaching sportif",
+    "Yoga",
+    "Nutrition",
+    "Naturopathie",
+    "Sophrologie",
+    "Kinesitherapie",
+    "Osteopathie",
+    "Psychologie",
+    "Orthophonie",
+    "Podologie",
+    "Dentaire",
+    "Plomberie",
+    "Electricite",
+    "Peinture",
+    "Menuiserie",
+    "Serrurerie",
+    "Climatisation",
+    "Chauffage",
+    "Nettoyage",
+    "Jardinage",
+    "Demoussage",
+    "Mecanique auto",
+    "Controle technique",
+    "Lavage auto",
+    "Reparation smartphone",
+    "Informatique",
+    "Cours particuliers",
+    "Soutien scolaire",
+    "Traduction",
+    "Comptabilite",
+    "Conseil juridique",
+    "Immobilier",
+    "Architecture",
+    "Decoration interieure",
+    "Evenementiel",
+    "Traiteur",
+    "Boulangerie",
+    "Patisserie",
+    "Toilettage",
+    "Dressage canin"
+  ].freeze
+
   def index
     scope = Company.active.with_public_booking.includes(:service_types, :company_setting)
-    @medical_specialties = MedicalTaxonomy.specialties
+    @specialty_options = specialty_options
 
     if params[:name].present?
       scope = scope.where("companies.name ILIKE ?", "%#{params[:name]}%")
@@ -17,7 +68,10 @@ class SearchController < ApplicationController
     end
 
     if params[:specialty].present?
-      scope = scope.where("companies.health_specialty ILIKE ?", "%#{params[:specialty]}%")
+      specialty_term = "%#{params[:specialty]}%"
+      scope = scope.left_outer_joins(:service_types)
+                   .where("companies.health_specialty ILIKE :term OR service_types.name ILIKE :term", term: specialty_term)
+                   .distinct
     end
 
     if params[:max_price].present?
@@ -83,5 +137,26 @@ class SearchController < ApplicationController
               review_count: review_count.to_i
             }
           end
+  end
+
+  def specialty_options
+    medical_specialties = MedicalTaxonomy.specialties
+    configured_health_specialties = Company.active
+                                          .with_public_booking
+                                          .where.not(health_specialty: [ nil, "" ])
+                                          .distinct
+                                          .pluck(:health_specialty)
+    service_specialties = ServiceType.active
+                                   .joins(:company)
+                                   .merge(Company.active.with_public_booking)
+                                   .where.not(name: [ nil, "" ])
+                                   .distinct
+                                   .pluck(:name)
+
+    (BUSINESS_SPECIALTIES + medical_specialties + configured_health_specialties + service_specialties)
+      .map(&:strip)
+      .reject(&:blank?)
+      .uniq
+      .sort_by(&:downcase)
   end
 end

@@ -64,19 +64,19 @@ module ApplicationHelper
   end
 
   def legal_business_name
-    ENV.fetch("LEGAL_BUSINESS_NAME", "Planexa")
+    ENV["LEGAL_BUSINESS_NAME"].presence || "Planexa"
   end
 
   def legal_owner_name
-    ENV.fetch("LEGAL_OWNER_NAME", legal_business_name)
+    ENV["LEGAL_OWNER_NAME"].presence || legal_business_name
   end
 
   def legal_owner_siret
-    ENV.fetch("LEGAL_OWNER_SIRET", "À configurer")
+    ENV["LEGAL_OWNER_SIRET"].presence || "88300612400035"
   end
 
   def legal_owner_address
-    ENV.fetch("LEGAL_OWNER_ADDRESS", "Adresse à configurer")
+    ENV["LEGAL_OWNER_ADDRESS"].presence || "10 CHEMIN de la Fourniserie, 12410 Salles-Curan FRANCE"
   end
 
   def legal_contact_email
@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def legal_city
-    ENV.fetch("LEGAL_CITY", "Ville à configurer")
+    ENV["LEGAL_CITY"].presence || "Salles-Curan"
   end
 
   def company_local_business_schema_json(company, avg_rating: nil, review_count: nil)

@@ -314,6 +314,8 @@
         var overlay = document.getElementById('adminSidebarOverlay');
         var sidebar = document.querySelector('.admin-sidebar');
         if (!btn || !overlay || !sidebar) return;
+        if (btn.dataset.sidebarBound === 'true') return;
+        btn.dataset.sidebarBound = 'true';
         btn.addEventListener('click', function () {
           var open = sidebar.classList.toggle('open');
           overlay.classList.toggle('active', open);

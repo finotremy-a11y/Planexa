@@ -67,6 +67,25 @@ class SearchControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "select[name='specialty']"
     assert_select "option", text: /Psychologie/
+    assert_select "option", text: /Plomberie/
+    assert_select "option", text: /Barbier/
+  end
+
+  test "filtre par specialite non medicale via service retourne la bonne entreprise" do
+    other_company = create(:company, name: "Cabinet Osteo Lyon", city: "Lyon", status: :active)
+    other_company.company_setting.update!(booking_mode: :booking_public)
+    other_company.update!(
+      professional_category: :healthcare_professional,
+      health_specialty: "Osteopathie",
+      convention_sector: :sector_2
+    )
+    create(:service_type, company: other_company, name: "Consultation osteo")
+
+    get search_path, params: { specialty: "Plomberie" }
+
+    assert_response :success
+    assert_select "body", /Plomberie Lyon/
+    assert_select "body", { text: /Cabinet Osteo Lyon/, count: 0 }
   end
 
   test "landing SEO categorie x ville retourne 200" do

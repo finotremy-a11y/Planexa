@@ -22,10 +22,21 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(29, 45, 36, 0.7) 0%, rgba(29, 45, 36, 0.62) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.16) 100%);
     z-index: 2;
   }
-  .hero-content { position: relative; z-index: 3; max-width: 720px; margin: 0 auto; }
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 28px;
+    border-radius: 18px;
+    background: rgba(25, 46, 36, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    box-shadow: 0 14px 30px rgba(18, 32, 24, 0.2);
+    backdrop-filter: blur(2px);
+  }
   .hero-media-layer {
     position: absolute;
     inset: 0;
@@ -38,7 +49,7 @@
     left: -12%;
     width: 124%;
     overflow: hidden;
-    opacity: 0.28;
+    opacity: 0.35;
   }
   .hero-media-row.top { top: 14%; transform: rotate(-1.6deg); }
   .hero-media-row.bottom { top: 54%; transform: rotate(1.2deg); }
@@ -81,7 +92,7 @@
     letter-spacing: 0.01em;
   }
   .hero h1 { font-family: var(--font-display); font-size: 3.2rem; font-weight: 700; color: white; margin-bottom: 20px; line-height: 1.15; }
-  .hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 36px; line-height: 1.7; }
+  .hero p { font-size: 1.1rem; color: rgba(255,255,255,0.95); margin-bottom: 36px; line-height: 1.7; }
   .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
   .btn-hero-primary { background: white; color: #2f4a3a; font-weight: 700; padding: 16px 32px; border-radius: var(--radius-md); font-size: 1rem; transition: var(--transition); text-decoration: none; display: inline-block; }
   .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); color: #2f4a3a; }
@@ -107,13 +118,13 @@
     .hero h1 { font-size: 1.8rem; }
     .hero p { font-size: 0.95rem; }
     .hero-media-row.bottom { display: none; }
-    .hero-media-row { opacity: 0.22; }
+    .hero-media-row { opacity: 0.28; }
   }
 </style>
 
 <section class="hero">
   <% hero_professions = [
-    ["Coiffeur", "https://images.unsplash.com/photo-1512690459411-b0fd1c86b8ce?auto=format&fit=crop&w=500&q=80"],
+    ["Coiffeur", "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=500&q=80"],
     ["Infirmiere", "https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=500&q=80"],
     ["Plombier", "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=500&q=80"],
     ["Electricien", "https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=500&q=80"],
