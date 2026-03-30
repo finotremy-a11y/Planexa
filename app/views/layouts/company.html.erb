@@ -295,10 +295,47 @@
       from { transform: translateX(100%); opacity: 0; }
       to   { transform: translateX(0); opacity: 1; }
     }
+
+    /* ── Mobile hamburger & overlay ─── */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      color: var(--text-700);
+      font-size: 1.3rem;
+      line-height: 1;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      margin-right: 8px;
+    }
+    .hamburger-btn:hover { background: var(--cream); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 99;
+    }
+    .sidebar-overlay.active { display: block; }
+
+    @media (max-width: 1024px) {
+      .hamburger-btn { display: flex; align-items: center; justify-content: center; }
+      .topbar { padding: 0 16px; }
+      .flash-container { right: 12px; max-width: calc(100vw - 24px); }
+    }
+    @media (max-width: 768px) {
+      .content-wrapper { padding: 16px; }
+    }
   </style>
 </head>
 <body>
   <div class="company-layout">
+
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -421,6 +458,7 @@
     <!-- Main content -->
     <div class="main-content">
       <header class="topbar">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">☰</button>
         <div class="topbar-breadcrumb">
           <%= t("company_layout.breadcrumb_prefix") %> /
           <strong><%= yield(:page_title) || controller_name.humanize %></strong>
@@ -493,6 +531,28 @@
   <script type="module">
     import { initPWA } from '/assets/pwa/register.js';
     initPWA();
+  </script>
+  <script>
+    (function () {
+      function initSidebar() {
+        var btn = document.getElementById('hamburgerBtn');
+        var overlay = document.getElementById('sidebarOverlay');
+        var sidebar = document.querySelector('.sidebar');
+        if (!btn || !overlay || !sidebar) return;
+        btn.addEventListener('click', function () {
+          var open = sidebar.classList.toggle('open');
+          overlay.classList.toggle('active', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        overlay.addEventListener('click', function () {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+      document.addEventListener('turbo:load', initSidebar);
+      document.addEventListener('DOMContentLoaded', initSidebar);
+    })();
   </script>
 </body>
 </html>

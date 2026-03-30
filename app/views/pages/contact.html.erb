@@ -8,11 +8,11 @@
     </div>
   </div>
 
-  <div style="display:grid; grid-template-columns:minmax(0, 1fr) 280px; gap:24px; align-items:start;">
+  <div class="responsive-aside-grid" style="display:grid; grid-template-columns:minmax(0, 1fr) 280px; gap:24px; align-items:start;">
     <div class="card">
       <div class="card-body">
         <%= form_with url: send_contact_path, method: :post, local: true do |form| %>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div class="form-group">
               <label class="form-label"><%= t("pages.contact.form.name_label") %> <span style="color:#dc2626;">*</span></label>
               <input type="text" name="name" class="form-control" placeholder="<%= t("pages.contact.form.name_placeholder") %>" required value="<%= user_signed_in? ? current_user.full_name : '' %>">

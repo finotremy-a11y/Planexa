@@ -24,6 +24,16 @@
   .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); color: var(--green-800); }
   .btn-hero-secondary { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.5); padding: 14px 28px; border-radius: var(--radius-md); font-size: 1rem; transition: var(--transition); text-decoration: none; display: inline-block; }
   .btn-hero-secondary:hover { border-color: white; background: rgba(255,255,255,0.1); color: white; }
+
+  @media (max-width: 900px) {
+    .hero { padding: 64px 24px; }
+    .hero h1 { font-size: 2.2rem; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 48px 20px; }
+    .hero h1 { font-size: 1.8rem; }
+    .hero p { font-size: 0.95rem; }
+  }
 </style>
 
 <section class="hero">
@@ -44,7 +54,7 @@
   </div>
 </section>
 
-<section style="padding:72px 48px; max-width:1100px; margin:0 auto;">
+<section class="home-section" style="padding:72px 48px; max-width:1100px; margin:0 auto;">
   <div style="text-align:center; margin-bottom:52px;">
     <h2 style="font-family:var(--font-display); font-size:2.2rem; margin-bottom:12px;">
       <%= t("home.features.heading") %>
@@ -54,7 +64,7 @@
     </p>
   </div>
 
-  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:28px;">
+  <div class="responsive-3col-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:28px;">
     <% [
       ["📅", t("home.features.items.planning.title"), t("home.features.items.planning.description")],
       ["🌐", t("home.features.items.booking.title"), t("home.features.items.booking.description")],
@@ -72,7 +82,7 @@
   </div>
 </section>
 
-<section style="background:var(--green-900); padding:72px 48px; text-align:center;">
+<section class="home-section" style="background:var(--green-900); padding:72px 48px; text-align:center;">
   <h2 style="font-family:var(--font-display); font-size:2rem; color:white; margin-bottom:12px;">
     <%= t("home.bottom_cta.heading") %>
   </h2>
@@ -86,7 +96,7 @@
 </section>
 
 
-<section style="background:var(--bg-secondary); border-top:1px solid var(--border); padding:52px 48px;">
+<section class="home-section" style="background:var(--bg-secondary); border-top:1px solid var(--border); padding:52px 48px;">
   <div style="max-width:1100px; margin:0 auto;">
     <h2 style="font-family:var(--font-display); font-size:1.3rem; margin-bottom:6px;">
       Trouvez un professionnel près de chez vous

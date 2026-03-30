@@ -162,10 +162,54 @@
       font-weight: 600;
       color: #1e293b;
     }
+
+    /* ── Mobile hamburger & overlay ─── */
+    .hamburger-admin-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      color: #1e293b;
+      font-size: 1.3rem;
+      line-height: 1;
+      border-radius: 6px;
+      transition: background 0.2s;
+      margin-right: 8px;
+    }
+    .hamburger-admin-btn:hover { background: #f1f5f9; }
+
+    .admin-sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 99;
+    }
+    .admin-sidebar-overlay.active { display: block; }
+
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-left: 0; }
+      .admin-topbar { padding: 0 16px; }
+      .admin-content { padding: 16px; }
+      .hamburger-admin-btn { display: flex; align-items: center; justify-content: center; }
+    }
+    @media (max-width: 768px) {
+      .admin-content { padding: 12px; }
+    }
   </style>
 </head>
 <body>
   <div class="admin-layout">
+
+    <!-- Mobile sidebar overlay -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
 
     <aside class="admin-sidebar">
       <div class="admin-logo">
@@ -227,6 +271,7 @@
 
     <div class="admin-main">
       <div class="admin-topbar">
+        <button class="hamburger-admin-btn" id="adminHamburgerBtn" aria-label="Menu" aria-expanded="false">☰</button>
         <span class="admin-topbar-title">
           <%= yield(:page_title) || controller_name.humanize %>
         </span>
@@ -261,6 +306,28 @@
   <script type="module">
     import { initPWA } from '/assets/pwa/register.js';
     initPWA();
+  </script>
+  <script>
+    (function () {
+      function initAdminSidebar() {
+        var btn = document.getElementById('adminHamburgerBtn');
+        var overlay = document.getElementById('adminSidebarOverlay');
+        var sidebar = document.querySelector('.admin-sidebar');
+        if (!btn || !overlay || !sidebar) return;
+        btn.addEventListener('click', function () {
+          var open = sidebar.classList.toggle('open');
+          overlay.classList.toggle('active', open);
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        overlay.addEventListener('click', function () {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+      document.addEventListener('turbo:load', initAdminSidebar);
+      document.addEventListener('DOMContentLoaded', initAdminSidebar);
+    })();
   </script>
 </body>
 </html>
