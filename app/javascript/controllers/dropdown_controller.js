@@ -32,4 +32,4 @@ export default class extends Controller {
   hide() {
     this.menuTarget.style.display = "none"
   }
-end
+}
