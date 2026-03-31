@@ -69,7 +69,8 @@ Rails.application.configure do
     protocol: "https"
   }
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
+  # Keep user flows resilient: mail provider failures must not return HTTP 500.
+  config.action_mailer.raise_delivery_errors = false
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
