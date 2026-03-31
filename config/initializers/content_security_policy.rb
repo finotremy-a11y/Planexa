@@ -15,8 +15,11 @@ Rails.application.configure do
     policy.connect_src :self, :https,
                        "https://api.stripe.com",
                        "https://sentry.io",
-                       "https://o*.ingest.sentry.io"
+                       "https://*.ingest.sentry.io"
   end
+
+  config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
+  config.content_security_policy_nonce_directives = %w[script-src]
 
   config.content_security_policy_report_only = false
 end

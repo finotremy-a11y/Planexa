@@ -382,11 +382,11 @@
   </footer>
 
   <!-- PWA Initialization -->
-  <script type="module">
+  <%= javascript_tag type: "module", nonce: true do %>
     import { initPWA } from '/assets/pwa/register.js';
     // Initialize PWA features if user is online and has JS enabled
     initPWA();
-  </script>
+  <% end %>
 
 </body>
 </html>
