@@ -238,11 +238,5 @@
       </div>
     </div>
   </div>
-
-  <!-- PWA Initialization -->
-  <%= javascript_tag type: "module", nonce: true do %>
-    import { initPWA } from '<%= asset_path("pwa/register.js") %>';
-    initPWA();
-  <% end %>
 </body>
 </html>

@@ -16,13 +16,16 @@
 
   <div class="form-group">
     <div class="form-label" style="margin-bottom:10px;"><%= t("auth.i_am") %></div>
-    <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"
+         data-controller="role-selector">
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
                      border:2px solid var(--border); border-radius:var(--radius-md);
                      cursor:pointer; transition:var(--transition);"
-             id="label-client">
+             id="label-client"
+             data-role-selector-target="clientLabel">
         <%= f.radio_button :role, "client", checked: resource.role.blank? || resource.role == "client",
-              style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
+              style: "accent-color:var(--green-800);",
+              data: { role_selector_target: "radio", action: "change->role-selector#refresh" } %>
         <div>
           <div style="font-weight:600; font-size:0.9rem;"><%= t("auth.client") %></div>
           <div style="font-size:0.75rem; color:var(--text-500);"><%= t("auth.free") %></div>
@@ -31,10 +34,12 @@
       <label style="display:flex; align-items:center; gap:10px; padding:12px 16px;
                      border:2px solid var(--border); border-radius:var(--radius-md);
                      cursor:pointer; transition:var(--transition);"
-             id="label-company">
+         id="label-company"
+         data-role-selector-target="companyLabel">
         <%= f.radio_button :role, "company_admin",
               checked: resource.role == "company_admin",
-              style: "accent-color:var(--green-800);", onchange: "toggleRole(this)" %>
+          style: "accent-color:var(--green-800);",
+          data: { role_selector_target: "radio", action: "change->role-selector#refresh" } %>
         <div>
           <div style="font-weight:600; font-size:0.9rem;"><%= t("auth.company") %></div>
           <div style="font-size:0.75rem; color:var(--gold-600);"><%= t("auth.trial_14_days") %></div>
@@ -87,15 +92,4 @@
 
   <%= f.submit t("auth.create_account_cta"), class: "btn btn-primary btn-lg",
         style: "width:100%; justify-content:center;" %>
-<% end %>
-
-<%= javascript_tag nonce: true do %>
-  function toggleRole(radio) {
-    document.getElementById("label-client").style.borderColor =
-      radio.value === "client" ? "var(--green-800)" : "var(--border)";
-    document.getElementById("label-company").style.borderColor =
-      radio.value === "company_admin" ? "var(--green-800)" : "var(--border)";
-  }
-
-  toggleRole(document.querySelector('input[name="user[role]"]:checked'));
 <% end %>

@@ -527,11 +527,6 @@
     </div>
   </div>
 
-  <!-- PWA Initialization -->
-  <%= javascript_tag type: "module", nonce: true do %>
-    import { initPWA } from '<%= asset_path("pwa/register.js") %>';
-    initPWA();
-  <% end %>
   <%= javascript_tag nonce: true do %>
     (function () {
       function initSidebar() {
