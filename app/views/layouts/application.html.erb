@@ -266,17 +266,22 @@
   </style>
 </head>
 <body>
-  <nav class="navbar">
+  <nav class="navbar"
+       data-controller="navbar"
+       data-action="click@window->navbar#closeOnOutside resize@window->navbar#handleResize">
     <%= link_to root_path, class: "navbar-brand" do %>
       <div class="navbar-logo">⚙</div>
       <span class="navbar-brand-name">Planexa</span>
     <% end %>
 
-    <button class="navbar-hamburger" id="navbarHamburger" aria-label="Menu" aria-expanded="false" aria-controls="navbarLinks" type="button">
+    <button class="navbar-hamburger" id="navbarHamburger"
+            aria-label="Menu" aria-expanded="false" aria-controls="navbarLinks" type="button"
+            data-navbar-target="button"
+            data-action="click->navbar#toggle">
       ☰
     </button>
 
-    <div class="navbar-links" id="navbarLinks">
+    <div class="navbar-links" id="navbarLinks" data-navbar-target="links">
       <%= render "shared/locale_switcher" %>
       <%= link_to t("nav.search"), search_path, class: "navbar-link" %>
       <%= link_to "Tarifs", tarifs_path, class: "navbar-link" %>
@@ -382,74 +387,6 @@
     // Initialize PWA features if user is online and has JS enabled
     initPWA();
   </script>
-  <script>
-    (function () {
-      function initPublicHamburger() {
-        var button = document.getElementById('navbarHamburger');
-        var links = document.getElementById('navbarLinks');
-        var overlay = document.getElementById('navbarMobileOverlay');
-        if (!button || !links || !overlay) return;
 
-        if (window.publicHamburgerCleanup) {
-          window.publicHamburgerCleanup();
-        }
-
-        function closeMenu() {
-          links.classList.remove('open');
-          overlay.classList.remove('open');
-          button.setAttribute('aria-expanded', 'false');
-          document.body.classList.remove('navbar-menu-open');
-        }
-
-        function handleButtonClick(event) {
-          event.stopPropagation();
-          var isOpen = links.classList.toggle('open');
-          overlay.classList.toggle('open', isOpen);
-          button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-          document.body.classList.toggle('navbar-menu-open', isOpen);
-        }
-
-        function handleDocumentClick(event) {
-          if (!links.classList.contains('open')) return;
-          if (button.contains(event.target) || links.contains(event.target)) return;
-          closeMenu();
-        }
-
-        function handleResize() {
-          if (window.innerWidth > 768) {
-            closeMenu();
-          }
-        }
-
-        function handleOverlayClick() {
-          closeMenu();
-        }
-
-        button.addEventListener('click', handleButtonClick);
-        document.addEventListener('click', handleDocumentClick);
-        overlay.addEventListener('click', handleOverlayClick);
-        window.addEventListener('resize', handleResize);
-
-        window.publicHamburgerCleanup = function () {
-          closeMenu();
-          button.removeEventListener('click', handleButtonClick);
-          document.removeEventListener('click', handleDocumentClick);
-          overlay.removeEventListener('click', handleOverlayClick);
-          window.removeEventListener('resize', handleResize);
-          window.publicHamburgerCleanup = null;
-        };
-      }
-
-      // DOM is already built (script is at bottom of <body>), so init immediately.
-      initPublicHamburger();
-
-      // Re-init on Turbo navigations — register only once to avoid listener accumulation
-      // across multiple page loads (Turbo re-executes body scripts on each navigation).
-      if (!window._hamburgerListenerSet) {
-        document.addEventListener('turbo:load', initPublicHamburger);
-        window._hamburgerListenerSet = true;
-      }
-    })();
-  </script>
 </body>
 </html>
