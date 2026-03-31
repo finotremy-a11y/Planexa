@@ -528,10 +528,10 @@
   </div>
 
   <!-- PWA Initialization -->
-  <script type="module">
-    import { initPWA } from '/assets/pwa/register.js';
+  <%= javascript_tag type: "module", nonce: true do %>
+    import { initPWA } from '<%= asset_path("pwa/register.js") %>';
     initPWA();
-  </script>
+  <% end %>
   <script>
     (function () {
       function initSidebar() {

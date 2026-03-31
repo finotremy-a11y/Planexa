@@ -383,7 +383,7 @@
 
   <!-- PWA Initialization -->
   <%= javascript_tag type: "module", nonce: true do %>
-    import { initPWA } from '/assets/pwa/register.js';
+    import { initPWA } from '<%= asset_path("pwa/register.js") %>';
     // Initialize PWA features if user is online and has JS enabled
     initPWA();
   <% end %>
