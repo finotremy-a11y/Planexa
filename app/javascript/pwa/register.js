@@ -207,7 +207,15 @@ async function subscribeToPush(registration) {
   try {
     // Récupérer la clé publique VAPID du serveur
     const response = await fetch('/api/v1/push_subscriptions/vapid_key');
+    if (!response.ok) {
+      console.warn('VAPID key endpoint unavailable, skipping push subscription');
+      return;
+    }
     const { vapidPublicKey } = await response.json();
+    if (!vapidPublicKey || typeof vapidPublicKey !== 'string' || vapidPublicKey.trim() === '') {
+      console.warn('VAPID key missing or invalid, skipping push subscription');
+      return;
+    }
 
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,

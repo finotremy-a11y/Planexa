@@ -6,7 +6,7 @@
  *  - Offline fallback: /offline.html
  */
 
-const CACHE_VERSION = 'planexa-v2';
+const CACHE_VERSION = 'planexa-v3';
 const STATIC_CACHE = `${CACHE_VERSION}:static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}:dynamic`;
 const OFFLINE_PAGE = '/offline.html';
@@ -63,19 +63,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Assets statiques — Cache-First
+  // Assets statiques — Cache-First (fingerprinted, safe to cache forever)
   if (isStaticAsset(url.pathname)) {
     event.respondWith(cacheFirst(request));
     return;
   }
 
-  // Pages publiques (login, about, etc) — Stale-While-Revalidate
-  if (isPublicPage(url.pathname)) {
-    event.respondWith(staleWhileRevalidate(request));
-    return;
-  }
-
-  // Pages protégées (dashboard, RDV, etc) — Network-First
+  // Toutes les pages HTML — Network-First (contiennent des importmaps fingerprintés
+  // qui changent à chaque déploiement, on ne veut jamais servir une version périmée)
   event.respondWith(networkFirst(request));
 });
 
