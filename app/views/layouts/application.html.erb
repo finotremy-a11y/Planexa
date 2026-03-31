@@ -440,8 +440,15 @@
         };
       }
 
-      document.addEventListener('turbo:load', initPublicHamburger);
-      document.addEventListener('DOMContentLoaded', initPublicHamburger);
+      // DOM is already built (script is at bottom of <body>), so init immediately.
+      initPublicHamburger();
+
+      // Re-init on Turbo navigations — register only once to avoid listener accumulation
+      // across multiple page loads (Turbo re-executes body scripts on each navigation).
+      if (!window._hamburgerListenerSet) {
+        document.addEventListener('turbo:load', initPublicHamburger);
+        window._hamburgerListenerSet = true;
+      }
     })();
   </script>
 </body>
