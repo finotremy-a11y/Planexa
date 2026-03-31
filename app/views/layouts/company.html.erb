@@ -532,7 +532,7 @@
     import { initPWA } from '<%= asset_path("pwa/register.js") %>';
     initPWA();
   <% end %>
-  <script>
+  <%= javascript_tag nonce: true do %>
     (function () {
       function initSidebar() {
         var btn = document.getElementById('hamburgerBtn');
@@ -555,6 +555,6 @@
       document.addEventListener('turbo:load', initSidebar);
       document.addEventListener('DOMContentLoaded', initSidebar);
     })();
-  </script>
+  <% end %>
 </body>
 </html>

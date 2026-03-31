@@ -157,7 +157,7 @@
   <% end %>
 </div>
 
-<script>
+<%= javascript_tag nonce: true do %>
   (function() {
     const radios = document.querySelectorAll("input[name='appointment[service_type_id]']");
     if (!radios.length) return;
@@ -185,4 +185,4 @@
       radio.addEventListener("change", () => updateSummary(radio));
     });
   })();
-</script>
+<% end %>

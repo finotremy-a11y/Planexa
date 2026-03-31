@@ -53,7 +53,7 @@
 </div>
 
 <script src="https://js.stripe.com/v3/"></script>
-<script>
+<%= javascript_tag nonce: true do %>
   const stripe = Stripe('<%= @publishable_key %>');
   const appearance = {
     theme: 'stripe',
@@ -93,4 +93,4 @@
       btn.textContent = '<%= j t("payment.retry_button") %>';
     }
   });
-</script>
+<% end %>

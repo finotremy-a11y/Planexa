@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Planexa",
   "short_name": "Planexa",
   "description": "Plateforme professionnelle de gestion de rendez-vous et réservations",
@@ -7,7 +8,7 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#6366f1",
+  "theme_color": "#2C5F2E",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -35,50 +36,20 @@
     }
   ],
   "categories": ["business", "productivity"],
-  "screenshots": [
-    {
-      "src": "/icons/screenshot-540x720.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "/icons/screenshot-1280x720.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ],
   "shortcuts": [
     {
-      "name": "Mes rendez-vous",
-      "short_name": "RDV",
-      "description": "Accès rapide à vos rendez-vous",
-      "url": "/appointments?utm_source=pwa_shortcut",
-      "icons": [{ "src": "/icons/shortcut-appointments-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      "name": "Rechercher",
+      "short_name": "Recherche",
+      "description": "Trouver un professionnel près de chez vous",
+      "url": "/recherche?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Réserver",
       "short_name": "Réserver",
       "description": "Créer une nouvelle réservation",
-      "url": "/bookings/new?utm_source=pwa_shortcut",
-      "icons": [{ "src": "/icons/shortcut-booking-192x192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/reservations/new?utm_source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
-  ],
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "attachment",
-          "accept": ["image/*", "application/pdf"]
-        }
-      ]
-    }
-  }
+  ]
 }

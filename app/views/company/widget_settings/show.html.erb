@@ -92,7 +92,7 @@
   </div>
 </div>
 
-<script>
+<%= javascript_tag nonce: true do %>
 function copyToClipboard(id) {
   const el = document.getElementById(id);
   el.select();
@@ -102,4 +102,4 @@ function copyToClipboard(id) {
   btn.textContent = '✓ Copié !';
   setTimeout(() => { btn.textContent = original; }, 2000);
 }
-</script>
+<% end %>

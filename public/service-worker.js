@@ -6,7 +6,7 @@
  *  - Offline fallback: /offline.html
  */
 
-const CACHE_VERSION = 'planexa-v1';
+const CACHE_VERSION = 'planexa-v2';
 const STATIC_CACHE = `${CACHE_VERSION}:static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}:dynamic`;
 const OFFLINE_PAGE = '/offline.html';
@@ -15,15 +15,18 @@ const OFFLINE_PAGE = '/offline.html';
 const PRECACHE_ASSETS = [
   '/',
   OFFLINE_PAGE,
-  '/assets/application.css',
-  '/assets/application.js'
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png'
 ];
 
 /** Installation du Service Worker — précache les assets statiques */
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
+      return Promise.allSettled(
+        PRECACHE_ASSETS.map((asset) => cache.add(asset))
+      );
     }).then(() => {
       self.skipWaiting(); // Activate immediately
     })

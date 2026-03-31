@@ -89,7 +89,7 @@
         style: "width:100%; justify-content:center;" %>
 <% end %>
 
-<script>
+<%= javascript_tag nonce: true do %>
   function toggleRole(radio) {
     document.getElementById("label-client").style.borderColor =
       radio.value === "client" ? "var(--green-800)" : "var(--border)";
@@ -98,4 +98,4 @@
   }
 
   toggleRole(document.querySelector('input[name="user[role]"]:checked'));
-</script>
+<% end %>

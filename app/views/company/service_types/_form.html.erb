@@ -120,7 +120,7 @@
 <% end %>
 
 <% if local_assigns[:service_templates].present? && @service_type.new_record? %>
-  <script>
+  <%= javascript_tag nonce: true do %>
     (function() {
       const nameInput = document.getElementById("service_type_name");
       const descriptionInput = document.getElementById("service_type_description");
@@ -138,5 +138,5 @@
         });
       });
     })();
-  </script>
+  <% end %>
 <% end %>
