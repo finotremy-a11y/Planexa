@@ -1,6 +1,12 @@
 <% content_for :title, t("payment.title") %>
 
-<div style="max-width:520px; margin:48px auto; padding:0 24px;">
+<div style="max-width:520px; margin:48px auto; padding:0 24px;"
+  data-controller="stripe-payment"
+  data-stripe-payment-publishable-key-value="<%= @publishable_key %>"
+  data-stripe-payment-client-secret-value="<%= @payment_intent.client_secret %>"
+  data-stripe-payment-return-url-value="<%= confirmation_appointments_url(appointment_id: @appointment.id) %>"
+  data-stripe-payment-processing-text-value="<%= t("payment.processing") %>"
+  data-stripe-payment-retry-text-value="<%= t("payment.retry_button") %>">
   <h1 style="font-family:var(--font-display); margin-bottom:8px;"><%= t("payment.title") %></h1>
   <p style="color:var(--text-500); margin-bottom:32px;">
     <%= @appointment.service_type.name %> — <%= @appointment.company.name %>
@@ -39,9 +45,11 @@
 
   <div class="card">
     <div class="card-body">
-      <div id="payment-element" style="margin-bottom:20px;"></div>
-      <div id="payment-errors" class="alert alert-error" style="display:none; margin-bottom:16px;"></div>
-      <button id="submit-payment" class="btn btn-primary btn-lg" style="width:100%; justify-content:center;">
+      <div id="payment-element" style="margin-bottom:20px;" data-stripe-payment-target="paymentElement"></div>
+      <div id="payment-errors" class="alert alert-error" style="display:none; margin-bottom:16px;" data-stripe-payment-target="errors"></div>
+      <button id="submit-payment" class="btn btn-primary btn-lg" style="width:100%; justify-content:center;"
+          data-stripe-payment-target="submit"
+          data-action="click->stripe-payment#submit">
           <%= t("payment.pay_button", amount: number_to_currency(@appointment.payment_amount_cents / 100.0,
             unit: "€", separator: ",", delimiter: " ", format: "%n %u")) %>
       </button>
@@ -53,44 +61,3 @@
 </div>
 
 <script src="https://js.stripe.com/v3/"></script>
-<%= javascript_tag nonce: true do %>
-  const stripe = Stripe('<%= @publishable_key %>');
-  const appearance = {
-    theme: 'stripe',
-    variables: {
-      colorPrimary: '#2C5F2E',
-      borderRadius: '8px',
-      fontFamily: 'DM Sans, system-ui, sans-serif'
-    }
-  };
-
-  const elements = stripe.elements({
-    clientSecret: '<%= @payment_intent.client_secret %>',
-    appearance
-  });
-
-  const paymentElement = elements.create('payment');
-  paymentElement.mount('#payment-element');
-
-  document.getElementById('submit-payment').addEventListener('click', async () => {
-    const btn = document.getElementById('submit-payment');
-    const errors = document.getElementById('payment-errors');
-    btn.disabled = true;
-    btn.textContent = '<%= j t("payment.processing") %>';
-    errors.style.display = 'none';
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: '<%= confirmation_appointments_url(appointment_id: @appointment.id) %>'
-      }
-    });
-
-    if (error) {
-      errors.textContent = error.message;
-      errors.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = '<%= j t("payment.retry_button") %>';
-    }
-  });
-<% end %>

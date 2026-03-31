@@ -12,8 +12,6 @@ export function registerServiceWorker() {
   navigator.serviceWorker
     .register('/service-worker.js', { scope: '/' })
     .then((registration) => {
-      console.log('Service Worker registered:', registration.scope);
-
       // Écoute les mises à jour du SW
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
@@ -66,74 +64,13 @@ navigator.serviceWorker.addEventListener('controllerchange', () => {
   // Page sera rechargée si SKIP_WAITING était triggered
 });
 
-// Install prompt — bannière "Ajouter à l'écran d'accueil"
-let deferredPrompt = null;
-
 export function setupInstallPrompt() {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Prévient le prompt automatique du navigateur
-    e.preventDefault();
-    deferredPrompt = e;
-
-    // Affiche notre prompt personnalisé
-    showInstallPrompt();
-  });
-
   window.addEventListener('appinstalled', () => {
-    console.log('Planexa installed');
-    deferredPrompt = null;
     // Envoyer un événement analytics
     if (window.gtag) {
       window.gtag('event', 'app_installed');
     }
   });
-}
-
-function showInstallPrompt() {
-  const banner = document.createElement('div');
-  banner.className = 'pwa-install-banner';
-  banner.innerHTML = `
-    <div class="pwa-install-content">
-      <div class="pwa-install-icon">
-        <img src="/icons/icon-192x192.png" alt="Planexa" />
-      </div>
-      <div class="pwa-install-text">
-        <h3>Installer Planexa</h3>
-        <p>Accédez à l'app directement depuis votre écran d'accueil</p>
-      </div>
-      <div class="pwa-install-actions">
-        <button class="pwa-install-btn-install">Installer</button>
-        <button class="pwa-install-btn-dismiss">Fermer</button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(banner);
-
-  const installBtn = banner.querySelector('.pwa-install-btn-install');
-  const dismissBtn = banner.querySelector('.pwa-install-btn-dismiss');
-
-  installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to install prompt: ${outcome}`);
-      deferredPrompt = null;
-      banner.remove();
-    }
-  });
-
-  dismissBtn.addEventListener('click', () => {
-    banner.remove();
-    // Ne pas re-montrer pendant 7 jours
-    localStorage.setItem('pwa-install-dismiss', Date.now().toString());
-  });
-
-  // Vérifier si l'utilisateur a déjà rejeté le prompt récemment
-  const lastDismiss = localStorage.getItem('pwa-install-dismiss');
-  if (lastDismiss && Date.now() - parseInt(lastDismiss) < 7 * 24 * 60 * 60 * 1000) {
-    banner.remove();
-  }
 }
 
 // Détection qu'on est en mode PWA (app installée)
@@ -181,10 +118,7 @@ export function setupPushNotifications() {
     registration.pushManager
       .getSubscription()
       .then((subscription) => {
-        if (subscription) {
-          console.log('Already subscribed to push');
-          return;
-        }
+        if (subscription) return;
         // S'abonner si pas déjà fait
         subscribeToPush(registration);
       });

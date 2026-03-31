@@ -17,7 +17,7 @@
 
   <div class="form-group">
     <%= f.label :email, "Adresse email", class: "form-label" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email",
+    <%= f.email_field :email, autocomplete: "email",
           value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
           class: "form-control", placeholder: "vous@exemple.fr" %>
   </div>

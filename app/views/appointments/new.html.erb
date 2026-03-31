@@ -5,7 +5,9 @@
   company_address = [ @company.address, @company.zip_code, @company.city ].compact.join(" ").strip
 %>
 
-<div style="max-width:1060px; margin:40px auto; padding:0 24px;">
+<div style="max-width:1060px; margin:40px auto; padding:0 24px;"
+  data-controller="appointment-summary"
+  data-appointment-summary-quote-value="<%= t("appointment_flow.new.quote") %>">
 
   <div style="margin-bottom:24px;">
     <h1 style="font-family:var(--font-display); margin-bottom:4px;">
@@ -64,6 +66,8 @@
                       <%= f.radio_button :service_type_id, st.id,
                             checked: @appointment.service_type_id == st.id,
                             data: {
+                              action: "change->appointment-summary#refresh",
+                              appointment_summary_target: "radio",
                               service_name: st.name,
                               service_duration: st.duration_minutes,
                               service_price: st.price_cents
@@ -127,15 +131,18 @@
         <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
           <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.service") %></span>
-            <strong id="summary-service-name" class="booking-summary-value responsive-break" style="text-align:right;"><%= selected_service&.name || "-" %></strong>
+                <strong id="summary-service-name" class="booking-summary-value responsive-break" style="text-align:right;"
+                  data-appointment-summary-target="name"><%= selected_service&.name || "-" %></strong>
           </div>
           <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.duration") %></span>
-            <strong id="summary-service-duration" class="booking-summary-value"><%= selected_service&.duration_minutes || "-" %> min</strong>
+                <strong id="summary-service-duration" class="booking-summary-value"
+                  data-appointment-summary-target="duration"><%= selected_service&.duration_minutes || "-" %> min</strong>
           </div>
           <div class="booking-summary-row" style="display:flex; justify-content:space-between; gap:12px;">
             <span style="color:var(--text-400);"><%= t("appointment_flow.shared.price") %></span>
-            <strong id="summary-service-price" class="booking-summary-value">
+                <strong id="summary-service-price" class="booking-summary-value"
+                  data-appointment-summary-target="price">
               <% if selected_service&.price_cents.to_i > 0 %>
                 <%= number_to_currency(selected_service.price_cents / 100.0, unit: "€", separator: ",", delimiter: " ", format: "%n %u") %>
               <% else %>
@@ -157,32 +164,3 @@
   <% end %>
 </div>
 
-<%= javascript_tag nonce: true do %>
-  (function() {
-    const radios = document.querySelectorAll("input[name='appointment[service_type_id]']");
-    if (!radios.length) return;
-
-    const nameEl = document.getElementById("summary-service-name");
-    const durationEl = document.getElementById("summary-service-duration");
-    const priceEl = document.getElementById("summary-service-price");
-
-    const formatPrice = (cents) => {
-      const amount = Number(cents || 0);
-      if (!amount) return "<%= j(t('appointment_flow.new.quote')) %>";
-      return (amount / 100).toFixed(2).replace(".", ",") + " €";
-    };
-
-    const updateSummary = (radio) => {
-      nameEl.textContent = radio.dataset.serviceName || "-";
-      durationEl.textContent = (radio.dataset.serviceDuration || "-") + " min";
-      priceEl.textContent = formatPrice(radio.dataset.servicePrice);
-    };
-
-    const selected = Array.from(radios).find((r) => r.checked) || radios[0];
-    if (selected) updateSummary(selected);
-
-    radios.forEach((radio) => {
-      radio.addEventListener("change", () => updateSummary(radio));
-    });
-  })();
-<% end %>

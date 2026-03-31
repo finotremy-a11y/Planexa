@@ -332,13 +332,17 @@
   </style>
 </head>
 <body>
-  <div class="company-layout">
+  <div class="company-layout"
+       data-controller="sidebar"
+       data-action="resize@window->sidebar#handleResize">
 
     <!-- Mobile sidebar overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"
+         data-sidebar-target="overlay"
+         data-action="click->sidebar#close"></div>
 
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" data-sidebar-target="panel">
       <div class="sidebar-logo">
         <div class="sidebar-logo-icon">⚙</div>
         <div>
@@ -458,7 +462,9 @@
     <!-- Main content -->
     <div class="main-content">
       <header class="topbar">
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">☰</button>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false"
+                data-sidebar-target="button"
+                data-action="click->sidebar#toggle">☰</button>
         <div class="topbar-breadcrumb">
           <%= t("company_layout.breadcrumb_prefix") %> /
           <strong><%= yield(:page_title) || controller_name.humanize %></strong>
@@ -526,30 +532,5 @@
       </div>
     </div>
   </div>
-
-  <%= javascript_tag nonce: true do %>
-    (function () {
-      function initSidebar() {
-        var btn = document.getElementById('hamburgerBtn');
-        var overlay = document.getElementById('sidebarOverlay');
-        var sidebar = document.querySelector('.sidebar');
-        if (!btn || !overlay || !sidebar) return;
-        if (btn.dataset.sidebarBound === 'true') return;
-        btn.dataset.sidebarBound = 'true';
-        btn.addEventListener('click', function () {
-          var open = sidebar.classList.toggle('open');
-          overlay.classList.toggle('active', open);
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        overlay.addEventListener('click', function () {
-          sidebar.classList.remove('open');
-          overlay.classList.remove('active');
-          btn.setAttribute('aria-expanded', 'false');
-        });
-      }
-      document.addEventListener('turbo:load', initSidebar);
-      document.addEventListener('DOMContentLoaded', initSidebar);
-    })();
-  <% end %>
 </body>
 </html>

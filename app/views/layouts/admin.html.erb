@@ -206,12 +206,16 @@
   </style>
 </head>
 <body>
-  <div class="admin-layout">
+  <div class="admin-layout"
+       data-controller="sidebar"
+       data-action="resize@window->sidebar#handleResize">
 
     <!-- Mobile sidebar overlay -->
-    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"
+         data-sidebar-target="overlay"
+         data-action="click->sidebar#close"></div>
 
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar" data-sidebar-target="panel">
       <div class="admin-logo">
         <div>
           <div class="admin-logo-name">Planexa</div>
@@ -271,7 +275,9 @@
 
     <div class="admin-main">
       <div class="admin-topbar">
-        <button class="hamburger-admin-btn" id="adminHamburgerBtn" aria-label="Menu" aria-expanded="false">☰</button>
+        <button class="hamburger-admin-btn" id="adminHamburgerBtn" aria-label="Menu" aria-expanded="false"
+                data-sidebar-target="button"
+                data-action="click->sidebar#toggle">☰</button>
         <span class="admin-topbar-title">
           <%= yield(:page_title) || controller_name.humanize %>
         </span>
@@ -301,30 +307,5 @@
     </div>
 
   </div>
-
-  <%= javascript_tag nonce: true do %>
-    (function () {
-      function initAdminSidebar() {
-        var btn = document.getElementById('adminHamburgerBtn');
-        var overlay = document.getElementById('adminSidebarOverlay');
-        var sidebar = document.querySelector('.admin-sidebar');
-        if (!btn || !overlay || !sidebar) return;
-        if (btn.dataset.sidebarBound === 'true') return;
-        btn.dataset.sidebarBound = 'true';
-        btn.addEventListener('click', function () {
-          var open = sidebar.classList.toggle('open');
-          overlay.classList.toggle('active', open);
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        overlay.addEventListener('click', function () {
-          sidebar.classList.remove('open');
-          overlay.classList.remove('active');
-          btn.setAttribute('aria-expanded', 'false');
-        });
-      }
-      document.addEventListener('turbo:load', initAdminSidebar);
-      document.addEventListener('DOMContentLoaded', initAdminSidebar);
-    })();
-  <% end %>
 </body>
 </html>
