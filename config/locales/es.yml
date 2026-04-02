@@ -337,6 +337,9 @@ es:
         default_subject: "Nuevo mensaje"
 
   activerecord:
+    errors:
+      messages:
+        taken: "ya ha sido utilizado"
     attributes:
       user:
         locale: "Idioma"

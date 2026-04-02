@@ -338,8 +338,12 @@ fr:
         default_subject: "Nouveau message"
 
   activerecord:
+    errors:
+      messages:
+        taken: "est déjà utilisé"
     attributes:
       user:
+        email: "E-mail"
         locale: "Langue"
         password: "Mot de passe"
         password_confirmation: "Confirmation du mot de passe"
