@@ -87,6 +87,7 @@ fr:
       flash:
         success: "Message envoye ! Nous vous repondrons sous 48h."
         error_required: "Veuillez remplir tous les champs obligatoires."
+        error_send: "Impossible d'envoyer votre message pour le moment. Veuillez reessayer dans quelques minutes."
       form:
         name_label: "Nom"
         name_placeholder: "Jean Dupont"

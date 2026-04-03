@@ -86,6 +86,7 @@ es:
       flash:
         success: "Mensaje enviado! Te responderemos en 48h."
         error_required: "Por favor, completa todos los campos obligatorios."
+        error_send: "No pudimos enviar tu mensaje ahora. Intentalo de nuevo en unos minutos."
       form:
         name_label: "Nombre"
         name_placeholder: "Juan Perez"
