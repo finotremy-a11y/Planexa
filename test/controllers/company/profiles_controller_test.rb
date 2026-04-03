@@ -111,7 +111,7 @@ class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "PATCH update avec logo met a jour logo_public_id" do
-    Tempfile.create(["company-logo", ".png"]) do |file|
+    Tempfile.create([ "company-logo", ".png" ]) do |file|
       file.binmode
       file.write(Base64.decode64(PNG_1X1_BASE64))
       file.rewind

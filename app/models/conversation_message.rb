@@ -72,11 +72,12 @@ class ConversationMessage < ApplicationRecord
   end
 
   def notify_recipient
-    recipient = if sender_id == conversation.client_user_id
-                  conversation.company.user
-                else
-                  conversation.client_user
-                end
+    recipient =
+      if sender_id == conversation.client_user_id
+        conversation.company.user
+      else
+        conversation.client_user
+      end
     return unless recipient
 
     sender_name = sender.full_name
