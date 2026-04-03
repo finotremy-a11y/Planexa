@@ -18,6 +18,41 @@
         <%= f.text_field :name, class: "form-control", placeholder: "Plomberie Dupont & Fils" %>
       </div>
 
+      <div class="form-group" data-controller="logo-preview">
+        <label class="form-label">Logo de l'entreprise</label>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+          <div style="width:72px; height:72px; border-radius:12px; overflow:hidden; border:1px solid var(--border-light);
+                      background:var(--gray-50); display:flex; align-items:center; justify-content:center;">
+            <%= image_tag (@company.logo_url.presence || ""),
+                  alt: "Logo #{@company.name}",
+                  data: { logo_preview_target: "image" },
+              style: "width:100%; height:100%; object-fit:cover; display:#{@company.logo_url.present? ? 'block' : 'none'};" %>
+
+            <div data-logo-preview-target="placeholder"
+                 style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+                font-size:1.15rem; color:var(--text-400); <%= @company.logo_url.present? ? 'display:none;' : '' %>">
+              <%= @company.name.to_s.first&.upcase || "?" %>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px; min-width:260px; flex:1;">
+            <%= f.file_field :logo,
+                  accept: "image/png,image/jpeg,image/webp,image/gif",
+                  data: { logo_preview_target: "input", action: "change->logo-preview#preview" },
+                  class: "form-control" %>
+            <span class="form-hint">Formats acceptes: JPG, PNG, WEBP, GIF (max 5 MB).</span>
+            <span class="form-hint">Apercu instantane active: l'image est recadree en carre automatiquement.</span>
+
+            <% if @company.logo_url.present? %>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <%= f.check_box :remove_logo, { data: { logo_preview_target: "remove", action: "change->logo-preview#toggleRemove" } }, "1", "0" %>
+                <span>Supprimer le logo actuel</span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <%= f.label :siret, "SIRET", class: "form-label" %>
         <%= f.text_field :siret, class: "form-control", placeholder: "14 chiffres", maxlength: 14 %>

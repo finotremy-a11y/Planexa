@@ -15,7 +15,14 @@ class Company::AppointmentsController < Company::BaseController
                              .includes(:employee, :service_type, :client_user)
   end
 
-  def show; end
+  def show
+    return unless @appointment.client_user
+
+    @conversation = Conversation.ensure_between!(
+      company: @company,
+      client_user: @appointment.client_user
+    )
+  end
 
   def new
     @appointment = @company.appointments.new

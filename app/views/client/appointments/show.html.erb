@@ -45,5 +45,17 @@
     </div>
   <% end %>
 
+  <% if @conversation %>
+    <div class="card" style="margin-bottom:18px;">
+      <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div>
+          <h2 style="margin:0 0 6px 0; font-size:1rem;">Besoin d'echanger avec l'entreprise ?</h2>
+          <p style="margin:0; color:var(--text-500); font-size:0.86rem;">Envoyez un message ou une photo directement depuis la messagerie.</p>
+        </div>
+        <%= link_to "Contacter l'entreprise", client_conversation_path(@conversation), class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
   <%= link_to "<- Retour a mes rendez-vous", client_appointments_path, class: "btn btn-secondary" %>
 </div>

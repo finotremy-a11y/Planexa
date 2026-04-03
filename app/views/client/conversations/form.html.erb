@@ -1,0 +1,22 @@
+<%= form_with model: [ :client, conversation, message ], id: "message_form", html: { multipart: true } do |f| %>
+  <% if message.errors.any? %>
+    <div class="alert alert-error" style="margin-bottom:10px;">
+      <%= message.errors.full_messages.to_sentence %>
+    </div>
+  <% end %>
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <%= f.text_area :body,
+          rows: 3,
+          placeholder: "Ecrivez votre message...",
+          style: "width:100%; border:1px solid var(--border); border-radius:10px; padding:10px; font:inherit;" %>
+
+    <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+      <div>
+        <%= f.label :photos, "Photos", style: "font-size:0.82rem; color:var(--text-500); display:block; margin-bottom:4px;" %>
+        <%= f.file_field :photos, multiple: true, accept: "image/*" %>
+      </div>
+      <%= f.submit "Envoyer", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>

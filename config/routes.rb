@@ -73,6 +73,9 @@ Rails.application.routes.draw do
   # ── Espace Client ────────────────────────────────────────────────────────
   namespace :client do
     root "dashboard#index"
+    resources :conversations, only: [ :index, :show ], path: "messagerie" do
+      resources :messages, only: [ :create ], controller: "conversation_messages"
+    end
     resources :appointments, only: [ :index, :show, :destroy ], path: "mes-rdv" do
       member do
         patch :cancel
@@ -91,6 +94,10 @@ Rails.application.routes.draw do
   # ── Espace Entreprise ─────────────────────────────────────────────────────
   namespace :company do
     root "dashboard#index"
+
+    resources :conversations, only: [ :index, :show ], path: "messagerie" do
+      resources :messages, only: [ :create ], controller: "conversation_messages"
+    end
 
     # Onboarding (étapes initiales après inscription)
     resource :onboarding, only: [ :show, :update ], path: "onboarding"

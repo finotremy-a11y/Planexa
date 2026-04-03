@@ -12,6 +12,11 @@ class Client::AppointmentsController < Client::BaseController
   end
 
   def show
+    @conversation = Conversation.ensure_between!(
+      company: @appointment.company,
+      client_user: current_user
+    )
+
     return unless @appointment.completed?
 
     @rebooking_url = new_appointment_path(

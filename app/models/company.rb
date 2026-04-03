@@ -21,6 +21,7 @@ class Company < ApplicationRecord
   has_many :api_webhooks,      dependent: :destroy
   has_many :company_closures,  dependent: :destroy
   has_many :medical_audit_logs, dependent: :destroy
+  has_many :conversations,     dependent: :destroy
 
   has_many :employee_skills, through: :employees
   has_many :skilled_service_types, through: :employee_skills, source: :service_type
@@ -138,7 +139,7 @@ class Company < ApplicationRecord
   def logo_url
     return nil unless logo_public_id.present?
     Cloudinary::Utils.cloudinary_url(logo_public_id,
-      width: 200, height: 200, crop: :fill, fetch_format: :auto)
+      width: 200, height: 200, crop: :fill, gravity: :auto, fetch_format: :auto)
   end
 
   # Returns the first near-term slot for a qualified employee.

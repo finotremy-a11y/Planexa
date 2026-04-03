@@ -33,6 +33,12 @@ class User < ApplicationRecord
                               dependent: :nullify
   has_many :push_subscriptions, class_name: "PushSubscription",
                               dependent: :destroy
+  has_many :client_conversations, class_name: "Conversation",
+                                  foreign_key: :client_user_id,
+                                  dependent: :destroy
+  has_many :sent_conversation_messages, class_name: "ConversationMessage",
+                                        foreign_key: :sender_id,
+                                        dependent: :nullify
 
   # ── Validations ────────────────────────────────────────────────────────────
   validates :first_name, :last_name, presence: true

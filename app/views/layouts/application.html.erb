@@ -319,6 +319,8 @@
             <% if current_user.client? %>
               <%= link_to t("nav.my_profile"), client_profile_path,
                     style: "display:block; padding:10px 16px; font-size:0.88rem; color:var(--text-700); text-decoration:none; border-bottom:1px solid var(--border-light);" %>
+              <%= link_to "Messagerie", client_conversations_path,
+                style: "display:block; padding:10px 16px; font-size:0.88rem; color:var(--text-700); text-decoration:none; border-bottom:1px solid var(--border-light);" %>
             <% end %>
             <%= link_to t("nav.sign_out"), destroy_user_session_path,
                   data: { turbo_method: :delete },

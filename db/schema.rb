@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_26_094128) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_03_143000) do
   create_schema "auth"
   create_schema "extensions"
   create_schema "graphql"
@@ -23,10 +23,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_26_094128) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "extensions.pg_stat_statements"
   enable_extension "extensions.pgcrypto"
+  enable_extension "extensions.unaccent"
   enable_extension "extensions.uuid-ossp"
   enable_extension "graphql.pg_graphql"
   enable_extension "pg_catalog.plpgsql"
-  enable_extension "unaccent"
   enable_extension "vault.supabase_vault"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -206,6 +206,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_26_094128) do
     t.integer "overbooking_limit_per_slot", default: 0, null: false
     t.integer "emergency_daily_capacity", default: 0, null: false
     t.index ["company_id"], name: "index_company_settings_on_company_id", unique: true
+  end
+
+  create_table "conversation_messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.bigint "sender_id", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id", "created_at"], name: "index_conversation_messages_on_conversation_id_and_created_at"
+    t.index ["conversation_id"], name: "index_conversation_messages_on_conversation_id"
+    t.index ["sender_id"], name: "index_conversation_messages_on_sender_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "client_user_id", null: false
+    t.datetime "client_last_read_at"
+    t.datetime "company_last_read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_user_id"], name: "index_conversations_on_client_user_id"
+    t.index ["company_id", "client_user_id"], name: "index_conversations_on_company_id_and_client_user_id", unique: true
+    t.index ["company_id"], name: "index_conversations_on_company_id"
   end
 
   create_table "discount_codes", force: :cascade do |t|
@@ -508,6 +531,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_26_094128) do
   add_foreign_key "companies", "users"
   add_foreign_key "company_closures", "companies"
   add_foreign_key "company_settings", "companies"
+  add_foreign_key "conversation_messages", "conversations"
+  add_foreign_key "conversation_messages", "users", column: "sender_id"
+  add_foreign_key "conversations", "companies"
+  add_foreign_key "conversations", "users", column: "client_user_id"
   add_foreign_key "discount_codes", "companies"
   add_foreign_key "discount_codes", "users", column: "client_user_id"
   add_foreign_key "employee_absences", "employees"

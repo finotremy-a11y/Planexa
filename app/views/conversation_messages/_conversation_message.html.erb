@@ -1,0 +1,23 @@
+<article id="conversation_message_<%= message.id %>"
+         style="padding:12px 14px; border:1px solid var(--border-light); border-radius:12px; background:white; margin-bottom:10px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:6px;">
+    <strong style="font-size:0.84rem; color:var(--text-700);"><%= message.sender.full_name %></strong>
+    <span style="font-size:0.74rem; color:var(--text-400);"><%= message.created_at.strftime("%d/%m/%Y %H:%M") %></span>
+  </div>
+
+  <% if message.body.present? %>
+    <p style="margin:0; color:var(--text-700); line-height:1.5; white-space:pre-wrap;"><%= message.body %></p>
+  <% end %>
+
+  <% if message.photos.attached? %>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+      <% message.photos.each do |photo| %>
+        <%= link_to photo, target: "_blank", rel: "noopener noreferrer" do %>
+          <%= image_tag photo,
+                alt: "Photo envoyee",
+                style: "width:120px; height:120px; object-fit:cover; border-radius:10px; border:1px solid var(--border-light);" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</article>

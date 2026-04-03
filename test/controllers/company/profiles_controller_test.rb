@@ -1,7 +1,10 @@
 require "test_helper"
+require "base64"
 
 class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
+
+  PNG_1X1_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9sX8sXkAAAAASUVORK5CYII="
 
   setup do
     @user    = create(:user, :company_admin)
@@ -105,5 +108,38 @@ class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
     }
     # Le controller modifie @company (scopé à current_user), pas other_company
     assert_not_equal "Hacked", other_company.reload.name
+  end
+
+  test "PATCH update avec logo met a jour logo_public_id" do
+    Tempfile.create(["company-logo", ".png"]) do |file|
+      file.binmode
+      file.write(Base64.decode64(PNG_1X1_BASE64))
+      file.rewind
+
+      uploaded_logo = Rack::Test::UploadedFile.new(file.path, "image/png")
+      Cloudinary::Uploader.expects(:upload).once.returns({ "public_id" => "planexa/companies/logo_123" })
+
+      patch company_profile_path, params: {
+        company: {
+          logo: uploaded_logo
+        }
+      }
+    end
+
+    assert_redirected_to company_profile_path
+    assert_equal "planexa/companies/logo_123", @company.reload.logo_public_id
+  end
+
+  test "PATCH update avec remove_logo supprime le logo" do
+    @company.update!(logo_public_id: "planexa/companies/existing_logo")
+
+    patch company_profile_path, params: {
+      company: {
+        remove_logo: "1"
+      }
+    }
+
+    assert_redirected_to company_profile_path
+    assert_nil @company.reload.logo_public_id
   end
 end

@@ -10,6 +10,7 @@
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <%= link_to t("nav.my_profile"), client_profile_path, class: "btn btn-secondary" %>
       <%= link_to t("client_dashboard.find_business"), search_path, class: "btn btn-primary" %>
+      <%= link_to "💬 Messagerie", client_conversations_path, class: "btn btn-secondary" %>
       <%= link_to "🧾 #{t("client_dashboard.my_invoices")}", client_invoices_path, class: "btn btn-secondary" %>
     </div>
   </div>

@@ -1,0 +1,50 @@
+<% content_for :title, "Messagerie" %>
+
+<div style="max-width:980px; margin:36px auto; padding:0 20px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; gap:10px; flex-wrap:wrap;">
+    <h1 style="margin:0;">Messagerie
+      <% if @total_unread_count.to_i.positive? %>
+        <span style="display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:22px; padding:0 6px; margin-left:8px; border-radius:999px; background:#dc2626; color:white; font-size:0.75rem; vertical-align:middle;"><%= @total_unread_count %></span>
+      <% end %>
+    </h1>
+    <%= link_to "← Retour au tableau de bord", client_root_path, class: "btn btn-secondary btn-sm" %>
+  </div>
+
+  <div class="card" style="padding:0; overflow:hidden;">
+    <div style="padding:14px 18px; border-bottom:1px solid var(--border-light); background:var(--surface-100);">
+      <strong>Conversations avec vos entreprises</strong>
+    </div>
+
+    <% if @conversations.empty? %>
+      <div style="padding:26px 18px; color:var(--text-500);">
+        Aucune conversation disponible pour le moment. Une conversation apparait apres un rendez-vous avec une entreprise.
+      </div>
+    <% else %>
+      <% @conversations.each do |conversation| %>
+        <% last_message = conversation.last_message %>
+        <% unread_count = conversation.unread_count_for(current_user) %>
+        <%= link_to client_conversation_path(conversation),
+              style: "display:block; padding:14px 18px; border-bottom:1px solid var(--border-light); text-decoration:none;" do %>
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+            <div>
+              <div style="font-weight:700; color:var(--text-900); display:flex; align-items:center; gap:8px;">
+                <span><%= conversation.title_for_client %></span>
+                <% if unread_count.positive? %>
+                  <span style="display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px; border-radius:999px; background:#dc2626; color:white; font-size:0.72rem;"><%= unread_count %></span>
+                <% end %>
+              </div>
+              <div style="font-size:0.85rem; color:var(--text-500); margin-top:2px;">
+                <%= last_message&.body&.truncate(70) || "Commencer la conversation" %>
+              </div>
+            </div>
+            <% if last_message %>
+              <span style="font-size:0.75rem; color:var(--text-400); white-space:nowrap;">
+                <%= last_message.created_at.strftime("%d/%m %H:%M") %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
