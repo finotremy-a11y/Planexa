@@ -316,6 +316,10 @@
                       background:white; border:1px solid var(--border-light);
                       border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
                       min-width:180px; z-index:200; overflow:hidden;">
+            <% if current_user.client? %>
+              <%= link_to t("nav.my_profile"), client_profile_path,
+                    style: "display:block; padding:10px 16px; font-size:0.88rem; color:var(--text-700); text-decoration:none; border-bottom:1px solid var(--border-light);" %>
+            <% end %>
             <%= link_to t("nav.sign_out"), destroy_user_session_path,
                   data: { turbo_method: :delete },
                   style: "display:block; padding:10px 16px; font-size:0.88rem; color:#dc2626; text-decoration:none;" %>

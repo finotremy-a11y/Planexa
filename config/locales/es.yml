@@ -25,6 +25,7 @@ es:
     contact: "Contacto"
     my_dashboard: "Mi panel"
     my_appointments: "Mis citas"
+    my_profile: "Mi perfil"
     admin: "Admin"
     sign_in: "Iniciar sesion"
     sign_out: "Cerrar sesion"
