@@ -66,7 +66,7 @@
           <!-- Actions -->
           <div style="display:flex; gap:8px; border-top:1px solid var(--border-light); padding-top:14px;">
             <%= link_to t("common.view"), company_employee_path(employee), class: "btn btn-secondary btn-sm" %>
-            <%= link_to t("employees.schedules_label"), company_employee_schedules_path(employee), class: "btn btn-ghost btn-sm" %>
+            <%= link_to "Horaires", company_employee_schedules_path(employee), class: "btn btn-ghost btn-sm" %>
             <%= link_to employee.active? ? t("employees.deactivate") : t("employees.activate"),
               toggle_active_company_employee_path(employee),
               data: { turbo_method: :patch },

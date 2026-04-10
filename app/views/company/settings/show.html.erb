@@ -198,9 +198,15 @@
           </label>
         </div>
 
-        <p style="font-size:0.78rem; color:var(--text-300); margin-top:8px;">
-          Le canal SMS necessite la configuration Twilio (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER).
-        </p>
+        <% if SmsService.credentials_present? %>
+          <p style="font-size:0.78rem; color:var(--green-700); margin-top:8px;">
+            Canal SMS configure (Twilio actif).
+          </p>
+        <% else %>
+          <p style="font-size:0.78rem; color:var(--text-300); margin-top:8px;">
+            Le canal SMS necessite la configuration Twilio (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER).
+          </p>
+        <% end %>
       </div>
     </div>
 

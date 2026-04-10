@@ -206,6 +206,9 @@ Rails.application.routes.draw do
     get "statistiques/export", to: "statistics#export_csv", as: :export_statistics_csv
   end
 
+  # Backward-compatible alias for old helper calls.
+  get "/company/onboarding/new", to: redirect("/company/onboarding"), as: :new_company_onboarding
+
   # ── Espace Admin ──────────────────────────────────────────────────────────
   namespace :admin do
     root "dashboard#index"

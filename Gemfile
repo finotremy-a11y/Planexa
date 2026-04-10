@@ -28,6 +28,7 @@ gem "resend", "~> 0.10"   # Resend API pour emails transactionnels
 gem "sidekiq", "~> 7.0"   # Background jobs
 gem "redis", "~> 5.0"     # Queue Sidekiq + cache
 gem "solid_cache"          # Required by :solid_cache_store in production
+gem "solid_cable"          # Required by Action Cable adapter :solid_cable in production
 
 # ── Fichiers & Images ─────────────────────────────────────────────────────────
 gem "cloudinary", "~> 2.0"        # Upload images
