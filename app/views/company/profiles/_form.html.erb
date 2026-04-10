@@ -85,7 +85,7 @@
         </div>
       </div>
 
-      <div data-controller="dependent_select" data-dependent_select-specialty-url-value="<%= company_profile_specialties_by_category_path %>">
+      <div data-controller="dependent-select" data-dependent-select-specialty-url-value="<%= company_profile_specialties_by_category_path %>">
         <div class="form-group">
           <%= f.label :professional_category, "Type d'activite", class: "form-label" %>
           <%= f.select :professional_category,
@@ -97,7 +97,7 @@
                 class: "form-control",
                 data: {
                   dependent_select_target: "categorySelect",
-                  action: "change->dependent_select#categoryChanged"
+                  action: "change->dependent-select#categoryChanged"
                 } %>
         </div>
 
