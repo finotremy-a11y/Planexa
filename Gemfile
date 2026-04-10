@@ -55,7 +55,7 @@ gem "groupdate"                 # Groupement temporel ActiveRecord
 gem "rack-cors"                 # CORS pour le widget embarquable
 gem "prawn",       "~> 2.5"    # Génération PDF factures
 gem "prawn-table", "~> 0.2"    # Tableaux Prawn pour les lignes de facture
-gem "web-push", "~> 2.1"       # Notifications push natives (PWA)
+gem "web-push", "~> 3.1"       # Notifications push natives (PWA)
 gem "rqrcode", "~> 3.1"        # QR code imprimable pour la fiche publique/widget
 gem "dotenv-rails", groups: [ :development, :test ]
 
