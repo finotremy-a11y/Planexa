@@ -22,7 +22,7 @@ gem "pundit"              # Autorisations par policy
 gem "stripe", "~> 18.0"   # Stripe Billing + Connect
 
 # ── Emails ────────────────────────────────────────────────────────────────────
-gem "resend", "~> 0.10"   # Resend API pour emails transactionnels
+gem "resend", "~> 1.1"    # Resend API pour emails transactionnels
 
 # ── Jobs & Cache ──────────────────────────────────────────────────────────────
 gem "sidekiq", "~> 7.0"   # Background jobs
