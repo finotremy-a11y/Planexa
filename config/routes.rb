@@ -177,7 +177,10 @@ Rails.application.routes.draw do
     resources :schedules, only: [ :index ], path: "planning"
 
     # Profil entreprise
-    resource :profile, only: [ :show, :edit, :update ], path: "profil"
+    resource :profile, only: [ :show, :edit, :update, :destroy ], path: "profil"
+
+    # Action personnalisée pour charger les spécialités
+    get "profile/specialties_by_category", to: "profiles#specialties_by_category", as: "profile_specialties_by_category"
 
     # Avis reçus
     resources :reviews, only: [ :index, :show, :destroy ], path: "avis"

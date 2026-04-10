@@ -697,6 +697,11 @@ fr:
     view_public_page: "Voir ma fiche publique ->"
     no_services: "Aucune prestation."
     add_service: "Ajouter ->"
+    delete_account: "Supprimer mon compte"
+    delete_account_confirmation: "Êtes-vous sûr ? Votre compte et toutes les données seront supprimés définitivement."
+    delete_account_warning: "Cette action ne peut pas être annulée."
+    danger_zone: "Zone de danger"
+    delete_account_irreversible: "Supprimer votre compte est une action <strong>irréversible</strong>."
 
   booking_groups:
     title: "Groupes de reservation"

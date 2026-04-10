@@ -173,5 +173,30 @@
               style: "width:100%; justify-content:center;" %>
       </div>
     </div>
+
+    <!-- 🚨 Danger Zone -->
+    <div class="card" style="border-color:var(--red-200); background:var(--red-50);">
+      <div class="card-header" style="border-color:var(--red-200);">
+        <h3 style="font-family:var(--font-display); font-size:1rem; color:var(--red-700);">
+          ⚠️ <%= t("profiles.danger_zone") %>
+        </h3>
+      </div>
+      <div class="card-body">
+        <p style="font-size:0.85rem; color:var(--text-600); margin-bottom:12px;">
+          <%= t("profiles.delete_account_irreversible").html_safe %>
+        </p>
+        <%= button_to t("profiles.delete_account"),
+              company_profile_path(@company),
+              method: :delete,
+              data: {
+                confirm: t("profiles.delete_account_confirmation")
+              },
+              class: "btn btn-danger btn-sm",
+              style: "width:100%; justify-content:center;" %>
+        <p style="font-size:0.75rem; color:var(--red-600); margin-top:8px;">
+          <%= t("profiles.delete_account_warning") %>
+        </p>
+      </div>
+    </div>
   </div>
 </div>

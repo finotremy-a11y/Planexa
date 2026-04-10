@@ -693,6 +693,11 @@ es:
     view_public_page: "Ver mi ficha publica ->"
     no_services: "Ninguna prestacion."
     add_service: "Agregar ->"
+    delete_account: "Eliminar mi cuenta"
+    delete_account_confirmation: "¿Estás seguro? Tu cuenta y todos los datos se eliminarán permanentemente."
+    delete_account_warning: "Esta acción no se puede deshacer."
+    danger_zone: "Zona de peligro"
+    delete_account_irreversible: "Eliminar tu cuenta es una acción <strong>irreversible</strong>."
 
   booking_groups:
     title: "Grupos de reserva"

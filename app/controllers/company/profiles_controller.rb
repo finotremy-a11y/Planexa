@@ -2,8 +2,13 @@ class Company::ProfilesController < Company::BaseController
   ALLOWED_LOGO_CONTENT_TYPES = %w[image/jpeg image/png image/webp image/gif].freeze
   MAX_LOGO_SIZE_BYTES = 5.megabytes
 
-  def show; end
-  def edit; end
+  def show
+    load_specialties_for_category
+  end
+
+  def edit
+    load_specialties_for_category
+  end
 
   def update
     @company.assign_attributes(company_params)
@@ -28,11 +33,38 @@ class Company::ProfilesController < Company::BaseController
       )
       redirect_to company_profile_path, notice: "Profil mis à jour."
     else
+      load_specialties_for_category
       render :edit, status: :unprocessable_entity
     end
   end
 
+  def specialties_by_category
+    specialties = if params[:category] == "healthcare_professional"
+      MedicalTaxonomy.specialties
+    else
+      StandardBusinessTaxonomy.specialties
+    end
+    render json: specialties
+  end
+
+  def destroy
+    if @company.destroy
+      sign_out(current_user)
+      redirect_to root_path, notice: "Votre compte a été supprimé."
+    else
+      redirect_to company_profile_path, alert: "Impossible de supprimer votre compte."
+    end
+  end
+
   private
+
+  def load_specialties_for_category
+    if @company.healthcare_professional?
+      @specialties = MedicalTaxonomy.specialties
+    else
+      @specialties = StandardBusinessTaxonomy.specialties
+    end
+  end
 
   def handle_logo_update
     return remove_logo! if remove_logo_param?

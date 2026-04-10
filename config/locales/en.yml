@@ -693,6 +693,11 @@ en:
     view_public_page: "View my public page ->"
     no_services: "No services."
     add_service: "Add ->"
+    delete_account: "Delete my account"
+    delete_account_confirmation: "Are you sure? Your account and all data will be deleted permanently."
+    delete_account_warning: "This action cannot be undone."
+    danger_zone: "Danger zone"
+    delete_account_irreversible: "Deleting your account is an <strong>irreversible</strong> action."
 
   booking_groups:
     title: "Booking groups"
