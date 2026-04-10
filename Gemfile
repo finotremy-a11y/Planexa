@@ -19,7 +19,7 @@ gem "devise"              # Authentification
 gem "pundit"              # Autorisations par policy
 
 # ── Paiements ─────────────────────────────────────────────────────────────────
-gem "stripe", "~> 18.0"   # Stripe Billing + Connect
+gem "stripe", "~> 19.0"   # Stripe Billing + Connect
 
 # ── Emails ────────────────────────────────────────────────────────────────────
 gem "resend", "~> 0.10"   # Resend API pour emails transactionnels
