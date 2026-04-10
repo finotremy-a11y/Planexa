@@ -92,7 +92,7 @@ class Company < ApplicationRecord
       {
         key: :schedules,
         completed: schedules_complete,
-        path: :company_schedules_path,
+        path: :company_employees_path,
         required: true
       },
       {

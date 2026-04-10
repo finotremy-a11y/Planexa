@@ -1,7 +1,10 @@
 class Company::SchedulesController < Company::BaseController
-  before_action :set_employee, only: [ :index, :create, :destroy ]
+  before_action :set_employee_for_index, only: :index
+  before_action :set_employee, only: [ :create, :destroy ]
 
   def index
+    return unless @employee
+
     @schedules  = @employee.schedules.recurring.order(:day_of_week)
     @exceptions = @employee.schedules.exceptions.order(:specific_date)
     @new_schedule = @employee.schedules.new
@@ -27,6 +30,22 @@ class Company::SchedulesController < Company::BaseController
   end
 
   private
+
+  def set_employee_for_index
+    if params[:employee_id].present?
+      @employee = @company.employees.find(params[:employee_id])
+      return
+    end
+
+    first_employee = @company.employees.active.order(:id).first
+
+    if first_employee
+      redirect_to company_employee_schedules_path(first_employee)
+    else
+      redirect_to company_employees_path,
+        alert: "Ajoutez d'abord un employe pour definir ses horaires."
+    end
+  end
 
   def set_employee
     @employee = @company.employees.find(params[:employee_id])

@@ -31,6 +31,14 @@ class Company::StripeConnectsController < Company::BaseController
     )
 
     redirect_to account_link.url, allow_other_host: true
+  rescue Stripe::InvalidRequestError => e
+    if e.message.include?("signed up for Connect")
+      redirect_to company_settings_path,
+        alert: "Stripe Connect n'est pas active sur votre compte Stripe. Activez Connect dans votre dashboard Stripe (Settings > Connect), puis reessayez."
+    else
+      redirect_to company_settings_path,
+        alert: "Erreur Stripe : #{e.message}"
+    end
   rescue Stripe::StripeError => e
     redirect_to company_settings_path,
       alert: "Erreur Stripe : #{e.message}"
