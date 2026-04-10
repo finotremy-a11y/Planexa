@@ -13,7 +13,7 @@ class Company::BaseController < ApplicationController
   def set_company
     @company = current_user.company
     if @company.nil?
-      redirect_to new_company_onboarding_path, notice: "Complétez d'abord votre profil entreprise."
+      redirect_to company_onboarding_path, notice: "Complétez d'abord votre profil entreprise."
     end
   end
 

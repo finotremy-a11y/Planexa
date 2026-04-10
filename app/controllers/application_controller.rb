@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     case resource.role
     when "admin"         then admin_root_path
-    when "company_admin" then company_root_path
+    when "company_admin" then resource.company.present? ? company_root_path : company_onboarding_path
     else                      client_root_path
     end
   end

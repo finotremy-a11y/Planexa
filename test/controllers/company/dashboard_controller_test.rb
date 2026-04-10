@@ -25,6 +25,15 @@ class Company::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  test "redirige vers l'onboarding si company_admin sans entreprise" do
+    sign_out @user
+    sign_in create(:user, :company_admin)
+
+    get company_root_path
+
+    assert_redirected_to company_onboarding_path
+  end
+
   # — Index —
   test "GET index retourne 200" do
     get company_root_path

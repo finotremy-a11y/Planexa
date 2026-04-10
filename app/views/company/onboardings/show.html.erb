@@ -1,0 +1,73 @@
+<% content_for :title, "Créer mon entreprise" %>
+<% content_for :page_title, "Créer mon entreprise" %>
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1>Créez votre profil entreprise</h1>
+    <p>Renseignez les informations minimales pour accéder au dashboard Planexa.</p>
+  </div>
+</div>
+
+<%= form_with model: @company, url: company_onboarding_path, method: :patch, local: true do |f| %>
+  <div class="card" style="max-width:720px;">
+    <div class="card-header">
+      <h3 style="font-family:var(--font-display);">Informations entreprise</h3>
+    </div>
+    <div class="card-body">
+      <% if @company.errors.any? %>
+        <div class="alert alert-error" style="margin-bottom:20px;">
+          <% @company.errors.full_messages.each do |message| %>
+            <div>• <%= message %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :name, "Nom de l'entreprise", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control", placeholder: "Cabinet Martin" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :siret, "SIRET", class: "form-label" %>
+        <%= f.text_field :siret, class: "form-control", placeholder: "14 chiffres", maxlength: 14 %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :address, "Adresse", class: "form-label" %>
+        <%= f.text_field :address, class: "form-control", placeholder: "12 rue de la Republique" %>
+      </div>
+
+      <div class="responsive-grid-2-1" style="display:grid; grid-template-columns:2fr 1fr; gap:12px;">
+        <div class="form-group">
+          <%= f.label :city, "Ville", class: "form-label" %>
+          <%= f.text_field :city, class: "form-control", placeholder: "Lyon" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :zip_code, "Code postal", class: "form-label" %>
+          <%= f.text_field :zip_code, class: "form-control", placeholder: "69001" %>
+        </div>
+      </div>
+
+      <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <%= f.label :phone, "Téléphone", class: "form-label" %>
+          <%= f.phone_field :phone, class: "form-control", placeholder: "04 78 00 00 00" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :website, "Site web (optionnel)", class: "form-label" %>
+          <%= f.url_field :website, class: "form-control", placeholder: "https://mon-site.fr" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :description, "Description (optionnel)", class: "form-label" %>
+        <%= f.text_area :description, class: "form-control", rows: 4,
+              placeholder: "Présentez votre activité, votre spécialité et votre zone d'intervention." %>
+      </div>
+    </div>
+
+    <div class="card-footer" style="display:flex; justify-content:flex-end;">
+      <%= f.submit "Créer mon entreprise", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
