@@ -25,7 +25,7 @@ gem "stripe", "~> 18.0"   # Stripe Billing + Connect
 gem "resend", "~> 0.10"   # Resend API pour emails transactionnels
 
 # ── Jobs & Cache ──────────────────────────────────────────────────────────────
-gem "sidekiq", "~> 7.0"   # Background jobs
+gem "sidekiq", "~> 8.0"   # Background jobs
 gem "redis", "~> 5.0"     # Queue Sidekiq + cache
 gem "solid_cache"          # Required by :solid_cache_store in production
 gem "solid_cable"          # Required by Action Cable adapter :solid_cable in production
