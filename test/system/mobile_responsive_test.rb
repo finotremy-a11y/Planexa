@@ -45,7 +45,7 @@ class MobileResponsiveTest < ApplicationSystemTestCase
   end
 
   test "new and edit appointment forms stay usable on mobile" do
-    [new_company_appointment_path, edit_company_appointment_path(@appointment)].each do |path|
+    [ new_company_appointment_path, edit_company_appointment_path(@appointment) ].each do |path|
       resize_to_viewport(*MOBILE_VIEWPORTS[:iphone])
       visit path
 
