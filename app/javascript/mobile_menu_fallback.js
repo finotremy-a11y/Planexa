@@ -3,6 +3,8 @@ const bindPublicNavbar = () => {
   const links = document.getElementById("navbarLinks")
   const overlay = document.getElementById("navbarMobileOverlay")
   if (!button || !links || !overlay || button.dataset.mobileFallbackBound) return
+  // Skip if Stimulus navbar controller is already wired to this button
+  if (button.dataset.action && button.dataset.action.includes("navbar#toggle")) return
 
   const setOpen = (open) => {
     links.classList.toggle("open", open)
