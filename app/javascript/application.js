@@ -2,6 +2,7 @@
 import "@hotwired/turbo-rails"
 import { initPWA } from "pwa/register"
 import "controllers"
+import "mobile_menu_fallback"
 import "chartkick"
 import "Chart.bundle"
 
