@@ -19,6 +19,7 @@ es:
     company_suspended: "Tu cuenta esta suspendida. Regulariza tu suscripcion."
     messages:
       blank: "no puede estar en blanco"
+      confirmation: "no coincide con %{attribute}"
 
   nav:
     search: "Buscar"
@@ -344,6 +345,9 @@ es:
         taken: "ya ha sido utilizado"
     attributes:
       user:
+        email: "Correo electronico"
+        password: "Contrasena"
+        password_confirmation: "Confirmacion de contrasena"
         locale: "Idioma"
 
   time:

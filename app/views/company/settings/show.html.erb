@@ -153,14 +153,14 @@
         </div>
       </div>
       <div class="card-body">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius); margin-bottom:10px;">
-          <div>
+        <div class="setting-toggle-row" style="margin-bottom:10px;">
+          <div class="setting-toggle-copy">
             <div style="font-weight:600; margin-bottom:4px;">Activer les rappels Email</div>
             <div style="font-size:0.82rem; color:var(--text-500);">
               Envoi d'un email de rappel aux clients 24h avant le rendez-vous.
             </div>
           </div>
-          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+          <label class="setting-toggle-control">
             <%= f.check_box :email_reminders_enabled,
                   style: "width:20px; height:20px; cursor:pointer;",
                   checked: @setting.email_reminders_enabled? %>
@@ -168,14 +168,14 @@
           </label>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius); margin-bottom:10px;">
-          <div>
+        <div class="setting-toggle-row" style="margin-bottom:10px;">
+          <div class="setting-toggle-copy">
             <div style="font-weight:600; margin-bottom:4px;">Activer les rappels SMS</div>
             <div style="font-size:0.82rem; color:var(--text-500);">
               Vos clients reçoivent un SMS J-1 avant leur RDV (si leur numéro est renseigné et qu'ils n'ont pas désactivé ces notifications).
             </div>
           </div>
-          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+          <label class="setting-toggle-control">
             <%= f.check_box :sms_reminders_enabled,
                   style: "width:20px; height:20px; cursor:pointer;",
                   checked: @setting.sms_reminders_enabled? %>
@@ -183,14 +183,14 @@
           </label>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:var(--gray-50); border-radius:var(--radius);">
-          <div>
+        <div class="setting-toggle-row">
+          <div class="setting-toggle-copy">
             <div style="font-weight:600; margin-bottom:4px;">Activer les rappels Push</div>
             <div style="font-size:0.82rem; color:var(--text-500);">
               Notification push envoyee aux clients ayant installe l'application web.
             </div>
           </div>
-          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+          <label class="setting-toggle-control">
             <%= f.check_box :push_reminders_enabled,
                   style: "width:20px; height:20px; cursor:pointer;",
                   checked: @setting.push_reminders_enabled? %>
@@ -235,14 +235,14 @@
                   class: "input", min: 0, max: 120, step: 5 %>
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--gray-50); border-radius:var(--radius);">
-            <div>
+          <div class="setting-toggle-row" style="padding:12px 14px;">
+            <div class="setting-toggle-copy">
               <div style="font-weight:600;">Autoriser le surbooking controle</div>
               <div style="font-size:0.82rem; color:var(--text-500); margin-top:2px;">
                 Permet d'accepter un chevauchement limite sur un creneau.
               </div>
             </div>
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex-shrink:0; margin-left:16px;">
+            <label class="setting-toggle-control">
               <%= f.check_box :allow_controlled_overbooking,
                     style: "width:20px; height:20px; cursor:pointer;" %>
               <span style="font-size:0.85rem; color:var(--text-500);">Active</span>
@@ -281,6 +281,7 @@
       </div>
       <div class="card-body" style="padding:0;">
         <% if @recent_reminder_deliveries.any? %>
+          <div class="responsive-table-scroll">
           <table style="width:100%; border-collapse:collapse;">
             <thead>
               <tr style="border-bottom:1px solid var(--border);">
@@ -315,6 +316,7 @@
               <% end %>
             </tbody>
           </table>
+          </div>
         <% else %>
           <div style="padding:14px; color:var(--text-400); font-size:0.84rem;">
             Aucune trace de rappel disponible pour le moment.
@@ -323,7 +325,7 @@
       </div>
     </div>
 
-    <div style="display:flex; justify-content:flex-end; gap:10px;">
+    <div class="responsive-form-actions" style="display:flex; justify-content:flex-end; gap:10px;">
       <%= f.submit "Sauvegarder les réglages", class: "btn btn-primary btn-lg" %>
     </div>
   </div>

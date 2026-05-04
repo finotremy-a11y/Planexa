@@ -3,6 +3,7 @@ require "test_helper"
 
 class PushSubscriptionTest < ActiveSupport::TestCase
   setup do
+    I18n.locale = :en
     @user    = create(:user)
     @company = create(:company)
     @subscription_params = {
@@ -13,6 +14,8 @@ class PushSubscriptionTest < ActiveSupport::TestCase
       p256dh: "test_p256dh_key"
     }
   end
+
+  teardown { I18n.locale = :fr }
 
   test "creates valid push subscription" do
     subscription = PushSubscription.new(@subscription_params)

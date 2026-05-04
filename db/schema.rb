@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_03_143000) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_04_143000) do
   create_schema "auth"
   create_schema "extensions"
   create_schema "graphql"
@@ -448,6 +448,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_143000) do
     t.index ["company_id", "name"], name: "index_service_types_on_company_id_and_name"
     t.index ["company_id"], name: "index_service_types_on_company_id"
     t.index ["deposit_kind"], name: "index_service_types_on_deposit_kind"
+  end
+
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.binary "channel", null: false
+    t.binary "payload", null: false
+    t.datetime "created_at", null: false
+    t.bigint "channel_hash", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "subscriptions", force: :cascade do |t|

@@ -8,11 +8,11 @@
     </div>
   </div>
 
-  <div class="responsive-aside-grid" style="display:grid; grid-template-columns:minmax(0, 1fr) 280px; gap:24px; align-items:start;">
+  <div class="responsive-split-layout">
     <div class="card">
       <div class="card-body">
         <%= form_with url: send_contact_path, method: :post, local: true do |form| %>
-          <div class="responsive-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label"><%= t("pages.contact.form.name_label") %> <span style="color:#dc2626;">*</span></label>
               <input type="text" name="name" class="form-control" placeholder="<%= t("pages.contact.form.name_placeholder") %>" required value="<%= user_signed_in? ? current_user.full_name : '' %>">
@@ -44,14 +44,14 @@
             <textarea name="message" class="form-control" rows="6" placeholder="<%= t("pages.contact.form.message_placeholder") %>" required></textarea>
           </div>
 
-          <div style="display:flex; justify-content:flex-end;">
+          <div class="responsive-form-actions" style="display:flex; justify-content:flex-end;">
             <button type="submit" class="btn btn-primary btn-lg"><%= t("pages.contact.form.submit") %></button>
           </div>
         <% end %>
       </div>
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:16px;">
+    <div class="responsive-sidebar-stack">
       <div class="card">
         <div class="card-body">
           <h3 style="font-family:var(--font-display); font-size:1rem; margin-bottom:16px;"><%= t("pages.contact.info.title") %></h3>
@@ -60,7 +60,7 @@
               <span style="font-size:1.1rem;">📧</span>
               <div>
                 <div style="font-weight:500; margin-bottom:2px;"><%= t("pages.contact.info.email_label") %></div>
-                <a href="mailto:<%= legal_contact_email %>" style="color:var(--green-700);"><%= legal_contact_email %></a>
+                <a href="mailto:<%= legal_contact_email %>" class="responsive-break" style="color:var(--green-700); display:inline-block;"><%= legal_contact_email %></a>
               </div>
             </div>
             <div style="display:flex; gap:10px; align-items:flex-start;">
@@ -74,7 +74,7 @@
               <span style="font-size:1.1rem;">📍</span>
               <div>
                 <div style="font-weight:500; margin-bottom:2px;"><%= t("pages.contact.info.address_label") %></div>
-                <div style="color:var(--text-500);"><%= legal_owner_address %></div>
+                <div class="responsive-break" style="color:var(--text-500);"><%= legal_owner_address %></div>
               </div>
             </div>
           </div>

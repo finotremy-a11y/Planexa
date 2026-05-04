@@ -1,6 +1,9 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  setup    { I18n.locale = :en }
+  teardown { I18n.locale = :fr }
+
   # — Validations —
   test "invalid without first_name" do
     user = build(:user, first_name: "")

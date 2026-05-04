@@ -1,8 +1,8 @@
 <% content_for :title, t("appointments.title") %>
 <% content_for :page_title, t("appointments.title") %>
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+<div class="mobile-action-bar" style="margin-bottom:24px;">
+  <div class="mobile-action-group">
     <%= link_to t("appointments.list_view"), company_appointments_path, class: "btn btn-secondary btn-sm #{controller.action_name == 'index' ? 'active' : ''}" %>
     <%= link_to t("appointments.calendar_view"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm" %>
     <%= link_to t("appointments.unassigned_view"), unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
@@ -12,8 +12,8 @@
 
 <%# Search / filters %>
 <%= search_form_for @q, url: company_appointments_path, html: { class: "search-form card", style: "margin-bottom:20px; padding:16px;" } do |f| %>
-  <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
-    <div>
+  <div class="filter-toolbar">
+    <div class="filter-field">
       <%= f.label :status_eq, t("common.status"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.select :status_eq,
         [[t("common.all"), nil], [t("statuses.pending"), "pending"], [t("statuses.confirmed"), "confirmed"],
@@ -21,15 +21,15 @@
             { include_blank: false },
             class: "form-select form-select-sm" %>
     </div>
-    <div>
+    <div class="filter-field">
       <%= f.label :scheduled_at_gteq, t("appointments.from_date"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.date_field :scheduled_at_gteq, class: "form-control form-control-sm" %>
     </div>
-    <div>
+    <div class="filter-field">
       <%= f.label :scheduled_at_lteq, t("appointments.to_date"), style: "font-size:0.8rem; color:var(--text-400); display:block; margin-bottom:4px;" %>
       <%= f.date_field :scheduled_at_lteq, class: "form-control form-control-sm" %>
     </div>
-    <div>
+    <div class="filter-actions">
       <%= f.submit t("common.filter"), class: "btn btn-secondary btn-sm" %>
       <%= link_to t("common.reset"), company_appointments_path, class: "btn btn-link btn-sm" %>
     </div>
@@ -37,7 +37,8 @@
 <% end %>
 
 <% if @appointments.any? %>
-  <div class="card" style="overflow:hidden;">
+  <div class="card responsive-table-card">
+    <div class="responsive-table-scroll">
     <table class="table" style="margin:0;">
       <thead>
         <tr>
@@ -99,6 +100,7 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   </div>
 
   <div style="margin-top:16px;">

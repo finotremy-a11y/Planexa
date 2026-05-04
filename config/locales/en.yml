@@ -19,6 +19,7 @@ en:
     company_suspended: "Your account is suspended. Please regularize your subscription."
     messages:
       blank: "can't be blank"
+      confirmation: "doesn't match %{attribute}"
 
   nav:
     search: "Search"
@@ -344,6 +345,9 @@ en:
         taken: "has already been taken"
     attributes:
       user:
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
         locale: "Language"
 
   time:

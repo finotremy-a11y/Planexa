@@ -73,7 +73,7 @@
   <div class="responsive-form-actions" style="display:flex; gap:8px;">
     <%= f.submit appointment.new_record? ? t("appointments.create_button") : t("common.save"),
           class: "btn btn-primary" %>
-        <%= link_to t("common.cancel"),
+    <%= link_to t("common.cancel"),
           appointment.new_record? ? company_appointments_path : company_appointment_path(appointment),
           class: "btn btn-secondary" %>
   </div>

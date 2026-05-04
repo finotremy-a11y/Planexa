@@ -28,7 +28,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST contact envoie un email" do
-    assert_enqueued_emails 1 do
+    assert_emails 1 do
       post send_contact_path, params: {
         name: "Jean Dupont",
         email: "jean@example.fr",

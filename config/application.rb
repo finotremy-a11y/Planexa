@@ -47,6 +47,9 @@ module PlanifyPro
     config.i18n.default_locale = :fr
     config.i18n.fallbacks = [ :fr ]
 
+    # Propshaft needs explicit JavaScript load path for importmap pinned files.
+    config.assets.paths << Rails.root.join("app/javascript")
+
     # Rate limiting via Rack::Attack
     config.middleware.use Rack::Attack
   end

@@ -98,23 +98,23 @@ class Company::DashboardControllerTest < ActionDispatch::IntegrationTest
                                        deposit_value: 1500)
 
     reconfirmed = create(:appointment, company: @company, service_type: standard_service,
-                                       status: :completed, scheduled_at: 5.days.ago,
-                                       reconfirmed_at: 6.days.ago)
+                                       status: :completed, scheduled_at: Time.current.beginning_of_month + 2.hours,
+                                       reconfirmed_at: Time.current.beginning_of_month + 1.hour)
 
     deposit_paid = create(:appointment, company: @company, service_type: deposit_service,
-                                        status: :completed, scheduled_at: 4.days.ago)
+                                        status: :completed, scheduled_at: Time.current.beginning_of_month + 3.hours)
     create(:payment, :succeeded, appointment: deposit_paid, company: @company,
                                 client_user: create(:user, role: :client))
 
     reminded = create(:appointment, company: @company, service_type: standard_service,
-                                    status: :confirmed, scheduled_at: 3.days.ago)
+                                    status: :confirmed, scheduled_at: Time.current.beginning_of_month + 4.hours)
     ReminderDelivery.create!(company: @company, appointment: reminded, channel: :email, status: :sent)
 
     create(:appointment, company: @company, service_type: standard_service,
-                         status: :completed, scheduled_at: 2.days.ago)
+                         status: :completed, scheduled_at: Time.current.beginning_of_month + 5.hours)
     cancelled_with_signal = create(:appointment, company: @company, service_type: standard_service,
-                                                 status: :cancelled, scheduled_at: 1.day.ago,
-                                                 reconfirmed_at: 2.days.ago)
+                                                 status: :cancelled, scheduled_at: Time.current.beginning_of_month + 6.hours,
+                                                 reconfirmed_at: Time.current.beginning_of_month + 5.hours)
     ReminderDelivery.create!(company: @company, appointment: cancelled_with_signal, channel: :email, status: :sent)
 
     get company_root_path

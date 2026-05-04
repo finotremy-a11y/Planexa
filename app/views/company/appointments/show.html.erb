@@ -1,33 +1,33 @@
 <% content_for :title, t("appointments.show_title", id: @appointment.id) %>
 <% content_for :page_title, t("appointments.show_title", id: @appointment.id) %>
 
-<div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+<div class="detail-stack">
   <%# Main detail card %>
-  <div class="card" style="flex:1; min-width:300px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+  <div class="card detail-main-card">
+    <div class="mobile-action-bar" style="margin-bottom:20px;">
       <h3 style="margin:0;"><%= t("common.details") %></h3>
       <span class="badge badge-<%= @appointment.status %>">
         <%= @appointment.status.humanize %>
       </span>
     </div>
 
-    <dl style="display:grid; grid-template-columns:auto 1fr; gap:8px 24px;">
-      <dt style="color:var(--text-400); white-space:nowrap;"><%= t("common.service_type") %></dt>
+    <dl class="detail-definition-list">
+      <dt><%= t("common.service_type") %></dt>
       <dd><strong><%= @appointment.service_type.name %></strong></dd>
 
-      <dt style="color:var(--text-400);"><%= t("common.date") %></dt>
+      <dt><%= t("common.date") %></dt>
       <dd><%= @appointment.scheduled_at.strftime("%A %d %B %Y") %></dd>
 
-      <dt style="color:var(--text-400);"><%= t("appointments.time_label") %></dt>
+      <dt><%= t("appointments.time_label") %></dt>
       <dd><%= @appointment.scheduled_at.strftime("%H:%M") %> → <%= @appointment.ends_at.strftime("%H:%M") %></dd>
 
-      <dt style="color:var(--text-400);"><%= t("common.duration") %></dt>
+      <dt><%= t("common.duration") %></dt>
       <dd><%= @appointment.duration_minutes %> min</dd>
 
-      <dt style="color:var(--text-400);"><%= t("appointments.source") %></dt>
+      <dt><%= t("appointments.source") %></dt>
       <dd><%= @appointment.online? ? t("appointments.online_booking") : t("appointments.manual_creation") %></dd>
 
-      <dt style="color:var(--text-400);"><%= t("appointments.reconfirmation") %></dt>
+      <dt><%= t("appointments.reconfirmation") %></dt>
       <dd>
         <% if @appointment.reconfirmed? %>
           <span class="badge badge-green"><%= t("appointments.reconfirmation_reconfirmed") %></span>
@@ -42,7 +42,7 @@
       </dd>
 
       <% if @appointment.urgent? %>
-        <dt style="color:var(--text-400);"><%= t("common.urgency") %></dt>
+        <dt><%= t("common.urgency") %></dt>
         <dd><span class="badge badge-danger"><%= t("appointments.urgent_label") %></span></dd>
       <% end %>
     </dl>
@@ -79,7 +79,7 @@
   </div>
 
   <%# Right column: client + employee %>
-  <div style="display:flex; flex-direction:column; gap:16px; min-width:260px; max-width:320px;">
+  <div class="detail-side-column">
     <%# Client %>
     <div class="card">
       <h4 style="margin-bottom:12px;"><%= t("common.client") %></h4>
@@ -105,7 +105,7 @@
         <%# Quick assign form %>
         <% if @company.employees.active.any? %>
           <%= form_with url: assign_employee_company_appointment_path(@appointment), method: :patch, local: false do |f| %>
-            <div style="display:flex; gap:8px; align-items:center;">
+            <div class="mobile-action-group" style="align-items:center;">
               <%= f.select :employee_id,
                     @company.employees.active.map { |e| [e.full_name, e.id] },
                     { prompt: t("common.choose") },

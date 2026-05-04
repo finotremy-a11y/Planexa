@@ -1,8 +1,8 @@
 <% content_for :title, t("appointments.calendar_title") %>
 <% content_for :page_title, t("appointments.calendar_subtitle") %>
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-  <div style="display:flex; gap:8px;">
+<div class="mobile-action-bar" style="margin-bottom:20px;">
+  <div class="mobile-action-group">
     <%= link_to t("appointments.list_view"), company_appointments_path, class: "btn btn-secondary btn-sm" %>
     <%= link_to t("appointments.calendar_view"), calendar_company_appointments_path, class: "btn btn-secondary btn-sm active" %>
     <%= link_to t("appointments.unassigned_view"), unassigned_company_appointments_path, class: "btn btn-secondary btn-sm" %>
@@ -16,11 +16,11 @@
 <% last_day  = today.end_of_month %>
 <% appts_by_date = @appointments.group_by { |a| a.scheduled_at.to_date } %>
 
-<div class="card" style="padding:0; overflow:hidden;">
+<div class="card calendar-shell" style="padding:0;">
   <%# Month header %>
-  <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border);">
+  <div class="calendar-header" style="padding:16px 24px; border-bottom:1px solid var(--border);">
     <h3 style="margin:0; text-transform:capitalize;"><%= today.strftime("%B %Y") %></h3>
-    <div style="display:flex; gap:8px;">
+    <div class="mobile-action-group calendar-toolbar">
       <% prev_month = today - 1.month %>
       <% next_month = today + 1.month %>
       <%= link_to "‹", calendar_company_appointments_path(month: prev_month.month, year: prev_month.year),
@@ -32,9 +32,9 @@
   </div>
 
   <%# Day-name headers %>
-  <div style="display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--border);">
+  <div class="calendar-weekdays" style="border-bottom:1px solid var(--border);">
     <% [t("employees.day_names")[1], t("employees.day_names")[2], t("employees.day_names")[3], t("employees.day_names")[4], t("employees.day_names")[5], t("employees.day_names")[6], t("employees.day_names")[0]].each do |day| %>
-      <div style="text-align:center; padding:8px 4px; font-size:0.78rem; font-weight:600; color:var(--text-400); text-transform:uppercase;">
+      <div class="calendar-weekday">
         <%= day %>
       </div>
     <% end %>
@@ -43,27 +43,31 @@
   <%# Calendar cells %>
   <% start_cell = first_day.beginning_of_week(:monday) %>
   <% end_cell   = last_day.end_of_week(:monday) %>
-  <div style="display:grid; grid-template-columns:repeat(7,1fr);">
+  <div class="calendar-grid">
     <% (start_cell..end_cell).each do |date| %>
       <% day_appts = appts_by_date[date] || [] %>
-      <div style="min-height:80px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:6px;
-                  background:<%= date == today ? 'rgba(5,150,105,0.04)' : 'transparent' %>;
-                  opacity:<%= date.month == today.month ? '1' : '0.4' %>;">
-        <div style="font-size:0.78rem; font-weight:<%= date == today ? '700' : '400' %>;
-                    color:<%= date == today ? 'var(--primary)' : 'var(--text-700)' %>; margin-bottom:4px;">
+      <% cell_classes = ["calendar-cell"] %>
+      <% cell_classes << "is-today" if date == today %>
+      <% cell_classes << "is-outside-month" if date.month != today.month %>
+      <div class="<%= cell_classes.join(' ') %>">
+        <div class="calendar-day-number <%= 'is-today' if date == today %>">
           <%= date.day %>
         </div>
+        <div class="calendar-event-list">
         <% day_appts.first(3).each do |appt| %>
           <%= link_to company_appointment_path(appt),
-                style: "display:block; font-size:0.72rem; padding:2px 4px; border-radius:3px; margin-bottom:2px;
-                        background:var(--primary-100,#dcfce7); color:var(--primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;",
+                class: "calendar-event-link",
                 title: "#{appt.service_type.name} — #{appt.scheduled_at.strftime('%H:%M')}" do %>
             <%= appt.scheduled_at.strftime("%H:%M") %> <%= appt.service_type.name %>
           <% end %>
         <% end %>
         <% if day_appts.size > 3 %>
-          <span style="font-size:0.7rem; color:var(--text-400);">+<%= day_appts.size - 3 %> <%= t("common.more") %></span>
+          <span class="calendar-event-more" style="font-size:0.7rem; color:var(--text-500);">+<%= day_appts.size - 3 %> <%= t("common.more") %></span>
         <% end %>
+        <% if day_appts.any? %>
+          <span class="calendar-event-count"><%= pluralize(day_appts.size, 'RDV', 'RDV') %></span>
+        <% end %>
+        </div>
       </div>
     <% end %>
   </div>
@@ -75,7 +79,7 @@
   <div class="card" style="margin-top:24px;">
     <h4 style="margin-bottom:16px;"><%= t("appointments.today_appointments") %> (<%= todays_appts.size %>)</h4>
     <% todays_appts.sort_by(&:scheduled_at).each do |appt| %>
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+      <div class="mobile-action-bar" style="padding:10px 0; border-bottom:1px solid var(--border);">
         <div>
           <strong><%= appt.scheduled_at.strftime("%H:%M") %></strong>
           — <%= appt.service_type.name %>

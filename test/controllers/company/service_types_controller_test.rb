@@ -40,7 +40,7 @@ class Company::ServiceTypesControllerTest < ActionDispatch::IntegrationTest
   test "POST quick_create ajoute jusqu'a 3 templates" do
     assert_difference("ServiceType.count", 3) do
       post quick_create_company_service_types_path, params: {
-        template_keys: [ "consultation_express", "session_standard", "pack_premium" ]
+        template_keys: [ "prestation_rapide", "prestation_standard", "prestation_premium" ]
       }
     end
 
@@ -48,11 +48,11 @@ class Company::ServiceTypesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST quick_create ignore les templates deja crees" do
-    create(:service_type, company: @company, name: "Consultation express")
+    create(:service_type, company: @company, name: "Prestation rapide")
 
     assert_difference("ServiceType.count", 1) do
       post quick_create_company_service_types_path, params: {
-        template_keys: [ "consultation_express", "session_standard" ]
+        template_keys: [ "prestation_rapide", "prestation_standard" ]
       }
     end
 

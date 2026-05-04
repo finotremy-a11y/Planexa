@@ -170,7 +170,7 @@
       background: var(--border);
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1024px) {
       .auth-layout {
         grid-template-columns: 1fr;
       }
@@ -181,6 +181,16 @@
 
       .auth-form-panel {
         padding: 40px 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .auth-form-panel {
+        padding: 24px 16px;
+      }
+
+      .auth-form-header h1 {
+        font-size: 1.65rem;
       }
     }
   </style>

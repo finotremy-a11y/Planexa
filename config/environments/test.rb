@@ -51,6 +51,10 @@ Rails.application.configure do
   # Use Supabase in test env — skip schema reprepare
   config.active_record.maintain_test_schema = false
 
+  # Disable automatic Turbo cable stream connection assertions on `visit`
+  # because ActionCable is not required for these responsive UI tests.
+  config.turbo.test_connect_after_actions = []
+
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 end
