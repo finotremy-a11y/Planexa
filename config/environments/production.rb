@@ -3,6 +3,10 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  if ENV["DATABASE_URL"].blank?
+    raise "DATABASE_URL is required in production"
+  end
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
