@@ -50,7 +50,7 @@
 
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload", preload_links_header: false %>
   <%= javascript_importmap_tags %>
   <style>
     .navbar {
@@ -386,38 +386,6 @@
       <span><%= t("footer.made_in_france") %></span>
     </div>
   </footer>
-
-  <%= javascript_tag nonce: true do %>
-    const initNavbarMobileFallback = () => {
-      const button = document.getElementById("navbarHamburger");
-      const links = document.getElementById("navbarLinks");
-      const overlay = document.getElementById("navbarMobileOverlay");
-      if (!button || !links || !overlay || button.dataset.mobileFallbackBound) return;
-
-      const setOpen = (open) => {
-        links.classList.toggle("open", open);
-        overlay.classList.toggle("open", open);
-        document.body.classList.toggle("navbar-menu-open", open);
-        button.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-
-      button.addEventListener("click", (event) => {
-        event.stopPropagation();
-        setOpen(!links.classList.contains("open"));
-      });
-
-      overlay.addEventListener("click", () => setOpen(false));
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 768) setOpen(false);
-      });
-
-      button.dataset.mobileFallbackBound = "1";
-    };
-
-    initNavbarMobileFallback();
-    document.addEventListener("turbo:load", initNavbarMobileFallback);
-  <% end %>
 
 </body>
 </html>
