@@ -3,7 +3,8 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  if ENV["DATABASE_URL"].blank?
+  building_assets = ENV["SECRET_KEY_BASE_DUMMY"].present?
+  if ENV["DATABASE_URL"].blank? && !building_assets
     raise "DATABASE_URL is required in production"
   end
 
