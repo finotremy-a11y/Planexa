@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Client::AppointmentsController < Client::BaseController
-  before_action :set_appointment, only: [ :show, :destroy ]
+  before_action :set_appointment, only: [ :show ]
+  before_action :set_cancellable_appointment, only: [ :destroy, :cancel ]
 
   def index
     @pagy, @appointments = pagy(
@@ -26,6 +27,11 @@ class Client::AppointmentsController < Client::BaseController
   end
 
   def destroy
+    unless @appointment
+      redirect_to client_appointments_path, alert: "Rendez-vous introuvable."
+      return
+    end
+
     if @appointment.pending? || @appointment.confirmed?
       @appointment.update!(status: :cancelled, cancellation_reason: "Annulé par le client")
       ClientMailer.appointment_cancelled(@appointment).deliver_later
@@ -43,5 +49,9 @@ class Client::AppointmentsController < Client::BaseController
 
   def set_appointment
     @appointment = current_user.client_appointments.find(params[:id])
+  end
+
+  def set_cancellable_appointment
+    @appointment = current_user.client_appointments.find_by(id: params[:id])
   end
 end
