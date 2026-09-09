@@ -8,8 +8,8 @@ class ContactMailer < ApplicationMailer
     @message = message
 
     mail(
-      to: ENV.fetch("EMAIL_CONTACT", "contact@planexa.fr"),
-      from: ENV.fetch("MAIL_FROM", "Planexa <noreply@planexa.fr>"),
+      to: ENV.fetch("EMAIL_CONTACT", "contact@dreamagenda.fr"),
+      from: ENV.fetch("MAIL_FROM", "DreamAgenda <noreply@dreamagenda.fr>"),
       reply_to: email,
       subject: t("mailers.contact.new_message.subject", subject: subject.presence || t("mailers.contact.new_message.default_subject"))
     )

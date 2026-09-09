@@ -43,5 +43,5 @@ Rails.configuration.vapid = {
   private_key: vapid_key_private,
   subject: ENV.fetch('VAPID_SUBJECT', nil).presence ||
     Rails.application.credentials.dig(:vapid, :subject).presence ||
-    "mailto:support@planexa.fr"
+    "mailto:support@dreamagenda.fr"
 }

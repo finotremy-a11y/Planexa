@@ -26,7 +26,7 @@ Devise.setup do |config|
   # with default "from" parameter.
   config.mailer_sender = ENV["DEVISE_MAILER_SENDER"].presence ||
     ENV["MAIL_FROM"].presence ||
-    "Planexa <onboarding@resend.dev>"
+    "DreamAgenda <onboarding@resend.dev>"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'

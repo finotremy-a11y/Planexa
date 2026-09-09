@@ -1,4 +1,4 @@
-SitemapGenerator::Sitemap.default_host = "https://planexa.fr"
+SitemapGenerator::Sitemap.default_host = "https://dreamagenda.fr"
 
 SitemapGenerator::Sitemap.create do
   # Pages statiques

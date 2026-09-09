@@ -1,7 +1,7 @@
 # Audit de faisabilite medecins / docteurs (G1)
 
 Date: 24/03/2026
-Auteur: Produit / Tech Planexa
+Auteur: Produit / Tech DreamAgenda
 
 ## 1) Perimetre et hypothese
 

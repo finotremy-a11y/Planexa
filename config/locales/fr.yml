@@ -1,7 +1,7 @@
 fr:
   seo:
-    default_meta_description: "Planexa - La plateforme de gestion de rendez-vous pour les artisans et entreprises de services."
-    default_title: "Planexa - Gestion de rendez-vous pour professionnels"
+    default_meta_description: "DreamAgenda - La plateforme de gestion de rendez-vous pour les artisans et entreprises de services."
+    default_title: "DreamAgenda - Gestion de rendez-vous pour professionnels"
 
   locale:
     changed: "Langue mise a jour."
@@ -41,12 +41,12 @@ fr:
     privacy: "Confidentialite"
     create_company_account: "Creer un compte entreprise"
     copyright: "© %{year} %{business} - Tous droits reserves"
-    made_in_france: "Fait avec soin en France"
+    made_in_france: "Fait avec soin en Aveyron"
 
   home:
     meta:
-      title: "Planexa - Gestion de rendez-vous pour professionnels"
-      description: "Planexa - Gerez vos rendez-vous en ligne. Planning intelligent, reservations clients, gestion d'equipe. 14 jours d'essai gratuit pour les artisans et entreprises de services."
+      title: "DreamAgenda - Gestion de rendez-vous pour professionnels"
+      description: "DreamAgenda - Gerez vos rendez-vous en ligne. Planning intelligent, reservations clients, gestion d'equipe. 14 jours d'essai gratuit pour les artisans et entreprises de services."
     hero:
       badge: "Pour les artisans et professionnels de service"
       title_html: "Gerez vos rendez-vous<br>comme un professionnel"
@@ -54,7 +54,7 @@ fr:
       cta_trial: "Essayer 14 jours gratuit"
       cta_search: "Trouver une entreprise"
     features:
-      heading: "Pourquoi choisir Planexa ?"
+      heading: "Pourquoi choisir DreamAgenda ?"
       subheading: "Une solution pensee pour les artisans et entreprises de services qui veulent gagner en efficacite."
       items:
         planning:
@@ -75,6 +75,7 @@ fr:
         analytics:
           title: "Suivi en temps reel"
           description: "Tableau de bord avec toutes vos statistiques et indicateurs."
+      made_in_france: "Un agenda francais et local, concu et cree en Aveyron."
     bottom_cta:
       heading: "Pret a commencer ?"
       subheading: "49 EUR / mois - 14 jours d'essai gratuit - Sans engagement"
@@ -117,7 +118,7 @@ fr:
   search:
     meta:
       title: "Rechercher une entreprise"
-      description: "Trouvez un artisan ou professionnel de service pres de chez vous. Reservez en ligne en quelques clics sur Planexa."
+      description: "Trouvez un artisan ou professionnel de service pres de chez vous. Reservez en ligne en quelques clics sur DreamAgenda."
     hero:
       heading: "Trouvez un professionnel pres de chez vous"
       subheading: "Artisans, services a domicile, professionnels qualifies"
@@ -151,7 +152,7 @@ fr:
     landing:
       meta:
         title: "%{activity} a %{city}"
-        description: "Trouvez des professionnels %{activity} a %{city} et reservez en ligne en quelques clics avec Planexa."
+        description: "Trouvez des professionnels %{activity} a %{city} et reservez en ligne en quelques clics avec DreamAgenda."
       kicker: "Guide local"
       heading: "%{activity} a %{city}"
       intro: "Consultez une selection d'entreprises specialisees en %{activity} a %{city}, comparez leurs prestations et prenez rendez-vous en ligne rapidement."
@@ -184,7 +185,7 @@ fr:
     feature_booking: "Reservations en ligne 24h/24 depuis votre fiche publique"
     feature_payment: "Encaissement securise via Stripe"
     feature_reminders: "Emails automatiques et rappels sans friction"
-    footer: "© %{year} Planexa - 49 EUR / mois - 14 jours d'essai"
+    footer: "© %{year} DreamAgenda - 49 EUR / mois - 14 jours d'essai"
 
   auth:
     sign_in: "Se connecter"
@@ -255,7 +256,7 @@ fr:
     invoices: "Factures"
     company_profile: "Profil entreprise"
     administrator: "Administrateur"
-    breadcrumb_prefix: "Planexa"
+    breadcrumb_prefix: "DreamAgenda"
     notifications: "Notifications"
     see_all: "Tout voir"
     no_notifications: "Aucune notification"
@@ -310,21 +311,21 @@ fr:
         subject: "Bravo ! Vous avez gagné une récompense chez %{company}"
     company:
       welcome_trial:
-        subject: "Bienvenue sur Planexa - Votre essai gratuit commence !"
+        subject: "Bienvenue sur DreamAgenda - Votre essai gratuit commence !"
       trial_ending_soon:
-        subject: "Votre essai Planexa se termine dans %{days_left} jours"
+        subject: "Votre essai DreamAgenda se termine dans %{days_left} jours"
       payment_failed:
         subject: "Échec du paiement - Action requise"
       account_suspended:
-        subject: "Votre compte Planexa a ete suspendu"
+        subject: "Votre compte DreamAgenda a ete suspendu"
       account_reactivated:
-        subject: "Votre compte Planexa est réactivé"
+        subject: "Votre compte DreamAgenda est réactivé"
       subscription_canceled:
-        subject: "Votre abonnement Planexa a été annulé"
+        subject: "Votre abonnement DreamAgenda a été annulé"
       new_appointment:
         subject: "Nouveau rendez-vous - %{datetime}"
       weekly_performance_summary:
-        subject: "Votre recap hebdomadaire Planexa"
+        subject: "Votre recap hebdomadaire DreamAgenda"
         heading: "Performance hebdomadaire - %{company}"
         period: "Periode du %{from} au %{to}"
         formula: "CA estime: somme des reservations en ligne de la semaine, hors annulations."
@@ -336,7 +337,7 @@ fr:
           estimated_revenue: "CA estime"
     contact:
       new_message:
-        subject: "[Contact Planexa] %{subject}"
+        subject: "[Contact DreamAgenda] %{subject}"
         default_subject: "Nouveau message"
 
   activerecord:
@@ -565,9 +566,9 @@ fr:
 
   subscriptions:
     title: "Mon abonnement"
-    success_message: "Votre abonnement est active — bienvenue sur Planexa !"
+    success_message: "Votre abonnement est active — bienvenue sur DreamAgenda !"
     cancelled_message: "La procedure de paiement a ete annulee. Vous pouvez reessayer a tout moment."
-    plan_name: "Abonnement Planexa"
+    plan_name: "Abonnement DreamAgenda"
     plan: "Plan"
     pro_plan: "Pro — 49 € / mois"
     trial_ends: "Fin d'essai"

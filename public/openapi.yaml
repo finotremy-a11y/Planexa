@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: Planexa Public API
+  title: DreamAgenda Public API
   version: v1
-  description: API REST publique pour integrer Planexa avec des outils tiers.
+  description: API REST publique pour integrer DreamAgenda avec des outils tiers.
 servers:
-  - url: https://planexa.fr
+  - url: https://dreamagenda.fr
     description: Production
   - url: http://localhost:3000
     description: Development

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Admin — Planexa</title>
+  <title><%= content_for?(:title) ? "#{yield(:title)} — " : "" %>Admin — DreamAgenda</title>
   <!-- PWA — Progressive Web App -->
   <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Planexa">
+  <meta name="apple-mobile-web-app-title" content="DreamAgenda">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -218,7 +218,7 @@
     <aside class="admin-sidebar" data-sidebar-target="panel">
       <div class="admin-logo">
         <div>
-          <div class="admin-logo-name">Planexa</div>
+          <div class="admin-logo-name">DreamAgenda</div>
         </div>
         <span class="admin-logo-badge">Admin</span>
       </div>

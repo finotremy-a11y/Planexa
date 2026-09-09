@@ -1,7 +1,7 @@
 en:
   seo:
-    default_meta_description: "Planexa - Appointment management platform for local service businesses."
-    default_title: "Planexa - Appointment management for professionals"
+    default_meta_description: "DreamAgenda - Appointment management platform for local service businesses."
+    default_title: "DreamAgenda - Appointment management for professionals"
 
   locale:
     changed: "Language updated."
@@ -41,12 +41,12 @@ en:
     privacy: "Privacy"
     create_company_account: "Create a business account"
     copyright: "© %{year} %{business} - All rights reserved"
-    made_in_france: "Crafted with care in France"
+    made_in_france: "Crafted with care in Aveyron"
 
   home:
     meta:
-      title: "Planexa - Appointment management for professionals"
-      description: "Planexa - Manage your appointments online. Smart planning, customer bookings, and team management. 14-day free trial for artisans and service businesses."
+      title: "DreamAgenda - Appointment management for professionals"
+      description: "DreamAgenda - Manage your appointments online. Smart planning, customer bookings, and team management. 14-day free trial for artisans and service businesses."
     hero:
       badge: "For artisans and service professionals"
       title_html: "Manage your appointments<br>like a pro"
@@ -54,7 +54,7 @@ en:
       cta_trial: "Start 14-day free trial"
       cta_search: "Find a business"
     features:
-      heading: "Why choose Planexa?"
+      heading: "Why choose DreamAgenda?"
       subheading: "A solution designed for artisans and service businesses that want to work more efficiently."
       items:
         planning:
@@ -75,6 +75,7 @@ en:
         analytics:
           title: "Real-time insights"
           description: "Dashboard with all your metrics and key indicators."
+      made_in_france: "A French, local agenda, designed and built in Aveyron."
     bottom_cta:
       heading: "Ready to get started?"
       subheading: "EUR 49 / month - 14-day free trial - No commitment"
@@ -117,7 +118,7 @@ en:
   search:
     meta:
       title: "Find a business"
-      description: "Find an artisan or service professional near you. Book online in just a few clicks with Planexa."
+      description: "Find an artisan or service professional near you. Book online in just a few clicks with DreamAgenda."
     hero:
       heading: "Find a professional near you"
       subheading: "Artisans, home services, qualified professionals"
@@ -151,7 +152,7 @@ en:
     landing:
       meta:
         title: "%{activity} in %{city}"
-        description: "Find %{activity} professionals in %{city} and book online in a few clicks with Planexa."
+        description: "Find %{activity} professionals in %{city} and book online in a few clicks with DreamAgenda."
       kicker: "Local guide"
       heading: "%{activity} in %{city}"
       intro: "Browse a curated list of businesses specialized in %{activity} in %{city}, compare their services, and book online quickly."
@@ -184,7 +185,7 @@ en:
     feature_booking: "24/7 online booking from your public profile"
     feature_payment: "Secure payments with Stripe"
     feature_reminders: "Automatic emails and frictionless reminders"
-    footer: "© %{year} Planexa - EUR 49/month - 14-day trial"
+    footer: "© %{year} DreamAgenda - EUR 49/month - 14-day trial"
 
   auth:
     sign_in: "Sign in"
@@ -255,7 +256,7 @@ en:
     invoices: "Invoices"
     company_profile: "Company profile"
     administrator: "Administrator"
-    breadcrumb_prefix: "Planexa"
+    breadcrumb_prefix: "DreamAgenda"
     notifications: "Notifications"
     see_all: "See all"
     no_notifications: "No notifications"
@@ -310,21 +311,21 @@ en:
         subject: "Great news! You unlocked a reward at %{company}"
     company:
       welcome_trial:
-        subject: "Welcome to Planexa - Your free trial starts now!"
+        subject: "Welcome to DreamAgenda - Your free trial starts now!"
       trial_ending_soon:
-        subject: "Your Planexa trial ends in %{days_left} days"
+        subject: "Your DreamAgenda trial ends in %{days_left} days"
       payment_failed:
         subject: "Payment failed - Action required"
       account_suspended:
-        subject: "Your Planexa account has been suspended"
+        subject: "Your DreamAgenda account has been suspended"
       account_reactivated:
-        subject: "Your Planexa account is reactivated"
+        subject: "Your DreamAgenda account is reactivated"
       subscription_canceled:
-        subject: "Your Planexa subscription was canceled"
+        subject: "Your DreamAgenda subscription was canceled"
       new_appointment:
         subject: "New appointment - %{datetime}"
       weekly_performance_summary:
-        subject: "Your weekly Planexa summary"
+        subject: "Your weekly DreamAgenda summary"
         heading: "Weekly performance - %{company}"
         period: "Period from %{from} to %{to}"
         formula: "Estimated revenue: sum of online bookings for the week, excluding cancellations."
@@ -336,7 +337,7 @@ en:
           estimated_revenue: "Estimated revenue"
     contact:
       new_message:
-        subject: "[Planexa Contact] %{subject}"
+        subject: "[DreamAgenda Contact] %{subject}"
         default_subject: "New message"
 
   activerecord:
@@ -565,9 +566,9 @@ en:
 
   subscriptions:
     title: "My subscription"
-    success_message: "Your subscription is active — welcome to Planexa!"
+    success_message: "Your subscription is active — welcome to DreamAgenda!"
     cancelled_message: "The payment process was cancelled. You can try again at any time."
-    plan_name: "Planexa Subscription"
+    plan_name: "DreamAgenda Subscription"
     plan: "Plan"
     pro_plan: "Pro — €49 / month"
     trial_ends: "Trial ends"

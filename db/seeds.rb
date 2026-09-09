@@ -1,4 +1,4 @@
-# db/seeds.rb — Seed Complet Planexa
+# db/seeds.rb — Seed Complet DreamAgenda
 # ============================================================
 # Lance avec : rails db:seed
 # Réinitialise tout : rails db:seed:replant
@@ -6,7 +6,7 @@
 # COMPTES DE TEST CRÉÉS :
 # ─────────────────────────────────────────────────────────────
 # ADMIN
-#   admin@planexa.fr          / AdminPlanexa2025!
+#   admin@dreamagenda.fr          / AdminDreamAgenda2025!
 #
 # ENTREPRISES (toutes avec abonnement actif)
 #   plomberie@dupont.fr          / Password123!   → Plomberie Dupont & Fils
@@ -23,7 +23,7 @@
 #   emma.petit@test.fr           / Password123!
 # ─────────────────────────────────────────────────────────────
 
-puts "\n🌱 Démarrage du seed complet Planexa..."
+puts "\n🌱 Démarrage du seed complet DreamAgenda..."
 puts "=" * 55
 
 # ── Nettoyage (ordre important pour les FK) ───────────────────
@@ -45,8 +45,8 @@ puts "   ✓ Base nettoyée"
 # ═══════════════════════════════════════════════════════════════
 puts "\n👑 Création du compte admin..."
 
-admin_email = ENV.fetch("ADMIN_EMAIL", "admin@planexa.fr").to_s.downcase.strip
-admin_password = ENV.fetch("ADMIN_PASSWORD", "AdminPlanexa2025!").to_s
+admin_email = ENV.fetch("ADMIN_EMAIL", "admin@dreamagenda.fr").to_s.downcase.strip
+admin_password = ENV.fetch("ADMIN_PASSWORD", "AdminDreamAgenda2025!").to_s
 
 admin = User.create!(
   first_name:   "Admin",

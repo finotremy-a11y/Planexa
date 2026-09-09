@@ -117,7 +117,7 @@ class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
       file.rewind
 
       uploaded_logo = Rack::Test::UploadedFile.new(file.path, "image/png")
-      Cloudinary::Uploader.expects(:upload).once.returns({ "public_id" => "planexa/companies/logo_123" })
+      Cloudinary::Uploader.expects(:upload).once.returns({ "public_id" => "dreamagenda/companies/logo_123" })
 
       patch company_profile_path, params: {
         company: {
@@ -127,11 +127,11 @@ class Company::ProfilesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to company_profile_path
-    assert_equal "planexa/companies/logo_123", @company.reload.logo_public_id
+    assert_equal "dreamagenda/companies/logo_123", @company.reload.logo_public_id
   end
 
   test "PATCH update avec remove_logo supprime le logo" do
-    @company.update!(logo_public_id: "planexa/companies/existing_logo")
+    @company.update!(logo_public_id: "dreamagenda/companies/existing_logo")
 
     patch company_profile_path, params: {
       company: {

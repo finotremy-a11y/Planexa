@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Planexa",
-  "short_name": "Planexa",
+  "name": "DreamAgenda",
+  "short_name": "DreamAgenda",
   "description": "Plateforme professionnelle de gestion de rendez-vous et réservations",
   "start_url": "/",
   "scope": "/",

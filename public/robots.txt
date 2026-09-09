@@ -26,4 +26,4 @@ Disallow: /rails/
 Disallow: /*.json$
 
 # Sitemap
-Sitemap: https://planexa.fr/sitemap.xml.gz
+Sitemap: https://dreamagenda.fr/sitemap.xml.gz

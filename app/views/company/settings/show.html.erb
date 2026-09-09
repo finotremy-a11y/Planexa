@@ -4,7 +4,7 @@
 <div class="page-header">
   <div class="page-header-left">
     <h1>Réglages</h1>
-    <p>Personnalisez le fonctionnement de votre espace Planexa</p>
+    <p>Personnalisez le fonctionnement de votre espace DreamAgenda</p>
   </div>
 </div>
 
@@ -67,7 +67,7 @@
             <%= f.radio_button :payment_mode, "payment_in_app",
                   checked: @setting.payment_in_app? %>
             <div class="radio-card-content">
-              <h4>💸 Paiement en ligne via Planexa</h4>
+              <h4>💸 Paiement en ligne via DreamAgenda</h4>
               <p>Les clients paient en ligne lors de la réservation. Les fonds arrivent directement sur votre compte Stripe.</p>
             </div>
           </label>
@@ -92,7 +92,7 @@
                   checked: @setting.assignment_automatic? %>
             <div class="radio-card-content">
               <h4>⚡ Assignation automatique</h4>
-              <p>Planexa désigne automatiquement l'employé disponible et qualifié, en équilibrant la charge de travail.</p>
+              <p>DreamAgenda désigne automatiquement l'employé disponible et qualifié, en équilibrant la charge de travail.</p>
             </div>
           </label>
           <label class="radio-card">

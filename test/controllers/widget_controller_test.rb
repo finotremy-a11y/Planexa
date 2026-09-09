@@ -44,7 +44,7 @@ class WidgetControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "GET booking ne présente pas la navigation Planexa" do
+  test "GET booking ne présente pas la navigation DreamAgenda" do
     get widget_booking_path(company_token: @token)
     assert_response :success
     # Le layout widget n'inclut pas de nav globale

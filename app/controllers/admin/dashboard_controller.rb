@@ -74,7 +74,7 @@ class Admin::DashboardController < Admin::BaseController
     end
 
     send_data csv_data,
-              filename: "planify_pro_entreprises_#{Date.today}.csv",
+              filename: "dream_agenda_entreprises_#{Date.today}.csv",
               type: "text/csv"
   end
 end

@@ -20,7 +20,7 @@ class Company::OnboardingsControllerTest < ActionDispatch::IntegrationTest
   test "PATCH update crée l'entreprise et redirige vers le dashboard" do
     patch company_onboarding_path, params: {
       company: {
-        name: "Planexa Test",
+        name: "DreamAgenda Test",
         siret: "12345678901234",
         address: "1 rue de Test",
         city: "Paris",
@@ -30,7 +30,7 @@ class Company::OnboardingsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to company_root_path
-    assert_equal "Planexa Test", @user.reload.company.name
+    assert_equal "DreamAgenda Test", @user.reload.company.name
   end
 
   test "PATCH update reaffiche le formulaire si les donnees sont invalides" do

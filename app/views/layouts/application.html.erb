@@ -20,7 +20,7 @@
 
   <!-- Open Graph -->
   <meta property="og:type"        content="website">
-  <meta property="og:site_name"   content="Planexa">
+  <meta property="og:site_name"   content="DreamAgenda">
   <meta property="og:title"       content="<%= content_for?(:title) ? page_title(yield(:title)) : page_title %>">
   <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : default_meta_description %>">
   <meta property="og:image"       content="<%= content_for?(:og_image) ? yield(:og_image) : og_image_url %>">
@@ -46,7 +46,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Planexa">
+  <meta name="apple-mobile-web-app-title" content="DreamAgenda">
 
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
@@ -271,7 +271,7 @@
        data-action="click@window->navbar#closeOnOutside resize@window->navbar#handleResize">
     <%= link_to root_path, class: "navbar-brand" do %>
       <div class="navbar-logo">⚙</div>
-      <span class="navbar-brand-name">Planexa</span>
+      <span class="navbar-brand-name">DreamAgenda</span>
     <% end %>
 
     <button class="navbar-hamburger" id="navbarHamburger"
@@ -352,7 +352,7 @@
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
           <div style="width:28px; height:28px; background:var(--gold-600); border-radius:4px;
                       display:flex; align-items:center; justify-content:center; font-size:0.85rem;">⚙</div>
-          <span style="font-family:var(--font-display); font-size:1rem; font-weight:700; color:white;">Planexa</span>
+          <span style="font-family:var(--font-display); font-size:1rem; font-weight:700; color:white;">DreamAgenda</span>
         </div>
         <p style="font-size:0.82rem; line-height:1.7; max-width:300px; color:rgba(255,255,255,0.6);">
           <%= t("footer.description") %>
@@ -370,7 +370,7 @@
       </div>
 
       <div>
-        <div class="public-footer-heading">Planexa</div>
+        <div class="public-footer-heading">DreamAgenda</div>
         <div class="public-footer-links">
           <%= link_to t("nav.search"), search_path %>
           <%= link_to t("nav.contact"), contact_path %>

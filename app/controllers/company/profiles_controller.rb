@@ -78,7 +78,7 @@ class Company::ProfilesController < Company::BaseController
 
     upload_result = Cloudinary::Uploader.upload(
       logo_file.path,
-      folder: "planexa/companies",
+      folder: "dreamagenda/companies",
       resource_type: :image
     )
 

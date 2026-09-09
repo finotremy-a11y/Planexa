@@ -138,7 +138,7 @@ class InvoiceGeneratorService
   def draw_footer(pdf)
     pdf.stroke_horizontal_rule
     pdf.move_down 6
-    pdf.text "Planexa • planexa.fr",
+    pdf.text "DreamAgenda • dreamagenda.fr",
              size: 7, color: "999999", align: :center
     pdf.text "Paiement effectué par carte bancaire via Stripe. TVA applicable selon la réglementation en vigueur.",
              size: 7, color: "aaaaaa", align: :center

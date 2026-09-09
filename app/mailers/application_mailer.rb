@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: ENV.fetch("MAIL_FROM", "Planexa <noreply@planexa.fr>")
+  default from: ENV.fetch("MAIL_FROM", "DreamAgenda <noreply@dreamagenda.fr>")
   layout "mailer"
 
   private

@@ -34,7 +34,7 @@ function showUpdatePrompt(registration) {
   message.className = 'pwa-update-prompt';
   message.innerHTML = `
     <div class="pwa-update-content">
-      <p>Une nouvelle version de Planexa est disponible !</p>
+      <p>Une nouvelle version de DreamAgenda est disponible !</p>
       <button class="pwa-update-btn-update">Mettre à jour</button>
       <button class="pwa-update-btn-dismiss">Plus tard</button>
     </div>
