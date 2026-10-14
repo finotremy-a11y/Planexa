@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   layout :choose_layout
 
+  before_action :sanitize_params_encoding
   before_action :store_locale_from_param
   around_action :switch_locale
   before_action :authenticate_user!
@@ -18,6 +19,28 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
 
   private
+
+  def sanitize_params_encoding
+    sanitize_encoding(params)
+  end
+
+  def sanitize_encoding(value)
+    case value
+    when ActionController::Parameters
+      value.each_pair { |key, val| value[key] = sanitize_encoding(val) }
+      value
+    when Hash
+      value.each { |key, val| value[key] = sanitize_encoding(val) }
+    when Array
+      value.map! { |val| sanitize_encoding(val) }
+    when String
+      return value if value.encoding == Encoding::UTF_8 && value.valid_encoding?
+
+      value.dup.force_encoding(Encoding::UTF_8).scrub("")
+    else
+      value
+    end
+  end
 
   def user_not_authorized
     flash[:alert] = t("errors.not_authorized")
